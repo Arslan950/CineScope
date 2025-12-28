@@ -42,6 +42,7 @@ CineScope is a sleek and modern web application designed for movie enthusiasts. 
 * **React:** A JavaScript library for building user interfaces.
 * **React Router:** For handling client-side routing.
 * **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+* **Zustand:** A state management tool used for current theme and favourites list.
 * **Framer Motion:** For creating fluid and complex animations.
 * **OMDb API:** To fetch detailed movie information.
 * **Daisy UI:** A component library for Tailwind CSS.
