@@ -66,7 +66,7 @@ Make sure you have Node.js and npm installed on your machine.
 
 1.  Clone the repo
     ```sh
-    git clone https://github.com/Arslan950/CineScope---ReactProject.git
+    git clone https://github.com/Arslan950/CineScope.git
     ```
 2.  Install NPM packages
     ```sh
