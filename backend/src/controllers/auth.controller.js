@@ -235,10 +235,6 @@ const emailVerification = asyncHandler(async (req, res) => {
         )
 });
 
-const resendEmailVerification = asyncHandler(async (req, res) => {
-
-});
-
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
@@ -279,6 +275,5 @@ export {
     resetPassword,
     getCurrentUserInfo,
     emailVerification,
-    resendEmailVerification,
     refreshAccessToken,
 }

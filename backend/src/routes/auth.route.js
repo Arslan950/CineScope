@@ -5,7 +5,6 @@ import {
     logout,
     getCurrentUserInfo,
     emailVerification,
-    resendEmailVerification,
     forgetPassword,
     resetPassword,
     refreshAccessToken

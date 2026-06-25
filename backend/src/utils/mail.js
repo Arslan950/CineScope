@@ -14,9 +14,6 @@ const sendEmail = async (options) => {
     const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
     const emailHTML = mailGenerator.generate(options.mailgenContent);
 
-    console.log("Reading credentials : " , process.env.MAIL_USER);
-    
-
     const transport = nodemailer.createTransport({
         service : "gmail",
         auth : {
@@ -44,7 +41,7 @@ const emailVerificationMail = (username, verificationUrl) => {
     return {
         body: {
             name: username,
-            intro: "Welcome to MarketPulse ! Excited to have you on board ",
+            intro: "Welcome to CineScope ! Excited to have you on board ",
             action: {
                 instructions: "To verify yourself as user please click the following button",
                 button: {
