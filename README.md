@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./src/assets/logo.svg" alt="CineScope Logo" width="100" />
+<img src="./frontend/src/assets/logo.svg" alt="CineScope Logo" width="100" />
 
 # CineScope
 
