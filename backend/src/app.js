@@ -21,8 +21,6 @@ app.use(cookieParser());
 
 app.use("/api/healthcheck",healthCheckRouter);
 app.use("/api/auth",authRouter);
-app.use("/api/auth",authRouter);
-app.use("api/auth",authRouter);
 
 app.get("/" , (req,res) => {
     res.send("hello world")
