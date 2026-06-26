@@ -12,6 +12,13 @@ const MoviesDetail = lazy(() => import('./Pages/Movie/MoviesDetail.jsx'));
 const MovieDescription = lazy(() => import('./Pages/Movie/MovieDescription.jsx'));
 const Home = lazy(() => import('./Pages/Home.jsx'));
 const Explore = lazy(() => import('./Pages/Explore.jsx'));
+const Login = lazy(() => import('./Pages/Login.jsx'));
+const SignUp = lazy(() => import('./Pages/SignUp.jsx'));
+const ForgetPassword = lazy(() => import('./Pages/Password/ForgetPassword.jsx'))
+const PasswordMain = lazy(() => import('./Pages/Password/PasswordMain.jsx'))
+const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'))
+const EmailVerification = lazy(() => import('./Pages/Email/EmailVerification.jsx'));
+const EmailMain = lazy(() => import('./Pages/Email/EmailMain.jsx'))
 const Loading = lazy(() => import('./components/Loading.jsx'))
 
 const router = createBrowserRouter([
@@ -76,6 +83,82 @@ const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: "verify-email",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <EmailMain />
+          </Suspense>
+        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <NotFound />
+              </Suspense>
+            )
+          },
+          {
+            path: ":emailVerificationToken",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <EmailVerification />
+              </Suspense>
+            )
+          }
+        ]
+      },
+      {
+        path: "login",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Login />
+          </Suspense>
+        )
+      },
+      {
+        path: "signup",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <SignUp />
+          </Suspense>
+        )
+      },
+      {
+        path: "forgetPassword",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ForgetPassword />
+          </Suspense>
+        )
+      },
+      {
+        path: "resetPassword",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <PasswordMain />
+          </Suspense>
+        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <NotFound />
+              </Suspense>
+            )
+          },
+          {
+            path: ":resetPasswordToken",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ResetPassword />
+              </Suspense>
+            )
+          }
+        ]
       },
       {
         path: "*",

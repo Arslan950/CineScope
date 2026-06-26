@@ -23,7 +23,7 @@ export function ThreeDMarqueeDemo() {
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate('/home')}
+                        onClick={() => navigate('/login')}
                         className='group bg-[#5fa2fa] text-white sm:p-4 rounded-2xl  sm:text-lg font-semibold p-2 flex items-center'
                     >
                         Get Started

@@ -83,7 +83,7 @@ const login = asyncHandler(async (req, res) => {
     const isPasswordCorrect = await user.isPasswordCorrect(password);
 
     if (!isPasswordCorrect) {
-        throw new ApiError(401, "Your entered password is wrong");
+        throw new ApiError(401, "Incorrect password");
     }
 
     const { accessToken, refreshToken } = await generateTokens(user._id);
@@ -154,7 +154,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
             subject: "Request to change password",
             mailgenContent: resetPasswordMail(
                 user?.fullName,
-                `http://localhost:5173/reset-password/${unHashedToken}`
+                `http://localhost:5174/resetPassword/${unHashedToken}`
             )
         })
 
