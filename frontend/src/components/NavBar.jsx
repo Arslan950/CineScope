@@ -2,14 +2,22 @@ import React from 'react'
 import { useState } from 'react'
 import logo from '../assets/logo.svg'
 import { motion } from 'motion/react'
-import { NavLink, Link } from 'react-router-dom'
-import ThemeBtn from './ThemeBtn'
-import { useThemeStore } from '../store/ThemeStore'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
+import ThemeBtn from './ThemeBtn.jsx'
+import { useThemeStore } from '../store/ThemeStore.js'
+import { useAuthStore } from "../store/AuthStore.js"
+import { LogOutIcon, UserCircle } from "lucide-react"
 
 const NavBar = () => {
     const [dropdownFlag, setDropdownFlag] = useState(false)
-
+    const navigate = useNavigate();
     const theme = useThemeStore((state) => state.theme);
+    const { loggedOut } = useAuthStore();
+
+    const handleLogout = () => {
+        loggedOut();
+        navigate('/login')
+    }
 
     return (
         <header>
@@ -165,7 +173,19 @@ const NavBar = () => {
                                             <ThemeBtn />
                                             <p>{theme}</p>
                                         </div>
-
+                                    </li>
+                                    <li className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer ">
+                                        <span
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                handleLogout();
+                                            }}
+                                            className="flex items-center gap-x-3 group text-slate-800 dark:text-white"
+                                        >
+                                            <LogOutIcon className='group-hover:stroke-[#5fa2fa] duration-200' height={24} width={24} />
+                                            <p className='text-[1em] group-hover:text-[#5fa2fa] duration-200'>Logout</p>
+                                        </span>
                                     </li>
                                 </ul>
                             </motion.div>
@@ -269,7 +289,84 @@ const NavBar = () => {
                 </div>
 
                 <div className='sm:flex-1 sm:flex sm:justify-end hidden '>
-                    <ThemeBtn />
+                    <div className='flex-1 flex justify-end  relative'>
+                        <label
+                            className="btn btn-circle swap swap-rotate dark:bg-[#111826] bg-slate-100  border-none shadow-none"
+                        >
+                            <input type="checkbox"
+                                onChange={() => {
+                                    setTimeout(() => {
+                                        setDropdownFlag(!dropdownFlag)
+                                    }, 120);
+                                }}
+                                value={!dropdownFlag}
+                            />
+
+                            {/* hamburger icon */}
+                            <svg
+                                className="swap-off fill-black dark:fill-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 512 512">
+                                <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+                            </svg>
+
+                            {/* close icon */}
+                            <svg
+                                className="swap-on fill-black dark:fill-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 512 512">
+                                <polygon
+                                    points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
+                            </svg>
+                        </label>
+                        {
+                            dropdownFlag && (
+                                <motion.div
+                                    initial={{ opacity: 0.6, y: -0, x: 10 }}
+                                    whileInView={{ opacity: 1, x: -5 }}
+                                    transition={{
+                                        delay: 0.1,
+                                        duration: 0.3,
+                                        ease: "easeInOut",
+                                    }}
+                                    className="absolute right-0 top-8 mt-4 m-3 w-40 bg-white dark:bg-[#212938] text-slate-900 dark:text-white rounded-md shadow-lg z-50 ">
+                                    <ul className="flex flex-col ">
+                                        <li className="px-2.5 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer ">
+                                            <NavLink to="/profile">
+                                                <div className='flex items-center ml-[7px] gap-x-3.5'>
+                                                    <UserCircle className='group-hover:stroke-[#5fa2fa] duration-200' height={24} width={24} />
+                                                    <p className='text-[1em] group-hover:text-[#5fa2fa] duration-200'>Profile</p>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        <li className="px-2.5 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer ">
+                                            <div className='flex items-center ml-[7px]'>
+                                                <ThemeBtn />
+                                                <p>{theme}</p>
+                                            </div>
+                                        </li>
+                                        <li className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer ">
+                                            <span
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleLogout();
+                                                }}
+                                                className="flex items-center gap-x-3 group text-slate-800 dark:text-white"
+                                            >
+                                                <LogOutIcon className='group-hover:stroke-[#5fa2fa] duration-200' height={24} width={24} />
+                                                <p className='text-[1em] group-hover:text-[#5fa2fa] duration-200'>Logout</p>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </motion.div>
+                            )
+                        }
+                    </div>
                 </div>
             </nav>
         </header >

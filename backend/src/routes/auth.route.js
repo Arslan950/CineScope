@@ -34,6 +34,6 @@ router.route("/forget-password").post(userForgotPasswordValidator(),validation,f
 
 router.route("/reset-password/:resetPasswordToken").post(userResetForgotPasswordValidator(),validation,resetPassword);
 
-router.route("/refresh-accessToken").post(verifyAccessToken,refreshAccessToken);
+router.route("/refresh-accessToken").post(refreshAccessToken);
 
 export default router;

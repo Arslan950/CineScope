@@ -33,7 +33,7 @@ const ForgetPassword = () => {
     }
 
     return (
-        <section className='flex justify-center items-center w-full h-[810px] '>
+        <section className='flex justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
             <AuthMarquee />
             <span className='h-full w-1/2 flex justify-center items-center py-20'>
                 <div className='w-lg h-[500px] sm:mb-0 mb-20 sm:mt-60'>

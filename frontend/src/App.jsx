@@ -1,24 +1,44 @@
 import './App.css'
 import { useEffect } from 'react'
 import NavBar from './components/NavBar'
+import SecondryNavBar from './components/SecondryNavBar.jsx'
 import Footbar from './components/Footbar'
 import { Outlet } from 'react-router-dom'
 import { useThemeStore } from './store/ThemeStore'
+import { useAuthStore } from './store/AuthStore'
 import { ToastContainer, toast } from 'react-toastify'
+import Loading from "./components/Loading.jsx"
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
+  const { checkAuth, isLoading } = useAuthStore();
+
+  const hideNavbarRoutes = ['/','/login', '/signup', '/forgetPassword'];
+  const shouldHideNavbar =
+    hideNavbarRoutes.includes(location.pathname) ||
+    location.pathname.startsWith('/resetPassword') ||
+    location.pathname.startsWith('/verify-email');
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     document.querySelector('html').classList.remove('dark', 'light');
     document.querySelector('html').classList.add(theme);
   }, [theme])
 
+  if (isLoading) {
+    return (
+      <Loading />
+    )
+  }
+
   return (
-
-
     <main className='min-h-screen w-screen dark:bg-[#111826] bg-slate-100 dark:text-white text-black font-Poppins flex flex-col sm:duration-300' >
-      <NavBar />
+      {
+        (shouldHideNavbar) ? <SecondryNavBar /> : <NavBar />
+      }
       <section className=' flex flex-grow flex-col items-center'>
         <ToastContainer
           position="top-right"

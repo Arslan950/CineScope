@@ -45,7 +45,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <section className='flex flex-col justify-center items-center w-full h-[810px]'>
+    <section className='flex flex-col justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
       <div className='space-y-1 mb-6'>
         <h1 className='text-4xl font-bold '>Reset password</h1>
       </div>

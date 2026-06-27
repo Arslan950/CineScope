@@ -4,6 +4,8 @@ import './index.css';
 import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+
 const Dashboard = lazy(() => import('./Pages/Dashboard.jsx'));
 const Favourites = lazy(() => import('./Pages/Favourites.jsx'));
 const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
@@ -20,6 +22,7 @@ const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'))
 const EmailVerification = lazy(() => import('./Pages/Email/EmailVerification.jsx'));
 const EmailMain = lazy(() => import('./Pages/Email/EmailMain.jsx'))
 const Loading = lazy(() => import('./components/Loading.jsx'))
+const Profile = lazy(() => import("./Pages/Profile.jsx"))
 
 const router = createBrowserRouter([
   {
@@ -37,49 +40,61 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: (
-          <Suspense fallback={<Loading />}>
-            <Home />
-          </Suspense>
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <Home />
+            </Suspense>
+          </ProtectedRoute>
         ),
       },
       {
         path: "favorites",
         element: (
-          <Suspense fallback={<Loading />}>
-            <Favourites />
-          </Suspense>
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <Favourites />
+            </Suspense>
+          </ProtectedRoute>
         ),
       },
       {
         path: "Search",
         element: (
-          <Suspense fallback={<Loading />}>
-            <Search />
-          </Suspense>
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <Search />
+            </Suspense>
+          </ProtectedRoute>
         ),
       },
       {
         path: "explore",
         element: (
-          <Suspense fallback={<Loading />}>
-            <MoviesDetail />
-          </Suspense>
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <MoviesDetail />
+            </Suspense>
+          </ProtectedRoute>
         ),
         children: [
           {
             index: true,
             element: (
-              <Suspense fallback={<Loading />}>
-                <Explore />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<Loading />}>
+                  <Explore />
+                </Suspense>
+              </ProtectedRoute>
             ),
           },
           {
             path: ":title",
             element: (
-              <Suspense fallback={<Loading />}>
-                <MovieDescription />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<Loading />}>
+                  <MovieDescription />
+                </Suspense>
+              </ProtectedRoute>
             ),
           },
         ],
@@ -159,6 +174,16 @@ const router = createBrowserRouter([
             )
           }
         ]
+      },
+      {
+        path : "profile",
+        element : (
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <Profile />
+            </Suspense>
+          </ProtectedRoute>
+        )
       },
       {
         path: "*",
