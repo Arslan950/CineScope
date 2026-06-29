@@ -2,7 +2,9 @@ import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.model.js";
+import { IntialUser } from "../models/intialUser.model.js"
 import { sendEmail, emailVerificationMail, resetPasswordMail } from "../utils/mail.js"
+import bcrypt from "bcrypt"
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
@@ -21,7 +23,27 @@ const generateTokens = async (userID) => {
     } catch (error) {
         throw new ApiError(401, "Unable to create JWT token");
     }
+};
+
+const generateOTP = (length = 4) => {
+    const digit = "0123456789";
+    let OTP = "";
+
+    for (let i = 0; i < length; i++) {
+        OTP += digit[crypto.randomInt(0, 10)]
+    }
+
+    const hashedOTP = crypto
+        .createHmac("sha256", process.env.OTP_SERVER_SECRET)
+        .update(OTP)
+        .digest("hex")
+
+    return { OTP, hashedOTP };
 }
+
+const hashPassword = async (password) => {
+    return await bcrypt.hash(password, 10)
+};
 
 const register = asyncHandler(async (req, res) => {
     const { fullName, email, password } = req.body;
@@ -32,44 +54,83 @@ const register = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User with same email already exists");
     }
 
-    const user = await User.create({
+    const hashedPassword = await hashPassword(password);
+
+    const { OTP, hashedOTP } = await generateOTP();
+
+    await IntialUser.deleteOne({ email });
+
+    const tempUser = await IntialUser.create({
         fullName,
         email,
-        password,
-        isEmailVerified: false
-    });
-
-    const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken();
-
-    user.emailVerificationToken = hashedToken;
-    user.emailVerificationExpires = tokenExpiry;
-
-    await user.save({ validateBeforeSave: false });
+        password: hashedPassword,
+        OTP: hashedOTP
+    })
 
     await sendEmail({
-        email: user?.email,
+        email: tempUser?.email,
         subject: "CineScope Email verification",
         mailgenContent: emailVerificationMail(
-            user?.fullName,
-            `http://localhost:5174/verify-email/${unHashedToken}`
+            tempUser?.fullName,
+            OTP
         )
     })
 
-    const createdUser = await User.findById(user._id).select(
-        "-password -refreshToken -emailVerificationToken -emailVerificationExpires",
+    const createdUser = await IntialUser.findById(tempUser._id).select(
+        "-password -OTP",
     )
 
     if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while creating a user");
+        throw new ApiError(500, "Something went wrong while creating a temporary  user");
     }
 
     return res
         .status(201)
         .json(
-            new ApiResponse(201, { user: createdUser }, "user created successfully , A verification email has been sent to your email")
+            new ApiResponse(201, { tempUser: createdUser }, "A verification email has been sent to your email")
         )
 
 });
+
+const verifyUser = asyncHandler(async (req, res) => {
+    const {email , enteredOTP } = req.body;
+    if (!enteredOTP) { throw new ApiError(400, "Please Provide a valid OTP") }
+
+    const hashedOTP = crypto
+        .createHmac("sha256",process.env.OTP_SERVER_SECRET)
+        .update(enteredOTP)
+        .digest("hex")
+
+    const user = await IntialUser.findOne({
+        email : email ,
+        OTP : hashedOTP,
+        createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) }
+    });
+
+    if(!user) {throw new ApiError(400,"Invalid OTP")}
+
+    const createUser = await User.create({
+        fullName : user?.fullName ,
+        email : user?.email ,
+        password : user?.password,
+        isEmailVerified : true
+    });
+
+    await IntialUser.deleteOne({ _id: user._id });
+
+    const createdUser = await User.findById(createUser._id).select(
+        "-password -refreshToken -resetPasswordToken -resetPasswordExpires"
+    )
+
+    if(!createdUser) {throw new ApiError(400,"Unable to create final User")}
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200,{user : createdUser},"User created successfully")
+        )
+
+})
 
 const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
@@ -164,7 +225,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
                 new ApiResponse(200, {}, "Email has been sent to your registered mail")
             )
     } catch (error) {
-        throw new ApiError(400,`Something went wrong : ${error}`)
+        throw new ApiError(400, `Something went wrong : ${error}`)
     }
 });
 
@@ -188,7 +249,9 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    user.password = newPassword;
+    const newPasswordHash = await hashPassword(newPassword)
+
+    user.password = newPasswordHash;
 
     await user.save({ validateBeforeSave: false });
 
@@ -206,34 +269,6 @@ const getCurrentUserInfo = asyncHandler(async (req, res) => {
             new ApiResponse(200, req.user, "Fetched user data succesfully !")
         )
 })
-
-const emailVerification = asyncHandler(async (req, res) => {
-    const { receviedEmailVerificationToken } = req.params;
-
-    if (!receviedEmailVerificationToken) { throw new ApiError(400, "Time exceeded please try again") }
-
-    const newHash = crypto.createHash("sha256").update(receviedEmailVerificationToken).digest("hex");
-
-    const user = await User.findOne({
-        emailVerificationToken: newHash,
-        emailVerificationExpires: { $gt: Date.now() }
-    })
-
-    if (!user) { throw new ApiError(400, "Something went wrong") }
-
-    user.emailVerificationToken = undefined;
-    user.emailVerificationExpires = undefined;
-
-    user.isEmailVerified = true;
-
-    await user.save({ validateBeforeSave: false });
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, {}, "Email verified succesfully ")
-        )
-});
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingToken = req.cookies?.refreshToken || req.body?.refreshToken;
@@ -269,11 +304,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 export {
     register,
+    verifyUser,
     login,
     logout,
     forgetPassword,
     resetPassword,
     getCurrentUserInfo,
-    emailVerification,
     refreshAccessToken,
 }

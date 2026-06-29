@@ -15,10 +15,10 @@ const sendEmail = async (options) => {
     const emailHTML = mailGenerator.generate(options.mailgenContent);
 
     const transport = nodemailer.createTransport({
-        service : "gmail",
-        auth : {
-            user : process.env.MAIL_USER,
-            pass : process.env.MAIL_PASS
+        service: "gmail",
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
         }
     });
 
@@ -37,18 +37,13 @@ const sendEmail = async (options) => {
     }
 }
 
-const emailVerificationMail = (username, verificationUrl) => {
+const emailVerificationMail = (username, otp) => {
     return {
         body: {
             name: username,
-            intro: "Welcome to CineScope ! Excited to have you on board ",
-            action: {
-                instructions: "To verify yourself as user please click the following button",
-                button: {
-                    color: "#5fa2fa",
-                    text: "Verify",
-                    link: verificationUrl
-                },
+            dictionary: {
+                "Your OTP Code": otp,
+                "Expires in": "10 minutes"
             },
             outro: "If you need help, please reply back to this email"
         }

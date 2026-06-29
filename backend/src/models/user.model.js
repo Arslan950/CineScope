@@ -33,12 +33,6 @@ const UserSchema = new Schema({
     refreshToken: {
         type: String,
     },
-    emailVerificationToken: {
-        type: String
-    },
-    emailVerificationExpires: {
-        type: Date
-    },
     resetPasswordToken: {
         type: String
     },
@@ -46,12 +40,6 @@ const UserSchema = new Schema({
         type: Date
     }
 }, { timestamps: true })
-
-UserSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) { return }
-
-    this.password = await bcrypt.hash(this.password, 10)
-});
 
 UserSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password,this.password)

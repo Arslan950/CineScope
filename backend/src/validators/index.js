@@ -26,6 +26,17 @@ const userRegistrationValidator = () => {
     ]
 };
 
+const userOTPValidator = () => {
+    return [
+        body("enteredOTP")
+            .trim()
+            .notEmpty()
+            .withMessage("OTP is required")
+            .isLength({min : 4})
+            .withMessage("OTP must be at least 4 digit long")
+    ]
+}
+
 const userLoginValidator = () => {
     return [
         body("email")
@@ -70,6 +81,7 @@ const userResetForgotPasswordValidator = () => {
 
 export {
     userRegistrationValidator,
+    userOTPValidator ,
     userLoginValidator,
     userForgotPasswordValidator,
     userResetForgotPasswordValidator

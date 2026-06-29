@@ -19,8 +19,6 @@ const SignUp = lazy(() => import('./Pages/SignUp.jsx'));
 const ForgetPassword = lazy(() => import('./Pages/Password/ForgetPassword.jsx'))
 const PasswordMain = lazy(() => import('./Pages/Password/PasswordMain.jsx'))
 const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'))
-const EmailVerification = lazy(() => import('./Pages/Email/EmailVerification.jsx'));
-const EmailMain = lazy(() => import('./Pages/Email/EmailMain.jsx'))
 const Loading = lazy(() => import('./components/Loading.jsx'))
 const Profile = lazy(() => import("./Pages/Profile.jsx"))
 
@@ -98,32 +96,6 @@ const router = createBrowserRouter([
             ),
           },
         ],
-      },
-      {
-        path: "verify-email",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <EmailMain />
-          </Suspense>
-        ),
-        children: [
-          {
-            index: true,
-            element: (
-              <Suspense fallback={<Loading />}>
-                <NotFound />
-              </Suspense>
-            )
-          },
-          {
-            path: ":emailVerificationToken",
-            element: (
-              <Suspense fallback={<Loading />}>
-                <EmailVerification />
-              </Suspense>
-            )
-          }
-        ]
       },
       {
         path: "login",
