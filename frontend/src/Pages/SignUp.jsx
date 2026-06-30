@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import AuthMarquee from "../components/AuthMarquee.jsx"
 import logo from "../assets/logo.svg";
 import { CheckCheck, EyeClosedIcon, EyeIcon } from "lucide-react";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { useAuthStore } from "../store/AuthStore.js"
 
 const SignUp = () => {
   const [passwordToogle, setPasswordToogle] = useState(false);
@@ -15,6 +16,8 @@ const SignUp = () => {
   const [step, setStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
+  const { login } = useAuthStore();
 
   useEffect(() => {
     const savedEmail = sessionStorage.getItem("pendingVerificationEmail");
@@ -66,7 +69,9 @@ const SignUp = () => {
       });
       sessionStorage.removeItem("pendingVerificationEmail");
       toast.success("Account verified successfully!");
-      navigate('/onBoarding');
+      login(email, password).then(() => {
+        navigate('/onBoarding');
+      })
     } catch (error) {
       if (error.response) {
         const backendMessage = error.response?.data?.message || "Something went wrong";
@@ -86,12 +91,12 @@ const SignUp = () => {
 
   const handleChangeEmail = () => {
     sessionStorage.removeItem("pendingVerificationEmail");
-    
+
     setEmail("");
-    setPassword(""); 
+    setPassword("");
     setOTP("");
-    
-    setStep(1); 
+
+    setStep(1);
   };
 
   return (

@@ -26,6 +26,10 @@ const UserSchema = new Schema({
         required: [true, 'Password is required'],
         minlength: 8
     },
+    genres : [{
+        type : String ,
+        default : ["Comedy" , "sc-fi" , "horror" ] 
+    }],
     isEmailVerified: {
         type: Boolean,
         default: false,

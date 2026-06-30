@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import NavBar from './components/NavBar'
 import SecondryNavBar from './components/SecondryNavBar.jsx'
 import Footbar from './components/Footbar'
-import { Outlet } from 'react-router-dom'
+import { Outlet , useLocation} from 'react-router-dom'
 import { useThemeStore } from './store/ThemeStore'
 import { useAuthStore } from './store/AuthStore'
 import { ToastContainer, toast } from 'react-toastify'
@@ -12,7 +12,7 @@ import Loading from "./components/Loading.jsx"
 function App() {
   const theme = useThemeStore((state) => state.theme);
   const { checkAuth, isLoading } = useAuthStore();
-
+  const location = useLocation();
   const hideNavbarRoutes = ['/','/login', '/signup', '/forgetPassword'];
   const shouldHideNavbar =
     hideNavbarRoutes.includes(location.pathname) ||

@@ -13,35 +13,17 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
-    const { setLoggedIn } = useAuthStore();
+    const { login } = useAuthStore();
     const isFormValid = email.trim() !== "" && password.trim() !== "";
 
     const handleLogIn = async (e) => {
         e.preventDefault();
         if (!isFormValid) return;
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
-                "email": email,
-                "password": password
-            },{withCredentials : true});
-            setLoggedIn(response?.data?.data);
+        login(email,password).then(() => {
             navigate('/home');
-        } catch (error) {
-            if (error.response) {
-                const backendMessage = error.response?.data?.message || "Invalid credentials. Please try again.";
-                setErrorMessage(backendMessage);
-                toast.error(backendMessage);
-            } else if (error.request) {
-                const networkMsg = "Network error. Please check your connection.";
-                setErrorMessage(networkMsg);
-                toast.error(networkMsg);
-            } else {
-                const unexpectedMsg = "An unexpected error occurred.";
-                setErrorMessage(unexpectedMsg);
-                toast.error(unexpectedMsg);
-            }
-        }
+        })
     }
+
     return (
         <section className='flex justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
             <AuthMarquee />

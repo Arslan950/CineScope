@@ -93,27 +93,27 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const verifyUser = asyncHandler(async (req, res) => {
-    const {email , enteredOTP } = req.body;
+    const { email, enteredOTP } = req.body;
     if (!enteredOTP) { throw new ApiError(400, "Please Provide a valid OTP") }
 
     const hashedOTP = crypto
-        .createHmac("sha256",process.env.OTP_SERVER_SECRET)
+        .createHmac("sha256", process.env.OTP_SERVER_SECRET)
         .update(enteredOTP)
         .digest("hex")
 
     const user = await IntialUser.findOne({
-        email : email ,
-        OTP : hashedOTP,
+        email: email,
+        OTP: hashedOTP,
         createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) }
     });
 
-    if(!user) {throw new ApiError(400,"Invalid OTP")}
+    if (!user) { throw new ApiError(400, "Invalid OTP") }
 
     const createUser = await User.create({
-        fullName : user?.fullName ,
-        email : user?.email ,
-        password : user?.password,
-        isEmailVerified : true
+        fullName: user?.fullName,
+        email: user?.email,
+        password: user?.password,
+        isEmailVerified: true
     });
 
     await IntialUser.deleteOne({ _id: user._id });
@@ -122,12 +122,12 @@ const verifyUser = asyncHandler(async (req, res) => {
         "-password -refreshToken -resetPasswordToken -resetPasswordExpires"
     )
 
-    if(!createdUser) {throw new ApiError(400,"Unable to create final User")}
+    if (!createdUser) { throw new ApiError(400, "Unable to create final User") }
 
     return res
         .status(200)
         .json(
-            new ApiResponse(200,{user : createdUser},"User created successfully")
+            new ApiResponse(200, { user: createdUser }, "User created successfully")
         )
 
 })
@@ -193,6 +193,45 @@ const logout = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(200, {}, "Logged out securly")
         )
+});
+
+const updateUserInfo = asyncHandler(async (req, res) => {
+    const { avatar, genres, fullName } = req.body;
+
+    const updateData = {};
+
+    if (avatar) updateData.avatar = avatar;
+    if (genres) updateData.genres = genres;
+    if (fullName) updateData.fullName = fullName;
+
+    if (Object.keys(updateData).length === 0) {
+        throw new ApiError(400, "Please provide at least one field to update");
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+        {
+            _id: req.user._id
+        },
+        {
+            $set: updateData,
+        },
+        {
+            returnDocument: "after",
+            runValidators: true,
+        }
+    )
+
+    if (!updateData) { throw new ApiError(400, "Not a valid user") }
+
+    await updatedUser.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, { updatedUser }, "Info updated succesfully")
+        )
+
+
 });
 
 const forgetPassword = asyncHandler(async (req, res) => {
@@ -307,6 +346,7 @@ export {
     verifyUser,
     login,
     logout,
+    updateUserInfo ,
     forgetPassword,
     resetPassword,
     getCurrentUserInfo,

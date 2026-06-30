@@ -21,6 +21,7 @@ const PasswordMain = lazy(() => import('./Pages/Password/PasswordMain.jsx'))
 const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'))
 const Loading = lazy(() => import('./components/Loading.jsx'))
 const Profile = lazy(() => import("./Pages/Profile.jsx"))
+const OnBoarding = lazy(() => import("./Pages/OnBoarding.jsx"))
 
 const router = createBrowserRouter([
   {
@@ -153,6 +154,16 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <Suspense fallback={<Loading />}>
               <Profile />
+            </Suspense>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "onBoarding",
+        element : (
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <OnBoarding />
             </Suspense>
           </ProtectedRoute>
         )

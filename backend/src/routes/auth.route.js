@@ -5,6 +5,7 @@ import {
     login,
     logout,
     getCurrentUserInfo,
+    updateUserInfo ,
     forgetPassword,
     resetPassword,
     refreshAccessToken
@@ -30,6 +31,8 @@ router.route("/login").post(userLoginValidator(), validation, login);
 router.route("/logout").post(verifyAccessToken, logout);
 
 router.route("/userInfo").get(verifyAccessToken,getCurrentUserInfo);
+
+router.route("/editInfo").patch(verifyAccessToken,updateUserInfo);
 
 router.route("/forget-password").post(userForgotPasswordValidator(),validation,forgetPassword);
 
