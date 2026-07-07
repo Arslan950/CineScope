@@ -1,3 +1,4 @@
+import { useGoogleLogin } from "@react-oauth/google"
 import React, { useState } from 'react';
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
@@ -13,86 +14,149 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
-    const { login } = useAuthStore();
+    const { login, googleAuth } = useAuthStore();
     const isFormValid = email.trim() !== "" && password.trim() !== "";
 
     const handleLogIn = async (e) => {
         e.preventDefault();
         if (!isFormValid) return;
-        login(email,password).then(() => {
+        login(email, password).then(() => {
             navigate('/home');
         })
     }
 
+    const handleGoogleSignIn = useGoogleLogin({
+        flow: 'auth-code',
+        onSuccess: async (codeResponse) => {
+            const { isSuccess, googleAuthError } = await googleAuth(codeResponse.code);
+
+            if (isSuccess) {
+                navigate("/home");
+            } else if (!isSuccess) {
+                toast.error(googleAuthError)
+            }
+        },
+        onError: (error) => {
+            console.error("Google Popup Error:", error);
+            toast.error("Google Authentication Popup Closed or Failed");
+        }
+    })
+
     return (
-        <section className='flex justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
-            <AuthMarquee />
-            <span className='h-full w-1/2 flex justify-center items-center py-20'>
-                <div className='w-lg h-[500px] sm:mb-0 mb-20'>
-                    <div className='flex items-center gap-x-2.5 mb-8 sm:pl-25 pl-9'>
-                        <img src={logo} width={45} />
-                        <h1 className='text-2xl font-semibold'>CineScope</h1>
+        <section className='w-full flex-1 flex items-stretch min-h-0'>
+            
+            <div className="hidden lg:block lg:w-1/2 relative overflow-hidden min-h-0">
+                <div className="absolute inset-0">
+                    <AuthMarquee />
+                </div>
+            </div>
+
+            <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto">
+                <div className="w-full max-w-md m-auto flex flex-col items-center gap-y-5">
+                    
+                    <div className="w-full sm:flex sm:items-center sm:justify-center gap-x-2 sm:block hidden">
+                        <img src={logo} width={40} alt="CineScope logo" />
+                        <h1 className="sm:text-3xl text-2xl font-semibold">CineScope</h1>
+                    </div>
+                    
+                    <div className="w-full flex flex-col justify-center items-center gap-y-2">
+                        <h1 className="sm:text-4xl text-3xl font-semibold">Welcome back</h1>
+                        <p className="text-lg font-semibold dark:text-white/70 text-black/70">Start exploring cinema</p>
                     </div>
 
-                    <div className='space-y-1 mb-6'>
-                        <h1 className='text-4xl font-bold '>Welcome back</h1>
-                        <p className='text-lg dark:text-white/60 font-medium'>Start exploring cinema</p>
-                    </div>
-
-                    <form onSubmit={handleLogIn} className='flex flex-col gap-y-4 sm:w-[80%] w-[100%]'>
-                        <div className='flex flex-col gap-y-1.5'>
-                            <label htmlFor="email" className='text-sm font-medium dark:text-white/80'>Email</label>
+                    <form
+                        className="w-full h-fit flex flex-col items-center gap-y-4"
+                        onSubmit={handleLogIn}
+                    >
+                        <div className="w-full flex flex-col gap-y-1">
+                            <label htmlFor="email" className="text-sm font-medium dark:text-white/80 text-black/80">
+                                Email
+                            </label>
                             <input
-                                onChange={(e) => setEmail(e.target.value)}
                                 id="email"
                                 type="email"
                                 value={email}
-                                placeholder='johndoe@gmail.com'
-                                className='ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 px-3 rounded-lg text-sm transition-all'
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="you@example.com"
+                                className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                             />
                         </div>
-                        <div className='flex flex-col gap-y-1.5'>
-                            <label htmlFor="password" className='text-sm font-medium dark:text-white/80'>Password</label>
-                            <div className='relative'>
+
+                        <div className="w-full flex flex-col gap-y-1">
+                            <label htmlFor="password" className="text-sm font-medium dark:text-white/80 text-black/80">
+                                Password
+                            </label>
+                            <div className="relative w-full">
                                 <input
-                                    onChange={(e) => setPassword(e.target.value)}
                                     id="password"
                                     type={passwordToogle ? "text" : "password"}
-                                    placeholder='••••••••'
-                                    className='w-full ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 pl-3 pr-10 rounded-lg text-sm transition-all'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter your password"
+                                    className="w-full px-3 py-2 pr-10 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setPasswordToogle(!passwordToogle)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
                                 >
                                     {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
                                 </button>
                             </div>
-                            <p onClick={() => navigate('/forgetPassword')} className='text-xs dark:text-[#5fa2fa] text-blue-600 text-right mt-0.5 cursor-pointer hover:text-blue-300 transition-colors'>
+                            <button
+                                type="button"
+                                onClick={() => navigate("/forgetPassword")}
+                                className="self-end text-sm text-blue-400 hover:underline"
+                            >
                                 Forgot password?
-                            </p>
+                            </button>
                         </div>
+
                         <button
+                            type="submit"
                             disabled={!isFormValid}
-                            type='submit'
-                            className={`${isFormValid ? "bg-[#5fa2fa]" : "bg-[#5fa2fa] cursor-not-allowed"} hover:bg-blue-600 active:bg-blue-600 text-white font-semibold rounded-lg py-3 mt-2 transition-colors`}
+                            className={`w-full py-2 rounded-lg font-semibold text-white transition ${isFormValid
+                                ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+                                : "bg-[#5fa2fa]/40 cursor-not-allowed"
+                                }`}
                         >
-                            Log in
+                            Login
                         </button>
-                        <p className='text-center dark:text-white/60 text-sm'>
-                            Don't have an account?{' '}
-                            <span onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                navigate('/signup');
-                            }} className='dark:text-[#5fa2fa] text-blue-600 hover:text-blue-300 cursor-pointer transition-colors'>Register</span>
+
+                        <div className="w-full flex items-center gap-x-2">
+                            <div className="flex-1 h-px bg-black/10 dark:bg-white/10" />
+                            <span className="text-xs text-black/40 dark:text-white/40">OR</span>
+                            <div className="flex-1 h-px bg-black/10 dark:bg-white/10" />
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => handleGoogleSignIn()}
+                            className="w-full py-2 rounded-lg border border-black/20 dark:border-white/20 flex items-center justify-center gap-x-2 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 transition"
+                        >
+                            <img
+                                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                                alt="Google"
+                                className="w-4 h-4"
+                            />
+                            Sign in with Google
+                        </button>
+
+                        <p className="text-sm dark:text-white/70 text-black/70">
+                            Don't have an account?{" "}
+                            <button
+                                type="button"
+                                onClick={() => navigate("/signup")}
+                                className="text-blue-400 hover:underline font-medium"
+                            >
+                                Register
+                            </button>
                         </p>
                     </form>
                 </div>
-            </span>
+            </div>
         </section>
     )
 }
 
-export default Login;
+export default Login

@@ -13,6 +13,11 @@ const UserSchema = new Schema({
         required: [true, 'Full name is required'],
         trim: true
     },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
@@ -23,13 +28,15 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
+        required: [function () {
+            return !this.googleId;
+        }, 'Password is required'],
         minlength: 8
     },
-    genres : [{
-        type : String ,
-        default : ["Comedy" , "sc-fi" , "horror" ] 
-    }],
+    genres: {
+        type: [String],
+        default: ["Comedy", "sc-fi", "horror"]
+    },
     isEmailVerified: {
         type: Boolean,
         default: false,
@@ -46,7 +53,12 @@ const UserSchema = new Schema({
 }, { timestamps: true })
 
 UserSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password,this.password)
+
+    if (!this.password) {
+        return false;
+    }
+
+    return await bcrypt.compare(password, this.password)
 };
 
 UserSchema.methods.generateAccessToken = function () {

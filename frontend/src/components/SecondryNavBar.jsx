@@ -21,15 +21,15 @@ const SecondryNavBar = () => {
 
     return (
         <header>
-            <nav className='bg-slate-100 dark:bg-[#111826] text-slate-900 dark:text-white px-4 py-4 flex items-center w-full shadow-md shadow-slate-200 dark:shadow-black/20 sm:duration-300'>
-                <div className='flex-1 ml-20'>
+            <nav 
+            className='bg-slate-100 dark:bg-[#111826] text-slate-900 dark:text-white px-4 py-4 w-full shadow-md shadow-slate-200 dark:shadow-black/20 sm:duration-300 flex justify-between items-center'>
+                <div className='sm:ml-20'>
                     <Link to="/" className='flex items-center gap-x-3'>
-                        <img src={logo} alt="CineScope" className='sm:w-fit w-8' />
+                        <img src={logo} alt="CineScope"/>
                         <h1 className='sm:text-xl font-semibold text-lg'>CineScope</h1>
                     </Link>
                 </div>
-                {/* {Dekstop NavBar} */}
-                <div className='sm:flex-1 sm:flex sm:justify-end hidden mr-20'>
+                <div className='sm:mr-20'>
                     <ThemeBtn />
                 </div>
             </nav>

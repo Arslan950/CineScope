@@ -22,6 +22,7 @@ const Profile = () => {
                                 <img
                                     src={user?.avatar || fallbackAvatar}
                                     alt={user?.fullName ? `${user.fullName} avatar` : "Profile avatar"}
+                                    referrerPolicy="no-referrer"
                                     onError={(e) => {
                                         e.currentTarget.src = fallbackAvatar;
                                     }}

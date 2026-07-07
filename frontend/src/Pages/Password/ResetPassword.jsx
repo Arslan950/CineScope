@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { useParams , useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify"
 import axios from 'axios';
 
 const ResetPassword = () => {
@@ -18,12 +18,11 @@ const ResetPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/reset-password/${resetPasswordToken}`,{
-        "newPassword" : newPassword ,
-        "confirmNewPassword" : confirmNewPassword
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/reset-password/${resetPasswordToken}`, {
+        "newPassword": newPassword,
+        "confirmNewPassword": confirmNewPassword
       });
 
-      setErrorMessage("Success")
       toast("password updated Successfully !")
       navigate('/login');
 
@@ -45,59 +44,71 @@ const ResetPassword = () => {
   }
 
   return (
-    <section className='flex flex-col justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
-      <div className='space-y-1 mb-6'>
-        <h1 className='text-4xl font-bold '>Reset password</h1>
-      </div>
-      <form onSubmit={handleResetPassword} className='flex flex-col gap-y-4 sm:w-[25%] w-[100%]'>
-        <div className='flex flex-col gap-y-1.5'>
-          <label htmlFor="password" className='text-sm font-medium dark:text-white/80'>Set new password</label>
-          <div className='relative'>
+    <section className='w-screen h-[calc(100vh-66px-120px)] flex items-center justify-center px-4'>
+      <form
+        onSubmit={handleResetPassword}
+        className="w-full max-w-sm flex flex-col items-center gap-y-5 bg-white dark:bg-black/20 rounded-xl p-6 sm:p-8"
+      >
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center">Reset Password</h1>
+        <div className="w-full flex flex-col gap-y-1">
+          <label htmlFor="newPassword" className="text-sm font-medium dark:text-white/80 text-black/80">
+            New password
+          </label>
+          <div className="relative w-full">
             <input
+              id="newPassword"
+              type={passwordToogle ? "text" : "password"}
+              value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              id="password"
-              type={passwordToogle ? "text" : "password"}
-              placeholder='••••••••'
-              className='w-full ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 pl-3 pr-10 rounded-lg text-sm transition-all'
+              placeholder="Enter new password"
+              className="w-full px-3 py-2 pr-10 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             />
             <button
               type="button"
               onClick={() => setPasswordToogle(!passwordToogle)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
             >
               {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
             </button>
           </div>
         </div>
-        <div className='flex flex-col gap-y-1.5'>
-          <label htmlFor="confirmPassword" className='text-sm font-medium dark:text-white/80'>Confirm password</label>
-          <div className='relative'>
+
+        <div className="w-full flex flex-col gap-y-1">
+          <label htmlFor="confirmNewPassword" className="text-sm font-medium dark:text-white/80 text-black/80">
+            Confirm new password
+          </label>
+          <div className="relative w-full">
             <input
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              id="confirmPassword"
+              id="confirmNewPassword"
               type={passwordToogle ? "text" : "password"}
-              placeholder='••••••••'
-              className='w-full ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 pl-3 pr-10 rounded-lg text-sm transition-all'
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              placeholder="Re-enter new password"
+              className="w-full px-3 py-2 pr-10 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             />
             <button
               type="button"
               onClick={() => setPasswordToogle(!passwordToogle)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
             >
               {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
             </button>
           </div>
         </div>
+
         <button
+          type="submit"
           disabled={!isFormValid}
-          type='submit'
-          className={`${isFormValid ? "bg-[#5fa2fa]" : "bg-[#5fa2fa] cursor-not-allowed"} hover:bg-blue-600 active:bg-blue-600 text-white font-semibold rounded-lg py-3 mt-2 transition-colors`}
+          className={`w-full py-2 rounded-lg font-semibold text-white transition ${isFormValid
+              ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+              : "bg-[#5fa2fa]/40 cursor-not-allowed"
+            }`}
         >
-          Reset Password
+          Reset
         </button>
       </form>
     </section>
   )
 }
 
-export default ResetPassword ;
+export default ResetPassword;

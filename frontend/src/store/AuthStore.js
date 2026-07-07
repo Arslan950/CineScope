@@ -1,36 +1,36 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const Backend_url = import.meta.env.VITE_BACKEND_URL ;
+const Backend_url = import.meta.env.VITE_BACKEND_URL;
 
 export const useAuthStore = create((set) => ({
-    user : null ,
-    isLoggedIn : false ,
-    isLoading : true ,
-    
-    checkAuth : async () => {
+    user: null,
+    isLoggedIn: false,
+    isLoading: true,
+
+    checkAuth: async () => {
         try {
-            const response = await axios.get(`${Backend_url}/auth/userInfo`,{
-                withCredentials : true
+            const response = await axios.get(`${Backend_url}/auth/userInfo`, {
+                withCredentials: true
             });
-            set({user : response.data.data , isLoggedIn : true , isLoading : false})
+            set({ user: response.data.data, isLoggedIn: true, isLoading: false })
         } catch (error) {
-            set({user : null , isLoggedIn : false , isLoading : false})
+            set({ user: null, isLoggedIn: false, isLoading: false })
         }
     },
 
-    login : async (email,password) => {
+    login: async (email, password) => {
         try {
-            const response = await axios.post(`${Backend_url}/auth/login`,{
-                "email" : email,
-                "password" : password
-            },{
-                withCredentials : true ,
+            const response = await axios.post(`${Backend_url}/auth/login`, {
+                "email": email,
+                "password": password
+            }, {
+                withCredentials: true,
             });
 
-            const userData = response?.data?.data ;
-            set({user : userData , isLoggedIn : true , isLoading : false})
+            const userData = response?.data?.data;
+            set({ user: userData, isLoggedIn: true, isLoading: false })
             toast("Login succesfully");
 
         } catch (error) {
@@ -46,14 +46,41 @@ export const useAuthStore = create((set) => ({
             }
         }
     },
-    
-    loggedOut : async () => {
-        try{
-            await axios.post(`${Backend_url}/auth/logout`,{},{
-                withCredentials : true 
+
+    loggedOut: async () => {
+        try {
+            await axios.post(`${Backend_url}/auth/logout`, {}, {
+                withCredentials: true
             })
-        }finally{
-        set({user : null , isLoggedIn : false })
+        } finally {
+            set({ user: null, isLoggedIn: false })
+        }
+    },
+
+    googleAuth: async (code) => {
+        try {
+            const response = await axios.post(`${Backend_url}/auth/google`, {
+                "code": code
+            }, { withCredentials: true });
+
+            const userData = response?.data?.data
+            set({ user: userData, isLoggedIn: true, isLoading: false })
+            toast("Google Auth successfull");
+
+            return {
+                isSuccess: true,
+                googleAuthError: null
+            };
+
+        } catch (error) {
+            console.error("Backend Error during Google Auth:", error);
+            const backendMessage = error.response?.data?.message || "Google Authentication Failed";
+            toast.error(backendMessage);
+
+            return {
+                isSuccess: false,
+                googleAuthError: error
+            };
         }
     }
 }));

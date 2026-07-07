@@ -5,6 +5,7 @@ import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import PublicRoute from './components/PublicRoute.jsx'; // <-- Added PublicRoute
 
 const Dashboard = lazy(() => import('./Pages/Dashboard.jsx'));
 const Favourites = lazy(() => import('./Pages/Favourites.jsx'));
@@ -16,12 +17,14 @@ const Home = lazy(() => import('./Pages/Home.jsx'));
 const Explore = lazy(() => import('./Pages/Explore.jsx'));
 const Login = lazy(() => import('./Pages/Login.jsx'));
 const SignUp = lazy(() => import('./Pages/SignUp.jsx'));
-const ForgetPassword = lazy(() => import('./Pages/Password/ForgetPassword.jsx'))
-const PasswordMain = lazy(() => import('./Pages/Password/PasswordMain.jsx'))
-const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'))
-const Loading = lazy(() => import('./components/Loading.jsx'))
-const Profile = lazy(() => import("./Pages/Profile.jsx"))
-const OnBoarding = lazy(() => import("./Pages/OnBoarding.jsx"))
+const ForgetPassword = lazy(() => import('./Pages/Password/ForgetPassword.jsx'));
+const PasswordMain = lazy(() => import('./Pages/Password/PasswordMain.jsx'));
+const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'));
+const Loading = lazy(() => import('./components/Loading.jsx'));
+const Profile = lazy(() => import("./Pages/Profile.jsx"));
+const OnBoarding = lazy(() => import("./Pages/OnBoarding.jsx"));
+
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const router = createBrowserRouter([
   {
@@ -101,33 +104,41 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: (
-          <Suspense fallback={<Loading />}>
-            <Login />
-          </Suspense>
+          <PublicRoute>
+            <Suspense fallback={<Loading />}>
+              <Login />
+            </Suspense>
+          </PublicRoute>
         )
       },
       {
         path: "signup",
         element: (
-          <Suspense fallback={<Loading />}>
-            <SignUp />
-          </Suspense>
+          <PublicRoute>
+            <Suspense fallback={<Loading />}>
+              <SignUp />
+            </Suspense>
+          </PublicRoute>
         )
       },
       {
         path: "forgetPassword",
         element: (
-          <Suspense fallback={<Loading />}>
-            <ForgetPassword />
-          </Suspense>
+          <PublicRoute>
+            <Suspense fallback={<Loading />}>
+              <ForgetPassword />
+            </Suspense>
+          </PublicRoute>
         )
       },
       {
         path: "resetPassword",
         element: (
-          <Suspense fallback={<Loading />}>
-            <PasswordMain />
-          </Suspense>
+          <PublicRoute>
+            <Suspense fallback={<Loading />}>
+              <PasswordMain />
+            </Suspense>
+          </PublicRoute>
         ),
         children: [
           {
@@ -182,6 +193,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <RouterProvider router={router} />
+    </GoogleOAuthProvider>
   </StrictMode>
 );

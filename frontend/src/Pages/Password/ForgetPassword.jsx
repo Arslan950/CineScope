@@ -2,19 +2,21 @@ import React, { useState } from 'react'
 import axios from "axios";
 import { toast } from 'react-toastify';
 import AuthMarquee from '../../components/AuthMarquee';
-import { CheckCheck } from "lucide-react";
+import { CheckCheck, Loader, Loader2Icon } from "lucide-react";
 const ForgetPassword = () => {
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const isFormValid = email.trim() !== "";
 
     const handleForgetPassword = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/forget-password`, {
                 "email": email
             });
-            setErrorMessage("Success")
+            toast("Email sent to your inbox")
         } catch (error) {
             if (error.response) {
                 const backendMessage = error.response?.data?.message || "Something went wrong";
@@ -29,43 +31,61 @@ const ForgetPassword = () => {
                 setErrorMessage(unknownMessage);
                 toast.error(unknownMessage);
             }
+        } finally {
+            setLoading(false)
         }
     }
 
     return (
-        <section className='flex justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
-            <AuthMarquee />
-            <span className='h-full w-1/2 flex justify-center items-center py-20'>
-                <div className='w-lg h-[500px] sm:mb-0 mb-20 sm:mt-60'>
-                    <div className='space-y-1 mb-6'>
-                        <h1 className='sm:text-4xl text-xl font-bold sm:text-left text-center sm:mb-0 mb-4'>Enter Your registered mail</h1>
-                    </div>
-                    <form onSubmit={handleForgetPassword} className='flex flex-col gap-y-4 sm:w-[80%] w-[100%]'>
-                        <div className='flex flex-col gap-y-1.5'>
-                            <label htmlFor="email" className='text-sm font-medium dark:text-white/80'>Email</label>
-                            <input
-                                onChange={(e) => setEmail(e.target.value)}
-                                id="email"
-                                type="email"
-                                value={email}
-                                placeholder='johndoe@gmail.com'
-                                className='ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 px-3 rounded-lg text-sm transition-all'
-                            />
-                        </div>
-                        <button
-                            disabled={!isFormValid}
-                            type='submit'
-                            className={`${isFormValid ? "bg-[#5fa2fa]" : "bg-[#5fa2fa] cursor-not-allowed"} hover:bg-blue-600 active:bg-blue-600 text-white font-semibold rounded-lg py-3 mt-2 transition-colors`}
-                        >
-                            Send Email
-                        </button>
-                    </form>
-                    <p className={`text-green-600 sm:mt-5 flex gap-x-1 ${(errorMessage === "Success") ? "block" : "hidden"}`}>
-                        <CheckCheck />
-                        An Forget password email has been sent to you
-                    </p>
+        <section className="w-full flex-1 flex items-stretch min-h-0">
+
+            <div className="hidden lg:block lg:w-1/2 relative overflow-hidden min-h-0">
+                <div className="absolute inset-0">
+                    <AuthMarquee />
                 </div>
-            </span>
+            </div>
+
+            <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto items-center justify-center">
+                {
+                    (loading) ? (<span className="loading loading-spinner loading-xl"></span>
+                    ) : (<div className="w-full max-w-md m-auto flex flex-col items-center gap-y-6">
+
+                        <div className="w-full flex flex-col justify-center items-center gap-y-2 text-center">
+                            <h1 className="sm:text-3xl text-2xl font-semibold">Enter your registered mail</h1>
+                        </div>
+
+                        <form
+                            className="w-full h-fit flex flex-col items-center gap-y-4"
+                            onSubmit={handleForgetPassword}
+                        >
+                            <div className="w-full flex flex-col gap-y-1">
+                                <label htmlFor="email" className="text-sm font-medium dark:text-white/80 text-black/80">
+                                    Email
+                                </label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="you@example.com"
+                                    className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={!isFormValid}
+                                className={`w-full py-2 mt-2 rounded-lg font-semibold text-white transition ${isFormValid
+                                    ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+                                    : "bg-[#5fa2fa]/40 cursor-not-allowed"
+                                    }`}
+                            >
+                                Submit
+                            </button>
+                        </form>
+                    </div>)
+                }
+            </div>
         </section>
     )
 }

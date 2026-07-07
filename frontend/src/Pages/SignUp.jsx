@@ -1,3 +1,4 @@
+import { useGoogleLogin } from "@react-oauth/google"
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
@@ -8,16 +9,17 @@ import { toast } from 'react-toastify';
 import { useAuthStore } from "../store/AuthStore.js"
 
 const SignUp = () => {
-  const [passwordToogle, setPasswordToogle] = useState(false);
+  const [passwordToggle, setPasswordToggle] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [OTP, setOTP] = useState("");
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const { login } = useAuthStore();
+  const { login, googleAuth } = useAuthStore();
 
   useEffect(() => {
     const savedEmail = sessionStorage.getItem("pendingVerificationEmail");
@@ -34,6 +36,7 @@ const SignUp = () => {
   const handleRegistration = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/register`, {
         "fullName": fullName,
         "email": email,
@@ -57,12 +60,15 @@ const SignUp = () => {
         setErrorMessage(unexpectedMsg);
         toast.error(unexpectedMsg);
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/verifyOTP`, {
         "email": email,
         "enteredOTP": OTP
@@ -86,8 +92,27 @@ const SignUp = () => {
         setErrorMessage(unexpectedMsg);
         toast.error(unexpectedMsg);
       }
+    } finally {
+      setLoading(false)
     }
   };
+
+  const handleGoogleSignUp = useGoogleLogin({
+    flow: "auth-code",
+    onSuccess: async (codeResponse) => {
+      const { isSuccess, googleAuthError } = await googleAuth(codeResponse.code);
+
+      if (isSuccess) {
+        navigate("/onBoarding");
+      } else if (!isSuccess) {
+        toast.error(googleAuthError)
+      }
+    },
+    onError: (error) => {
+      console.error("Google Popup Error:", error);
+      toast.error("Google Authentication Popup Closed or Failed");
+    }
+  });
 
   const handleChangeEmail = () => {
     sessionStorage.removeItem("pendingVerificationEmail");
@@ -100,122 +125,190 @@ const SignUp = () => {
   };
 
   return (
-    <section className='flex justify-center items-center w-full sm:h-[810px] md:h-[590px]'>
-      <AuthMarquee />
-      <span className='h-full w-1/2 flex justify-center items-center py-20'>
-        {
-          (step === 1) ? (
-            <div className='w-lg h-[500px] sm:mb-0 mb-20'>
-              <div className='flex items-center gap-x-2.5 mb-8 sm:pl-25 sm:pl-9 pl-18'>
-                <img src={logo} width={45} />
-                <h1 className='text-2xl font-semibold'>CineScope</h1>
-              </div>
+    <section className="w-full flex-1 flex items-stretch min-h-0 ">
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden min-h-0">
+        <div className="absolute inset-0">
+          <AuthMarquee />
+        </div>
+      </div>
 
-              <div className='space-y-1 mb-6'>
-                <h1 className='sm:text-4xl text-2xl font-bold sm:text-left text-center sm:mb-0 mb-4'>Welcome to CineScope</h1>
-                <p className='sm:text-lg dark:text-white/60 font-medium sm:text-left text-center text-black'>Register now to begin your cinematic journey</p>
-              </div>
+      <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto scrollbar-hide items-center justify-center">
+        {loading ? (
+          <span className="loading loading-spinner loading-xl"></span>
+        ) : (
+          <div className="w-full max-w-md m-auto flex flex-col items-center gap-y-5">
+            {step === 1 ? (
+              <>
+                <div className="w-full sm:flex sm:items-center sm:justify-center gap-x-2 sm:block hidden">
+                  <img src={logo} width={40} alt="CineScope logo" />
+                  <h1 className="sm:text-3xl text-2xl font-semibold">CineScope</h1>
+                </div>
 
-              <form onSubmit={handleRegistration} className='flex flex-col gap-y-4 sm:w-[80%] w-[100%]'>
-                <div className='flex flex-col gap-y-1.5'>
-                  <label htmlFor="fullName" className='text-sm font-medium dark:text-white/80 text-black'>Full name</label>
-                  <input
-                    onChange={(e) => setFullName(e.target.value)}
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    placeholder='Jhon Doe'
-                    className='ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 px-3 rounded-lg text-sm transition-all dark:text-white '
-                  />
+                <div className="w-full flex flex-col justify-center items-center gap-y-2 text-center">
+                  <h1 className="sm:text-4xl text-3xl font-semibold text-nowrap">Welcome to CineScope</h1>
+                  <p className="text-lg font-semibold dark:text-white/70 text-black/70">
+                    Register now to begin your cinematic journey
+                  </p>
                 </div>
-                <div className='flex flex-col gap-y-1.5'>
-                  <label htmlFor="email" className='text-sm font-medium dark:text-white/80'>Email</label>
-                  <input
-                    onChange={(e) => setEmail(e.target.value)}
-                    id="email"
-                    type="email"
-                    value={email}
-                    placeholder='johndoe@gmail.com'
-                    className='ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 px-3 rounded-lg text-sm transition-all'
-                  />
-                </div>
-                <div className='flex flex-col gap-y-1.5'>
-                  <label htmlFor="password" className='text-sm font-medium dark:text-white/80'>Set password</label>
-                  <div className='relative'>
+
+                <form
+                  className="w-full h-fit flex flex-col items-center gap-y-4"
+                  onSubmit={handleRegistration}
+                >
+                  <div className="w-full flex flex-col gap-y-1">
+                    <label htmlFor="fullName" className="text-sm font-medium dark:text-white/80 text-black/80">
+                      Full Name
+                    </label>
                     <input
-                      onChange={(e) => setPassword(e.target.value)}
-                      id="password"
-                      type={passwordToogle ? "text" : "password"}
-                      placeholder='••••••••'
-                      className='w-full ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 pl-3 pr-10 rounded-lg text-sm transition-all'
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="John Doe"
+                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                     />
+                  </div>
+
+                  <div className="w-full flex flex-col gap-y-1">
+                    <label htmlFor="email" className="text-sm font-medium dark:text-white/80 text-black/80">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    />
+                  </div>
+
+                  <div className="w-full flex flex-col gap-y-1">
+                    <label htmlFor="password" className="text-sm font-medium dark:text-white/80 text-black/80">
+                      Password
+                    </label>
+                    <div className="relative w-full">
+                      <input
+                        id="password"
+                        type={passwordToggle ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter your password"
+                        className="w-full px-3 py-2 pr-10 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setPasswordToggle(!passwordToggle)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
+                      >
+                        {passwordToggle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={!isFormValid}
+                    className={`w-full py-2 mt-2 rounded-lg font-semibold text-white transition ${isFormValid
+                        ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+                        : "bg-[#5fa2fa]/40 cursor-not-allowed"
+                      }`}
+                  >
+                    Sign up
+                  </button>
+
+                  <div className="w-full flex items-center gap-x-2 my-1">
+                    <div className="flex-1 h-px bg-black/10 dark:bg-white/10" />
+                    <span className="text-xs text-black/40 dark:text-white/40">OR</span>
+                    <div className="flex-1 h-px bg-black/10 dark:bg-white/10" />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleGoogleSignUp()}
+                    className="w-full py-2 rounded-lg border border-black/20 dark:border-white/20 flex items-center justify-center gap-x-2 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 transition"
+                  >
+                    <img
+                      src="https://www.svgrepo.com/show/475656/google-color.svg"
+                      alt="Google"
+                      className="w-4 h-4"
+                    />
+                    Sign up with Google
+                  </button>
+
+                  <p className="text-sm dark:text-white/70 text-black/70 mt-2">
+                    Already have an account?{" "}
                     <button
                       type="button"
-                      onClick={() => setPasswordToogle(!passwordToogle)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+                      onClick={() => navigate("/login")}
+                      className="text-blue-400 hover:underline font-medium"
                     >
-                      {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
+                      Login here
                     </button>
-                  </div>
+                  </p>
+                </form>
+              </>
+            ) : (
+              <>
+                <div className="w-full sm:flex sm:items-center sm:justify-center gap-x-2 sm:block hidden">
+                  <img src={logo} width={40} alt="CineScope logo" />
+                  <h1 className="sm:text-3xl text-2xl font-semibold">CineScope</h1>
                 </div>
-                <button
-                  disabled={!isFormValid}
-                  type='submit'
-                  className={`${isFormValid ? "bg-[#5fa2fa]" : "bg-[#5fa2fa] cursor-not-allowed"} hover:bg-blue-600 active:bg-blue-600 text-white font-semibold rounded-lg py-3 mt-2 transition-colors`}
-                >
-                  Register
-                </button>
-                <p className='text-center dark:text-white/60 text-sm'>
-                  Already have an account?{' '}
-                  <span onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    navigate('/login');
-                  }} className='text-[#5fa2fa] hover:text-blue-300 cursor-pointer transition-colors'>Log in</span>
-                </p>
-              </form>
-            </div>
-          ) : (
-            <div className='w-lg h-[500px] sm:mb-0 mb-20 sm:mt-50'>
-              <div className='space-y-4 mb-6'>
-                <h1 className='sm:text-4xl text-2xl font-bold sm:text-left text-center sm:mb-0 mb-4'>Verify yourself</h1>
-                <p className='sm:text-lg dark:text-white/60 font-medium sm:text-left text-center text-black'>Enter the 4 digit code sent to you</p>
-              </div>
 
-              <form onSubmit={handleVerifyOTP} className='flex flex-col gap-y-4 sm:w-[80%] w-[100%]'>
-                <div className='flex flex-col gap-y-1.5'>
-                  <label htmlFor="enteredOTP" className='text-sm font-medium dark:text-white/80 text-black'>OTP</label>
-                  <input
-                    onChange={(e) => setOTP(e.target.value)}
-                    id="enteredOTP"
-                    type="text"
-                    value={OTP}
-                    placeholder='XXXX'
-                    className='ring-1 ring-slate-700 focus:ring-[#5fa2fa] focus:outline-none bg-transparent py-2.5 px-3 rounded-lg text-sm transition-all dark:text-white '
-                  />
+                <div className="w-full flex flex-col justify-center items-center gap-y-2 text-center">
+                  <h1 className="sm:text-4xl text-3xl font-semibold">Verify yourself</h1>
+                  <p className="text-lg font-semibold dark:text-white/70 text-black/70">
+                    Enter the 4 digit code sent to you
+                  </p>
                 </div>
-                <button
-                  disabled={!isOTPValid}
-                  type='submit'
-                  className={`${isOTPValid ? "bg-[#5fa2fa]" : "bg-[#5fa2fa] cursor-not-allowed"} hover:bg-blue-600 active:bg-blue-600 text-white font-semibold rounded-lg py-3 mt-2 transition-colors`}
+
+                <form
+                  className="w-full h-fit flex flex-col items-center gap-y-4"
+                  onSubmit={handleVerifyOTP}
                 >
-                  Submit
-                </button>
-                <p className='text-center dark:text-white/60 text-sm mt-2'>
-                  Wrong email?{' '}
-                  <span
-                    onClick={handleChangeEmail}
-                    className='text-[#5fa2fa] hover:text-blue-300 cursor-pointer transition-colors'
+                  <div className="w-full flex flex-col gap-y-1">
+                    <label htmlFor="enteredOTP" className="text-sm font-medium dark:text-white/80 text-black/80">
+                      OTP
+                    </label>
+                    <input
+                      id="enteredOTP"
+                      type="text"
+                      value={OTP}
+                      onChange={(e) => setOTP(e.target.value)}
+                      placeholder="Enter OTP"
+                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={!isOTPValid}
+                    className={`w-full py-2 mt-2 rounded-lg font-semibold text-white transition ${isOTPValid
+                        ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+                        : "bg-[#5fa2fa]/40 cursor-not-allowed"
+                      }`}
                   >
-                    Change it here
-                  </span>
-                </p>
-              </form>
-            </div>)
-        }
-      </span>
+                    Submit
+                  </button>
+
+                  <p className="text-sm dark:text-white/70 text-black/70 mt-2">
+                    Wrong email?{" "}
+                    <button
+                      type="button"
+                      onClick={() => handleChangeEmail()}
+                      className="text-blue-400 hover:underline font-medium"
+                    >
+                      Change it here
+                    </button>
+                  </p>
+                </form>
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </section>
-  )
+  );
 }
 
-export default SignUp
+export default SignUp;

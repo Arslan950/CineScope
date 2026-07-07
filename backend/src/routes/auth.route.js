@@ -1,5 +1,6 @@
 import { Router } from "express"
 import {
+    googleAuth,
     register,
     verifyUser,
     login,
@@ -21,6 +22,8 @@ import {
 } from "../validators/index.js"
 
 const router = Router();
+
+router.route("/google").post(googleAuth);
 
 router.route("/register").post(userRegistrationValidator(), validation, register);
 

@@ -1,3 +1,4 @@
+import { OAuth2Client } from "google-auth-library"
 import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
@@ -44,6 +45,63 @@ const generateOTP = (length = 4) => {
 const hashPassword = async (password) => {
     return await bcrypt.hash(password, 10)
 };
+
+const googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    'postmessage'
+)
+
+const googleAuth = asyncHandler(async (req, res) => {
+    const { code } = req.body;
+
+    if (!code) {
+        throw new ApiError(400, "Autherization code is required")
+    }
+
+    const { tokens } = await googleClient.getToken(code);
+    const ticket = await googleClient.verifyIdToken({
+        idToken: tokens.id_token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, picture, sub: googleId } = payload;
+
+    let user = await User.findOne({ email })
+
+    if (!user) {
+        user = await User.create({
+            avatar: picture,
+            fullName: name,
+            googleId: googleId,
+            email: email,
+            isEmailVerified: true,
+        })
+    } else if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save({ validateBeforeSave: false });
+    }
+
+    const { accessToken, refreshToken } = await generateTokens(user._id);
+
+    const createdUser = await User.findById(user._id).select(
+        "-password -refreshToken",
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: false,
+    };
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(200, createdUser, "Account created via Google")
+        )
+});
 
 const register = asyncHandler(async (req, res) => {
     const { fullName, email, password } = req.body;
@@ -155,7 +213,7 @@ const login = asyncHandler(async (req, res) => {
     }
 
     const loggedInUser = await User.findById(user._id).select(
-        "-password -refreshToken -emailVerificationToken -emailVerificationExpires",
+        "-password -refreshToken",
     )
 
     return res
@@ -342,11 +400,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 export {
+    googleAuth,
     register,
     verifyUser,
     login,
     logout,
-    updateUserInfo ,
+    updateUserInfo,
     forgetPassword,
     resetPassword,
     getCurrentUserInfo,
