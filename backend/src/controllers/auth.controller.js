@@ -286,7 +286,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, { updatedUser }, "Info updated succesfully")
+            new ApiResponse(200, updatedUser , "Info updated succesfully")
         )
 
 

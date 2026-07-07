@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Camera } from "lucide-react";
 import { cinematicAvatars, genres } from "../MoviesDB/moviesList.js";
 import { useCloudinaryImageUpload } from '../hooks/useImageURL.js';
+import { useAuthStore } from '../store/AuthStore.js';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const OnBoarding = () => {
+
+  const { editUserInfo } = useAuthStore();
+
   const navigate = useNavigate();
 
   const [preview, setPreview] = useState("https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg");
@@ -42,35 +46,17 @@ const OnBoarding = () => {
   const [selectedGenres, setSelectedGenres] = useState([]);
 
   const toggleGenre = (title) => {
-    setSelectedGenres((prev) => 
+    setSelectedGenres((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     )
   }
 
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/auth/editInfo`,{
-        "avatar" : preview ,
-        "genres" : selectedGenres ,
-      },{withCredentials : true });
-
+    editUserInfo(preview, selectedGenres).then(() => {
+      navigate("/home");
       toast.success("Profile updated successfully!");
-
-      navigate("/home")
-      
-    }catch(error){
-      if(error.response){
-        const backendMessage = error.response?.data?.message || "Somewith went wrong(2)"
-        toast.error(backendMessage)
-      }else if (error.request) {
-        const networkMsg = "Network error. Please check your connection.";
-        toast.error(networkMsg);
-      } else {
-        const unexpectedMsg = "An unexpected error occurred.";
-        toast.error(unexpectedMsg);
-      }
-    }
+    })
   }
 
   return (
