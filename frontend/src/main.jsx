@@ -5,9 +5,9 @@ import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-import PublicRoute from './components/PublicRoute.jsx'; // <-- Added PublicRoute
+import PublicRoute from './components/PublicRoute.jsx';
 
-const Dashboard = lazy(() => import('./Pages/Dashboard.jsx'));
+const LandingPage = lazy(() => import('./Pages/LandingPage.jsx'));
 const Favourites = lazy(() => import('./Pages/Favourites.jsx'));
 const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
 const Search = lazy(() => import('./Pages/Search.jsx'));
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         index: true,
         element: (
           <Suspense fallback={<Loading />}>
-            <Dashboard />
+            <Loading />
           </Suspense>
         ),
       },
