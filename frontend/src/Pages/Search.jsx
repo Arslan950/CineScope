@@ -3,7 +3,7 @@ import { SearchIcon } from 'lucide-react';
 
 const Search = () => {
     return (
-        <div className='max-w-7xl flex flex-col items-center p-4 sm:p-6 gap-y-20 mx-auto'>
+        <div className='max-w-7xl flex flex-col items-center p-4 sm:p-6 gap-y-20 mx-auto mt-17'>
             <div className='flex flex-col items-center gap-y-8'>
                 <div className='flex flex-col items-center gap-y-3 text-center'>
                     <h1 className='sm:text-4xl text-3xl font-semibold mt-5 text-slate-900 dark:text-white'>

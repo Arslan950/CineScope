@@ -39,7 +39,7 @@ function App() {
       {
         (shouldHideNavbar) ? <SecondryNavBar /> : <NavBar />
       }
-      <section className=' flex flex-grow flex-col items-center mt-17'>
+      <section className=' flex flex-grow flex-col items-center '>
         <ToastContainer
           position="top-right"
           autoClose={5000}

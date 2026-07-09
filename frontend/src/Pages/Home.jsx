@@ -6,7 +6,7 @@ import { Trending, Bollywood , webseries} from '../MoviesDB/moviesList'
 const Home = () => {
   const naviagte = useNavigate()
   return (
-    <section className='w-full p-2 space-y-10 sm:p-7'>
+    <section className='w-full p-2 space-y-10 sm:p-7 mt-17'>
       <div className="relative w-full h-[60vh] sm:bg-cover bg-cover bg-top rounded-3xl" style={{ backgroundImage: "url('https://images4.alphacoders.com/138/1385846.jpg')" }}>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent rounded-3xl"></div>
         <div className="relative h-full flex flex-col justify-end p-8 md:p-12 text-white ">

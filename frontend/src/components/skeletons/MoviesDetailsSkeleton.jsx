@@ -2,11 +2,9 @@ import React from 'react'
 
 const MoviesDetailsSkeleton = () => {
   return (
-    <div class="bg-slate-100 dark:bg-gray-900 text-white font-sans p-6 sm:p-8 lg:p-12 mt-10 animate-pulse">
+    <div class="bg-slate-100 dark:bg-gray-900 text-white font-sans p-6 sm:p-8 lg:p-12 mt-10 animate-pulse mt-17">
       <div class="max-w-6xl mx-auto">
-
-        <div class="h-12 bg-gray-700 rounded-3xl w-full md:w-lg mx-auto mb-12"></div>
-
+        
         <div class="flex flex-col md:flex-row gap-8 lg:gap-12">
 
           <div class="flex-shrink-0 w-full md:w-1/3">

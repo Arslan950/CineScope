@@ -6,7 +6,7 @@ const Favourites = () => {
 
   if (favouritesList.length === 0) {
     return (
-      <div className='max-w-6xl flex flex-col items-center m-6 gap-y-20 mt-13'>
+      <div className='max-w-6xl flex flex-col items-center m-6 gap-y-20 mt-30'>
         <div className='flex flex-col items-center gap-y-5'>
           <h1 className='sm:text-4xl text-2xl font-semibold text-slate-900 dark:text-white'>Your Favorite Movies</h1>
 
@@ -21,20 +21,20 @@ const Favourites = () => {
   }
 
   return (
-<div className='flex w-full flex-col items-center bg-greeen-500 p-2 sm:p-6 md:p-8'>
-    <section className='grid sm:w-full sm:max-w-8xl grid-cols-2 gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:pl-16 max-[373px]:grid-cols-1'>
+    <div className='flex w-full flex-col items-center bg-greeen-500 p-2 sm:p-6 md:p-8 mt-17'>
+      <section className='grid sm:w-full sm:max-w-8xl grid-cols-2 gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:pl-16 max-[373px]:grid-cols-1'>
         {favouritesList.map((movie) => (
-            <Card
-                visiblity={1}
-                key={movie.id}
-                id={movie.id}
-                title={movie.title}
-                poster={movie.poster}
-                rating={movie.ratings}
-            />
+          <Card
+            visiblity={1}
+            key={movie.id}
+            id={movie.id}
+            title={movie.title}
+            poster={movie.poster}
+            rating={movie.ratings}
+          />
         ))}
-    </section>
-</div>
+      </section>
+    </div>
   )
 }
 

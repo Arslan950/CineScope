@@ -60,7 +60,7 @@ const OnBoarding = () => {
   }
 
   return (
-    <section ref={scrollTargetRef} className='w-full min-h-[calc(100vh-160px)] flex items-center justify-center px-4 py-8'>
+    <section ref={scrollTargetRef} className='w-full min-h-[calc(100vh-160px)] flex items-center justify-center px-4 py-8 mt-17'>
       {
         (step === 1) ? (
           <div className='w-full max-w-6xl rounded-2xl border border-slate-700 bg-white/70 dark:bg-slate-900/40 px-5 py-8 shadow-xl shadow-slate-950/10 dark:shadow-black/20 sm:px-10 lg:px-16'>

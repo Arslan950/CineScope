@@ -38,7 +38,7 @@ const MovieDescription = () => {
 
   if (movieData?.Response === 'False') {
     return (
-      <div className='flex flex-col items-center gap-y-8 mt-6'>
+      <div className='flex flex-col items-center gap-y-8 mt-30'>
         <h1 className='sm:text-5xl text-3xl font-semibold'>No movie found 😕</h1>
         <motion.button
           whileHover={{ scale: 1.1 }}
@@ -54,7 +54,7 @@ const MovieDescription = () => {
 
   return (
     <>
-      <div className="text-slate-900 dark:text-white font-sans p-6 sm:p-8 lg:p-12 " >
+      <div className="text-slate-900 dark:text-white font-sans p-6 sm:p-8 lg:p-12 mt-17" >
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 ">
 
           <div className="flex-shrink-0 w-full md:w-1/3 ">
