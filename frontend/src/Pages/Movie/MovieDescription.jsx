@@ -18,7 +18,6 @@ const MovieDescription = () => {
   const navigate = useNavigate();
   const [isFavourited, setIsFavourited] = useState(false);
   const { favouritesList } = useFavouritesStore();
-  const scrollTargetRef = useRef(null);
 
   const { movieData, loading } = useFetchDetails(title);
 
@@ -30,12 +29,6 @@ const MovieDescription = () => {
       setIsFavourited(isMovieInFavourites);
     }
   }, [favouritesList, movieData]);
-
-  useEffect(() => {
-    if (scrollTargetRef.current) {
-      scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [movieData.Title]);
 
   if (loading) {
     return (
@@ -62,7 +55,7 @@ const MovieDescription = () => {
   return (
     <>
       <div className="text-slate-900 dark:text-white font-sans p-6 sm:p-8 lg:p-12 " >
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 " ref={scrollTargetRef}>
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 ">
 
           <div className="flex-shrink-0 w-full md:w-1/3 ">
             <img
