@@ -57,15 +57,21 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    editUserInfo: async (preview, selectedGenres) => {
-        try {
-            const response = await axios.patch(`${Backend_url}/auth/editInfo`, {
-                "avatar": preview,
-                "genres": selectedGenres,
-            }, { withCredentials: true });
+    editUserInfo: async (preview, selectedGenres, fullName) => {
+        const formData = {};
+        if (preview) formData.avatar = preview;
+        if (selectedGenres) formData.genres = selectedGenres;
+        if (fullName) formData.fullName = fullName;
 
-            const userData = response?.data?.data ;
-            set({user : userData })
+        try {
+            const response = await axios.patch(`${Backend_url}/auth/editInfo`,
+                formData,
+                {
+                    withCredentials: true
+                });
+
+            const userData = response?.data?.data;
+            set({ user: userData })
 
         } catch (error) {
             if (error.response) {

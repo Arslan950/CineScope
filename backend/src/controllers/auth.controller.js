@@ -279,7 +279,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
         }
     )
 
-    if (!updateData) { throw new ApiError(400, "Not a valid user") }
+    if (!updatedUser) { throw new ApiError(400, "Not a valid user") }
 
     await updatedUser.save({ validateBeforeSave: false });
 
