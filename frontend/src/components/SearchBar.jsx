@@ -2,7 +2,15 @@ import { SearchIcon } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SearchBar = ({ className = "", classNameforIcon = "", classNameforButton = "" }) => {
+const SearchBar = (
+    {
+        className = "pl-12 pr-28 py-3 rounded-full",
+        classNameforIcon = "",
+        classNameforButton = "px-3 py-1.5 rounded-full font-semibold",
+        Children = "Search"
+    }
+
+) => {
     const [movieName, setMovieName] = useState("");
     const navigate = useNavigate()
 
@@ -22,7 +30,7 @@ const SearchBar = ({ className = "", classNameforIcon = "", classNameforButton =
                     placeholder='Search for movies'
                     value={movieName}
                     onChange={(e) => setMovieName(e.target.value)}
-                    className={`w-full pl-12 pr-28 py-3 rounded-full 
+                    className={`w-full  
                                bg-slate-100 dark:bg-[#1f2a38] 
                                text-slate-900 dark:text-white 
                                placeholder:text-slate-400 dark:placeholder:text-gray-400 
@@ -30,12 +38,14 @@ const SearchBar = ({ className = "", classNameforIcon = "", classNameforButton =
                                focus:ring-2 focus:ring-blue-500 focus:outline-none
                                duration-200 ${className} `}
                 />
-                <div className={`absolute ${classNameforButton} top-1/2 right-2 -translate-y-1/2 `}>
+                <div className={`absolute top-1/2 right-2 -translate-y-1/2 `}>
                     <button
                         type='submit'
-                        className='bg-blue-500 text-white px-3 py-1.5 rounded-full 
-                                   hover:bg-blue-600 duration-300 font-semibold'>
-                        Search
+                        className={`bg-blue-500 text-white hover:bg-blue-600 duration-300 ${classNameforButton}`}
+                    >
+                        {
+                            Children
+                        }
                     </button>
                 </div>
             </div>

@@ -61,7 +61,6 @@ const MovieDescription = () => {
 
   return (
     <>
-      <SearchBar className='sm:mt-8 mt-6 sm:mb-0 mb-3' classNameforIcon='sm:top-14 top-12' classNameforButton='sm:top-14 top-12' />
       <div className="text-slate-900 dark:text-white font-sans p-6 sm:p-8 lg:p-12 " >
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 " ref={scrollTargetRef}>
 
