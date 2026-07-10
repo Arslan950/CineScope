@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import api from "../lib/axiosInstance.js"
 import { toast } from "react-toastify";
 
 const Backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -11,9 +12,7 @@ export const useAuthStore = create((set) => ({
 
     checkAuth: async () => {
         try {
-            const response = await axios.get(`${Backend_url}/auth/userInfo`, {
-                withCredentials: true
-            });
+            const response = await api.get('/auth/userInfo');
             set({ user: response.data.data, isLoggedIn: true, isLoading: false })
         } catch (error) {
             set({ user: null, isLoggedIn: false, isLoading: false })
@@ -49,12 +48,15 @@ export const useAuthStore = create((set) => ({
 
     loggedOut: async () => {
         try {
-            await axios.post(`${Backend_url}/auth/logout`, {}, {
-                withCredentials: true
-            })
+            await api.post('/auth/logout');
         } finally {
             set({ user: null, isLoggedIn: false })
         }
+    },
+
+    forceLogout: () => {
+        set({ user: null, isLoggedIn: false, isLoading: false });
+        toast.info("Session expired. Please log in again.");
     },
 
     editUserInfo: async (preview, selectedGenres, fullName) => {
@@ -64,12 +66,7 @@ export const useAuthStore = create((set) => ({
         if (fullName) formData.fullName = fullName;
 
         try {
-            const response = await axios.patch(`${Backend_url}/auth/editInfo`,
-                formData,
-                {
-                    withCredentials: true
-                });
-
+            const response = await api.patch('/auth/editInfo',formData);
             const userData = response?.data?.data;
             set({ user: userData })
 
