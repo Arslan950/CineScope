@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.model.js";
 import { IntialUser } from "../models/intialUser.model.js"
 import { sendEmail, emailVerificationMail, resetPasswordMail } from "../utils/mail.js"
+import { optionsAccessToken , optionsRefreshToken } from "../utils/cookies-options.js";
 import bcrypt from "bcrypt"
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
@@ -89,15 +90,10 @@ const googleAuth = asyncHandler(async (req, res) => {
         "-password -refreshToken",
     )
 
-    const options = {
-        httpOnly: true,
-        secure: false,
-    };
-
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, optionsAccessToken)
+        .cookie("refreshToken", refreshToken, optionsRefreshToken)
         .json(
             new ApiResponse(200, createdUser, "Account created via Google")
         )
@@ -207,19 +203,14 @@ const login = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await generateTokens(user._id);
 
-    const options = {
-        httpOnly: true,
-        secure: false
-    }
-
     const loggedInUser = await User.findById(user._id).select(
         "-password -refreshToken",
     )
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, optionsAccessToken)
+        .cookie("refreshToken", refreshToken, optionsRefreshToken)
         .json(
             new ApiResponse(200, loggedInUser, "Logged in succesfully!")
         )
@@ -239,15 +230,10 @@ const logout = asyncHandler(async (req, res) => {
         }
     );
 
-    const options = {
-        httpOnly: true,
-        secure: false
-    }
-
     return res
         .status(200)
-        .clearCookie("accessToken", options)
-        .clearCookie("refreshToken", options)
+        .clearCookie("accessToken", optionsAccessToken)
+        .clearCookie("refreshToken", optionsRefreshToken)
         .json(
             new ApiResponse(200, {}, "Logged out securly")
         )
@@ -280,8 +266,6 @@ const updateUserInfo = asyncHandler(async (req, res) => {
     )
 
     if (!updatedUser) { throw new ApiError(400, "Not a valid user") }
-
-    await updatedUser.save({ validateBeforeSave: false });
 
     return res
         .status(200)
@@ -385,15 +369,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken: newRefreshToken } = await generateTokens(user?._id);
 
-    const options = {
-        httpOnly: true,
-        secure: false,
-    }
-
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("accessToken", accessToken, optionsAccessToken)
+        .cookie("refreshToken", newRefreshToken, optionsRefreshToken)
         .json(
             new ApiResponse(200, { accessToken, newRefreshToken }, "Assigned new accessToken")
         )
