@@ -5,15 +5,17 @@ import { useCloudinaryImageUpload } from '../hooks/useImageURL.js';
 import { useAuthStore } from '../store/AuthStore.js';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
+import fallBack from "../assets/fallBack.png"
 import { toast } from 'react-toastify';
 
 const OnBoarding = () => {
 
-  const { editUserInfo } = useAuthStore();
+  const { isLoggedIn , editUserInfo } = useAuthStore();
 
   const navigate = useNavigate();
 
-  const [preview, setPreview] = useState("https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg");
+  const fallBack_url = "https://res.cloudinary.com/dadnb58fk/image/upload/v1783770669/vacdzydevdtlbuznxzu6.png" || fallBack;
+  const [preview, setPreview] = useState(fallBack_url);
   const [step, setStep] = useState(1);
 
   const { uploadImage, loading, errorMessage, imageUrl } = useCloudinaryImageUpload();
@@ -26,6 +28,11 @@ const OnBoarding = () => {
       scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
+
+  const handleSkip = () => {
+    setPreview(fallBack_url);
+    setStep(2);
+  }
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -120,7 +127,7 @@ const OnBoarding = () => {
 
               <div className='flex w-full max-w-3xl items-center justify-between gap-x-5 pt-2'>
                 <button
-                  onClick={() => { setStep(2) }}
+                  onClick={handleSkip}
                   type='button'
                   className='w-32 rounded-lg border border-slate-600 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-[#5fa2fa] hover:text-[#5fa2fa] dark:text-white/80 sm:w-40'
                 >
