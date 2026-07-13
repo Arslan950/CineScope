@@ -7,6 +7,7 @@ import { useThemeStore } from '../store/ThemeStore.js'
 import { useAuthStore } from "../store/AuthStore.js"
 import { LogOutIcon, SearchIcon, HomeIcon, HeartIcon } from "lucide-react";
 import SearchBar from "../components/SearchBar.jsx";
+import fallBack from "../assets/fallBack.png"
 
 const NavBar = () => {
     const [dropdownFlag, setDropdownFlag] = useState(false)
@@ -15,7 +16,7 @@ const NavBar = () => {
     const { loggedOut } = useAuthStore();
 
     const user = useAuthStore((state) => state.user);
-    const avatar = user?.avatar;
+    const avatar = user?.avatar || "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
 
     const handleLogout = () => {
         loggedOut().then(() => {

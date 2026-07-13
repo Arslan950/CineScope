@@ -4,8 +4,9 @@ import { useAuthStore } from "../store/AuthStore.js";
 import { useCloudinaryImageUpload } from "../hooks/useImageURL.js"
 import { genres } from "../MoviesDB/moviesList.js"
 import { toast } from 'react-toastify';
+import fallBack from "../assets/fallBack.png"
 
-const fallbackAvatar = "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg";
+const fallbackAvatar = "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
 
 const Profile = () => {
     const { editUserInfo } = useAuthStore();

@@ -14,7 +14,7 @@ const OnBoarding = () => {
 
   const navigate = useNavigate();
 
-  const fallBack_url = "https://res.cloudinary.com/dadnb58fk/image/upload/v1783770669/vacdzydevdtlbuznxzu6.png" || fallBack;
+  const fallBack_url = "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
   const [preview, setPreview] = useState(fallBack_url);
   const [step, setStep] = useState(1);
 

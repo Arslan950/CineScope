@@ -11,14 +11,8 @@ import Loading from "./components/Loading.jsx"
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
-  const { checkAuth, isLoading } = useAuthStore();
-  const location = useLocation();
-  const hideNavbarRoutes = ['/','/login', '/signup', '/forgetPassword'];
-  const shouldHideNavbar =
-    hideNavbarRoutes.includes(location.pathname) ||
-    location.pathname.startsWith('/resetPassword') ||
-    location.pathname.startsWith('/verify-email');
-
+  const { checkAuth, isLoading , isLoggedIn } = useAuthStore();
+  
   useEffect(() => {
     checkAuth();
   }, []);
@@ -37,7 +31,7 @@ function App() {
   return (
     <main className='min-h-screen w-screen dark:bg-[#111826] bg-slate-100 dark:text-white text-black font-Poppins flex flex-col sm:duration-300' >
       {
-        (shouldHideNavbar) ? <SecondryNavBar /> : <NavBar />
+        (isLoggedIn) ? <NavBar /> : <SecondryNavBar/>
       }
       <section className=' flex flex-grow flex-col items-center '>
         <ToastContainer

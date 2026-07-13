@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken"
 const UserSchema = new Schema({
     avatar: {
         type: String,
-        default: "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
+        default : "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png"
     },
     fullName: {
         type: String,
