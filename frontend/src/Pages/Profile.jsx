@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { CheckCircle2, Film, Mail, ShieldAlert, UserRound, Edit, Save, Camera, X } from 'lucide-react';
 import { useAuthStore } from "../store/AuthStore.js";
 import { useCloudinaryImageUpload } from "../hooks/useImageURL.js"
-import { genres } from "../MoviesDB/moviesList.js"
+import { genres } from "../lib/static-data.js"
 import { toast } from 'react-toastify';
 import fallBack from "../assets/fallBack.png"
 

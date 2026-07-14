@@ -1,5 +1,5 @@
 import { ThreeDMarquee } from "../components/ui/3d-marquee.jsx";
-import { images } from "../MoviesDB/moviesList.js";
+import { images } from "../lib/static-data.js";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";

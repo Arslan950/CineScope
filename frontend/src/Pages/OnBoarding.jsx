@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera } from "lucide-react";
-import { cinematicAvatars, genres } from "../MoviesDB/moviesList.js";
+import { cinematicAvatars, genres } from "../lib/static-data.js";
 import { useCloudinaryImageUpload } from '../hooks/useImageURL.js';
 import { useAuthStore } from '../store/AuthStore.js';
 import { useNavigate } from "react-router-dom"

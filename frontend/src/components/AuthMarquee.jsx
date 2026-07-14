@@ -1,5 +1,5 @@
 import React from 'react'
-import { images } from "../MoviesDB/moviesList.js";
+import { images } from "../lib/static-data.js";
 import { ThreeDMarquee } from './ui/3d-marquee.jsx';
 const AuthMarquee = () => {
     return (
