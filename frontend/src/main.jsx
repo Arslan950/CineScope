@@ -90,7 +90,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ":title",
+            path: "result",
             element: (
               <ProtectedRoute>
                 <Suspense fallback={<Loading />}>

@@ -2,9 +2,9 @@ import React from 'react'
 import Lottie from 'lottie-react'
 import animation from '../animation/loading.json'
 
-const Loading = () => {
+const Loading = ({className}) => {
     return (
-        <div className='min-h-screen flex items-center justify-center'>
+        <div className={`flex items-center justify-center ${className ? className : "min-h-screen"}`}>
             <div className='max-w-70 mb-30'>
                 <Lottie
                     className="[&_path]:!fill-black/85 dark:[&_path]:!fill-white/85"

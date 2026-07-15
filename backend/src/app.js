@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import healthCheckRouter from "./routes/healthCheck.route.js";
 import authRouter from "./routes/auth.route.js";
 import dashboardRouter from "./routes/dashboard.route.js";
+import moviesRouter from "./routes/movies.route.js"
 import { ApiError } from "./utils/api-error.js";
 
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use("/api/healthcheck", healthCheckRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/get-dashboard-data",dashboardRouter)
+app.use("/api/explore",moviesRouter)
 
 app.use((err, req, res, next) => {
     if (err instanceof ApiError) {

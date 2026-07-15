@@ -16,7 +16,13 @@ const SearchBar = (
 
     const handleSearch = useCallback((e) => {
         e.preventDefault();
-        navigate(`/explore/${encodeURIComponent(movieName.trim())}`);
+        if(!movieName.trim()) {
+            return 
+        }
+
+        const params = new URLSearchParams({search : movieName.trim()})
+
+        navigate(`/explore/?${params.toString()}`);
     }, [movieName, navigate]);
 
     return (

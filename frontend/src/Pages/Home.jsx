@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import CardSection from '../components/Cards/CardSection'
 import api from "../lib/axiosInstance.js"
 import Loading from "../components/Loading.jsx"
+import { toast } from 'react-toastify'
 
 const Home = () => {
   const naviagte = useNavigate();
@@ -14,16 +15,19 @@ const Home = () => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setLoading(true);
+    const controller = new AbortController();
+
     const getTrendingData = async () => {
+      setLoading(true);
       try {
-        const response = await api.get("/get-dashboard-data");
+        const response = await api.get("/get-dashboard-data",{ signal: controller.signal });
 
         setHollywoodData(response?.data?.data?.hollywood);
         setBollywoodData(response?.data?.data?.bollywood);
         setWebSeriesData(response?.data?.data?.webSeries);
 
       } catch (error) {
+        if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
         if (error.response) {
           const backendMessage = error.response?.data?.message
           setErrorMessage(backendMessage)
@@ -37,11 +41,13 @@ const Home = () => {
           setErrorMessage(unexpectedMsg);
           toast.error(unexpectedMsg);
         }
-      } finally{
+      } finally {
         setLoading(false)
       }
     }
     getTrendingData();
+
+    return () => controller.abort();
   }, [])
 
   if (loading) {

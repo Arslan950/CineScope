@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useState } from 'react';
 import { ProgressiveBlur } from '../ui/progressive-blur';
 import { motion } from 'framer-motion'; // Corrected the import for motion
@@ -8,13 +8,25 @@ import HeartFavourites from './HeartFavourites';
 
 export default React.memo(function Card({ id, title, poster, rating, visiblity }) {
   const [isHover, setIsHover] = useState(false);
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
+
+  const handleClick = useCallback(() => {
+    
+    if(!id){
+      return 
+    }
+
+    const params = new URLSearchParams({id : id});
+
+    navigate(`/explore/result?${params.toString()}`);
+
+  },[id])
 
   return (
     <div
       onClick={(e) => {
         e.preventDefault();
-        naviagte(`/explore/${encodeURIComponent(title)}`);
+        handleClick();
       }}
       className='relative my-4 flex-shrink-0 sm:h-[340px] sm:w-[240px] h-[245px] w-[175px] overflow-hidden sm:rounded-3xl rounded-2xl dark:ring-1 dark:ring-white/75 ring-1 ring-black'
       onMouseEnter={() => setIsHover(true)}
