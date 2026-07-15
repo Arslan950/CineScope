@@ -62,6 +62,71 @@ const getSearchData = asyncHandler(async (req, res) => {
     }
 });
 
+const formatMovieData = (item) => {
+  const rawDirector = item.credits?.crew?.find(member => member.job === 'Director');
+  const director = rawDirector ? {
+    real_name: rawDirector.name,
+    role: rawDirector.job,
+    picture: `https://image.tmdb.org/t/p/w200${rawDirector.profile_path}`
+  } : null;
+
+  const topCast = item.credits?.cast?.slice(0, 20).map(actor => ({
+    real_name: actor.name,
+    role: actor.character,
+    picture: `https://image.tmdb.org/t/p/w200${actor.profile_path}`
+  })) || [];
+
+  const trailerKey = item.videos?.results?.find(
+    video => video.site === 'YouTube' && video.type === 'Trailer' && video.official === true
+  )?.key || null;
+
+  const genres = item.genres?.map(genre => genre.name) || [];
+
+  return {
+    id: item.id,
+    title: item.title,
+    poster: item.poster_path ? `https://image.tmdb.org/t/p/w400${item.poster_path}` : "https://placehold.co/300x450/252525/FFFFFF?text=No+poster+availabe",
+    runtime: item.runtime, 
+    rating: item.vote_average ? `${item.vote_average.toFixed(1)}/10` : item.vote_average,
+    imdb_id: item.imdb_id,
+    release_date: item.release_date, 
+    overview: item.overview,
+    status: item.status,
+    genres: genres,
+    director: director,
+    cast: topCast,
+    trailer: trailerKey ? `https://www.youtube.com/watch?v=${trailerKey}` : null
+  };
+};
+
+const getMoviesDetail = asyncHandler (async (req,res) => {
+    const api_key = process.env.TMDB_API_KEY
+    const {id} = req.body;
+
+    if(!id){
+        throw new ApiError(400,"Please provide a movie");
+    }
+
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&append_to_response=credits,videos`,{ httpsAgent: agent, timeout: 10000 });
+
+        const finalData = formatMovieData(response.data);
+
+        if(!finalData){
+            throw new ApiError(400,"Failed to fetch details from TMDB")
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200,finalData,"Fetched movies data successfully"))
+
+        
+    } catch (error) {
+        throw new ApiError(400, `${error.message}`)
+    }
+});
+
 export {
-    getSearchData
+    getSearchData,
+    getMoviesDetail,
 }
