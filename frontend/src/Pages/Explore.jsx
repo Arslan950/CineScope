@@ -11,7 +11,7 @@ const Explore = () => {
     const searchedTerm = searchParams.get("search");
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
 
     const [results, setResults] = useState([]);
@@ -24,7 +24,7 @@ const Explore = () => {
         const controller = new AbortController();
 
         const getSearchResults = async () => {
-            setLoading(true);
+            setErrorMessage("");
             try {
                 const response = await api.post("/explore/search-results", {
                     "searchedTerm": searchedTerm,
@@ -75,13 +75,13 @@ const Explore = () => {
                 </div>
             )}
 
-            {!loading && errorMessage && (
+            {loading && errorMessage && (
                 <div className='w-full max-w-md text-center py-16'>
                     <p className='text-red-400 text-sm sm:text-base'>{errorMessage}</p>
                 </div>
             )}
 
-            {!loading && !errorMessage && results.length === 0 && (
+            {!loading && errorMessage && results.length === 0 && (
                 <div className='w-full max-w-md text-center py-16'>
                     <p className='text-gray-400 text-sm sm:text-base'>
                         No results found{searchedTerm ? ` for "${searchedTerm}"` : ""}.
@@ -100,6 +100,7 @@ const Explore = () => {
                                 title={movie.title}
                                 poster={movie.poster}
                                 rating={movie.rating}
+                                type={movie.type}
                             />
                         ))}
                     </section>

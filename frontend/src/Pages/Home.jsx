@@ -12,13 +12,12 @@ const Home = () => {
   const [bollywoodData, setBollywoodData] = useState([]);
   const [webSeriesData, setWebSeriesData] = useState([]);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const controller = new AbortController();
 
     const getTrendingData = async () => {
-      setLoading(true);
       try {
         const response = await api.get("/get-dashboard-data",{ signal: controller.signal });
 
@@ -63,7 +62,7 @@ const Home = () => {
         <div className="relative h-full flex flex-col justify-end p-8 md:p-12 text-white ">
           <div className="max-w-2xl ">
             <h1 className="text-xl md:text-5xl sm:text-nowrap font-black tracking-tight drop-shadow-lg text-white/90 hover:text-[#5fa2fa] duration-300 "
-              onClick={() => { naviagte('/explore/Spider-Man: Brand New Day') }}
+              onClick={() => { naviagte('/explore/movie?id=969681') }}
             >Spider-Man: Brand New Day</h1>
             <div className="flex items-center space-x-4 mt-4 mb-6">
               <div className="flex items-center space-x-1">

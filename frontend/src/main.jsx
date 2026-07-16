@@ -13,6 +13,7 @@ const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
 const Search = lazy(() => import('./Pages/Search.jsx'));
 const MoviesDetail = lazy(() => import('./Pages/Movie/MoviesDetail.jsx'));
 const MovieDescription = lazy(() => import('./Pages/Movie/MovieDescription.jsx'));
+const TvDescription = lazy(() => import('./Pages/Movie/TvDescription .jsx'));
 const Home = lazy(() => import('./Pages/Home.jsx'));
 const Explore = lazy(() => import('./Pages/Explore.jsx'));
 const Login = lazy(() => import('./Pages/Login.jsx'));
@@ -90,11 +91,21 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "result",
+            path: "movie",
             element: (
               <ProtectedRoute>
                 <Suspense fallback={<Loading />}>
                   <MovieDescription />
+                </Suspense>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "tv",
+            element: (
+              <ProtectedRoute>
+                <Suspense fallback={<Loading />}>
+                  <TvDescription />
                 </Suspense>
               </ProtectedRoute>
             ),
@@ -160,8 +171,8 @@ const router = createBrowserRouter([
         ]
       },
       {
-        path : "profile",
-        element : (
+        path: "profile",
+        element: (
           <ProtectedRoute>
             <Suspense fallback={<Loading />}>
               <Profile />
@@ -170,8 +181,8 @@ const router = createBrowserRouter([
         )
       },
       {
-        path : "onBoarding",
-        element : (
+        path: "onBoarding",
+        element: (
           <ProtectedRoute>
             <Suspense fallback={<Loading />}>
               <OnBoarding />

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'; // Corrected the import for motion
 import { useNavigate } from 'react-router-dom';
 import HeartFavourites from './HeartFavourites';
 
-export default React.memo(function Card({ id, title, poster, rating, visiblity }) {
+export default React.memo(function Card({ id, title, poster, rating, type , visiblity }) {
   const [isHover, setIsHover] = useState(false);
   const navigate = useNavigate();
 
@@ -18,7 +18,11 @@ export default React.memo(function Card({ id, title, poster, rating, visiblity }
 
     const params = new URLSearchParams({id : id});
 
-    navigate(`/explore/result?${params.toString()}`);
+    if(type === "movie"){
+      navigate(`/explore/movie?${params.toString()}`);
+    }else if(type === "tv"){
+      navigate(`/explore/tv?${params.toString()}`);
+    }
 
   },[id])
 

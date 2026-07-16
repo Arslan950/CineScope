@@ -19,6 +19,7 @@ const CardSection = ({ movieList, name }) => {
               title={movie.title}
               poster={movie.poster}
               rating={movie.rating}
+              type={movie.type}
             />
           ))
         }

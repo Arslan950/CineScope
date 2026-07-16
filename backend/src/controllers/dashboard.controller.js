@@ -28,12 +28,13 @@ const getTrendingData = asyncHandler(async (req, res) => {
         webSeries: `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&with_original_language=en`
     }
 
-    const formatItem = (item) => {
+    const formatItem = (item, type) => {
         return {
             id: item.id,
             title: item.title || item.name || item.original_name,
             poster: item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}` : null,
-            rating: `${item.vote_average.toFixed(1)}/10`
+            rating: `${item.vote_average.toFixed(1)}/10`,
+            type: type
         }
     };
 
@@ -45,9 +46,9 @@ const getTrendingData = asyncHandler(async (req, res) => {
         ]);
 
         const finalData = {
-            hollywood: hollywoodRes.data?.results?.slice(0, 5).map(formatItem) || [],
-            bollywood: bollywoodRes.data?.results?.slice(0, 5).map(formatItem) || [],
-            webSeries: webSeriesRes.data?.results?.slice(0, 5).map(formatItem) || []
+            hollywood: hollywoodRes.data?.results?.slice(0, 5).map(item => formatItem(item, 'movie')) || [],
+            bollywood: bollywoodRes.data?.results?.slice(0, 5).map(item => formatItem(item, 'movie')) || [],
+            webSeries: webSeriesRes.data?.results?.slice(0, 5).map(item => formatItem(item, 'tv')) || []
         };
 
         if (finalData.hollywood.length === 0 && finalData.bollywood.length === 0) {
@@ -56,7 +57,7 @@ const getTrendingData = asyncHandler(async (req, res) => {
 
         return res
             .status(200)
-            .json(new ApiResponse(200, finalData, "Trendng Data fetched succesfully"))
+            .json(new ApiResponse(200, finalData, "Trending Data fetched successfully"))
 
     } catch (error) {
         throw new ApiError(400, `${error.message}`)
