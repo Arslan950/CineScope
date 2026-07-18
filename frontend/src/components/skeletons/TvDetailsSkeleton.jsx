@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MoviesDetailsSkeleton = () => {
+const TvDetailsSkeleton = () => {
   return (
     <section className="mt-16 min-h-screen">
       <section className="relative w-full h-[80dvh] bg-gray-700 skeleton shimmer-light">
@@ -25,9 +25,9 @@ const MoviesDetailsSkeleton = () => {
         <div className="flex flex-col-reverse md:flex-row gap-12 items-start">
           <div className="flex-1 w-full space-y-10">
             <div>
-              <div className="h-7 w-48 bg-gray-700 skeleton shimmer-light rounded mb-6" />
+              <div className="h-7 w-56 bg-gray-700 skeleton shimmer-light rounded mb-6" />
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="flex flex-col gap-2">
                     <div className="h-3 w-16 bg-gray-700 skeleton shimmer-light rounded" />
                     <div className="h-4 w-24 bg-gray-700 skeleton shimmer-light rounded" />
@@ -61,7 +61,37 @@ const MoviesDetailsSkeleton = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
-        <div className="h-7 w-48 bg-gray-700 skeleton shimmer-light rounded mb-8" />
+        <div className="h-7 w-40 bg-gray-700 skeleton shimmer-light rounded mb-8" />
+        <div className="flex overflow-x-auto gap-6 pb-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="min-w-[160px] w-[160px] flex flex-col rounded-xl overflow-hidden border border-slate-700/50">
+              <div className="w-full h-52 bg-gray-700 skeleton shimmer-light" />
+              <div className="p-4 flex-1 flex flex-col justify-center gap-2">
+                <div className="h-3 w-full bg-gray-700 skeleton shimmer-light rounded" />
+                <div className="h-3 w-2/3 bg-gray-700 skeleton shimmer-light rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
+        <div className="h-7 w-32 bg-gray-700 skeleton shimmer-light rounded mb-8" />
+        <div className="flex overflow-x-auto gap-6 pb-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="min-w-[200px] w-[200px] sm:min-w-[220px] sm:w-[220px] flex flex-col rounded-xl overflow-hidden border border-slate-700/50">
+              <div className="w-full h-72 sm:h-80 bg-gray-700 skeleton shimmer-light" />
+              <div className="p-4 flex-1 flex flex-col justify-center gap-2">
+                <div className="h-4 w-full bg-gray-700 skeleton shimmer-light rounded" />
+                <div className="h-3 w-1/2 bg-gray-700 skeleton shimmer-light rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
+        <div className="h-7 w-36 bg-gray-700 skeleton shimmer-light rounded mb-8" />
         <div className="flex overflow-x-auto gap-6 pb-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="min-w-[160px] w-[160px] flex flex-col rounded-xl overflow-hidden border border-slate-700/50">
@@ -83,4 +113,4 @@ const MoviesDetailsSkeleton = () => {
   )
 }
 
-export default MoviesDetailsSkeleton
+export default TvDetailsSkeleton

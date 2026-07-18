@@ -1,4 +1,4 @@
-import MoviesDetailsSkeleton from "../../components/skeletons/MoviesDetailsSkeleton.jsx"
+import TvDetailsSkeleton from "../../components/skeletons/TvDetailsSkeleton.jsx"
 import { AnimatedSubscribeButton } from '../../components/ui/AnimatedButton'
 import HeartFavourites from "../../components/Cards/HeartFavourites.jsx";
 import React, { useEffect, useState } from 'react';
@@ -29,6 +29,7 @@ const TvDescription = () => {
         }, { signal: controller.signal });
 
         setTvData(response.data?.data);
+        setLoading(false);
         toast.success(`Fetched data succesfully`);
       } catch (error) {
         if (error.name === 'CanceledError' || error.name === 'AbortError') {
@@ -47,9 +48,8 @@ const TvDescription = () => {
           setErrorMessage(unexpectedMsg);
           toast.error(unexpectedMsg);
         }
-      } finally {
         setLoading(false);
-      }
+      } 
     }
     getTVDetails();
 
@@ -59,7 +59,7 @@ const TvDescription = () => {
 
   if (loading) {
     return (
-      <MoviesDetailsSkeleton />
+      <TvDetailsSkeleton />
     )
   }
 
@@ -86,7 +86,6 @@ const TvDescription = () => {
 
   return (
     <section className="mt-16 min-h-screen">
-      {/* Hero Section */}
       <section
         className="relative w-full h-[80dvh] bg-cover bg-center"
         style={{
@@ -135,7 +134,6 @@ const TvDescription = () => {
         </motion.div>
       </section>
 
-      {/* Details Section */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16">
         <div className="flex flex-col-reverse md:flex-row gap-12 items-start">
           <div className="flex-1 w-full space-y-10">
@@ -201,7 +199,6 @@ const TvDescription = () => {
         </div>
       </div>
 
-      {/* Creators Section */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
         <h2 className="text-2xl font-semibold text-white mb-8">Creators</h2>
         <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
@@ -221,7 +218,6 @@ const TvDescription = () => {
         </div>
       </div>
 
-      {/* Seasons Section (Slightly Larger Cards) */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
         <h2 className="text-2xl font-semibold text-white mb-8">Seasons</h2>
         <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
@@ -241,7 +237,6 @@ const TvDescription = () => {
         </div>
       </div>
 
-      {/* Cast Section */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
         <h2 className="text-2xl font-semibold text-white mb-8">Top Cast</h2>
         <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
@@ -261,7 +256,6 @@ const TvDescription = () => {
         </div>
       </div>
 
-      {/* Trailer Section */}
       {tvData?.trailer && (
         <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 mb-16 border-t border-slate-800">
           <h2 className="text-2xl font-semibold text-white mb-8">Trailer</h2>

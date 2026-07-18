@@ -13,7 +13,7 @@ import { motion } from 'motion/react'
 const MovieDescription = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [movieData, setMovieData] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const id = searchParams.get("id");
   const navigate = useNavigate();
@@ -23,12 +23,14 @@ const MovieDescription = () => {
 
     const getMovieDetails = async () => {
       try {
+        setLoading(true);
         setErrorMessage("");
         const response = await api.post("/explore/movie-result", {
           "id": id
         }, { signal: controller.signal });
 
         setMovieData(response.data?.data);
+        setLoading(false)
         toast.success(`Fetched data succesfully`);
       } catch (error) {
         if (error.name === 'CanceledError' || error.name === 'AbortError') {
@@ -47,8 +49,6 @@ const MovieDescription = () => {
           setErrorMessage(unexpectedMsg);
           toast.error(unexpectedMsg);
         }
-      } finally {
-        setLoading(false);
       }
     }
     getMovieDetails();
@@ -205,8 +205,8 @@ const MovieDescription = () => {
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
         <h2 className="text-2xl font-semibold text-white mb-8">Top Cast & Crew</h2>
-        <div className="flex  overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-          <div className="min-w-[160px] w-[160px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
+        <div className="flex  overflow-x-auto gap-6 pb-6  scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+          <div className="min-w-[160px] w-[160px] flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
             <img
               src={movieData?.director?.picture}
               alt={movieData?.director?.real_name}
@@ -219,7 +219,7 @@ const MovieDescription = () => {
           </div>
 
           {movieData?.cast?.map((casts, index) => (
-            <div key={index} className="min-w-[160px] w-[160px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
+            <div key={index} className="min-w-[160px] w-[160px] flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
               <img src={casts?.picture} alt={casts?.real_name} className="w-full h-52 object-cover object-top" />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-sm font-bold truncate">{casts?.real_name} </h3>
