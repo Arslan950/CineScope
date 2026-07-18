@@ -1,4 +1,4 @@
-import ChevronRightIcon from '../icons/ChevronRightIcon';
+import { ChevronRightIcon } from 'lucide-react';
 import Card from '../Cards/Card';
 
 const CardSection = ({ movieList, name }) => {

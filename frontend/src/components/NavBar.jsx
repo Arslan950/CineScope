@@ -149,7 +149,7 @@ const NavBar = () => {
                                     e.preventDefault();
                                     handleLogout();
                                 }}
-                                className='flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-all duration-200 shadow-sm'
+                                className='flex items-center justify-center gap-x-2 bg-[#5fa2fa] hover:bg-blue-500 text-white px-4 py-2 rounded-md transition-all duration-200 shadow-sm'
                             >
                                 <span className="text-sm font-semibold whitespace-nowrap">Logout</span>
                                 <LogOutIcon size={16} strokeWidth={2.5} />

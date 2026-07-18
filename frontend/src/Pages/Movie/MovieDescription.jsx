@@ -120,7 +120,7 @@ const MovieDescription = () => {
                 >
                   <span className="group inline-flex items-center">
                     Add to Favourites
-                    <ChevronRightIcon />
+                    <ChevronRightIcon className="size-5 transition-transform duration-300 group-hover:translate-x-1"/>
                   </span>
                   <span className="group inline-flex items-center">
                     <CheckIcon />

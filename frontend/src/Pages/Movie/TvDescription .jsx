@@ -122,7 +122,7 @@ const TvDescription = () => {
                 >
                   <span className="group inline-flex items-center">
                     Add to Favourites
-                    <ChevronRightIcon />
+                    <ChevronRightIcon className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                   <span className="group inline-flex items-center">
                     <CheckIcon />
@@ -227,10 +227,10 @@ const TvDescription = () => {
         <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
           {tvData?.seasons?.map((season, index) => (
             <div key={index} className="min-w-[200px] w-[200px] sm:min-w-[220px] sm:w-[220px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img 
-                src={season?.poster_path} 
-                alt={season?.name} 
-                className="w-full h-72 sm:h-80 object-cover object-center" 
+              <img
+                src={season?.poster_path}
+                alt={season?.name}
+                className="w-full h-72 sm:h-80 object-cover object-center"
               />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-base font-bold truncate">{season?.name}</h3>
@@ -247,10 +247,10 @@ const TvDescription = () => {
         <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
           {tvData?.cast?.map((castMember, index) => (
             <div key={index} className="min-w-[160px] w-[160px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img 
-                src={castMember?.picture} 
-                alt={castMember?.real_name} 
-                className="w-full h-52 object-cover object-top" 
+              <img
+                src={castMember?.picture}
+                alt={castMember?.real_name}
+                className="w-full h-52 object-cover object-top"
               />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-sm font-bold truncate">{castMember?.real_name} </h3>

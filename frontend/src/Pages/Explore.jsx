@@ -25,6 +25,7 @@ const Explore = () => {
 
         const getSearchResults = async () => {
             setErrorMessage("");
+            setLoading(true);
             try {
                 const response = await api.post("/explore/search-results", {
                     "searchedTerm": searchedTerm,
@@ -33,6 +34,7 @@ const Explore = () => {
 
                 setResults(response.data?.data?.results);
                 setMaxPage(response.data?.data?.total_pages);
+                setLoading(false);
             } catch (error) {
                 if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
                 if (error.response) {
@@ -48,9 +50,8 @@ const Explore = () => {
                     setErrorMessage(unexpectedMsg);
                     toast.error(unexpectedMsg);
                 }
-            } finally {
                 setLoading(false);
-            }
+            } 
         };
 
         getSearchResults();
@@ -70,14 +71,8 @@ const Explore = () => {
             </div>
 
             {loading && (
-                <div className='flex justify-center py-16'>
+                <div className='flex justify-center py-16 w-full'>
                     <Loading className={"h-fit"} />
-                </div>
-            )}
-
-            {loading && errorMessage && (
-                <div className='w-full max-w-md text-center py-16'>
-                    <p className='text-red-400 text-sm sm:text-base'>{errorMessage}</p>
                 </div>
             )}
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CardSection from '../components/Cards/CardSection'
 import api from "../lib/axiosInstance.js"
-import Loading from "../components/Loading.jsx"
+import HomeSkeleton from "../components/skeletons/HomeSkeleton.jsx"
 import { toast } from 'react-toastify'
 
 const Home = () => {
@@ -25,6 +25,7 @@ const Home = () => {
         setBollywoodData(response?.data?.data?.bollywood);
         setWebSeriesData(response?.data?.data?.webSeries);
 
+        setLoading(false);
       } catch (error) {
         if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
         if (error.response) {
@@ -40,9 +41,8 @@ const Home = () => {
           setErrorMessage(unexpectedMsg);
           toast.error(unexpectedMsg);
         }
-      } finally {
         setLoading(false)
-      }
+      } 
     }
     getTrendingData();
 
@@ -51,7 +51,7 @@ const Home = () => {
 
   if (loading) {
     return (
-      <Loading />
+      <HomeSkeleton />
     )
   }
 
@@ -73,14 +73,13 @@ const Home = () => {
             <a
               href='https://www.youtube.com/watch?v=8TZMtslA3UY'
               target='_main'
-              className="w-fit flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-transform hover:scale-105 shadow-lg">
+              className="w-fit flex items-center space-x-2 bg-[#5fa2fa] hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg transition-transform hover:scale-105 shadow-lg">
               <span>Watch Trailer</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* Trending and Bollywood section */}
       <div className='space-y-6'>
         <CardSection movieList={hollywoodData} name={`Hollywood`} />
         <CardSection movieList={bollywoodData} name={`Bollywood`} />
@@ -90,4 +89,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home ;
