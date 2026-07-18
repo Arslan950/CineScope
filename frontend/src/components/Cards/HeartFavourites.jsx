@@ -1,12 +1,12 @@
-import React, { useMemo ,useCallback} from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useFavouritesStore } from '../../store/FavouritesStore';
 
-const HeartFavourites = ({ id, title, poster, rating, onClick, children, className = "", SVGClassName = "" }) => {
+const HeartFavourites = ({ id, title, poster, rating, type, onClick, children, className = "", SVGClassName = "" }) => {
     const { favouritesList, addFavourites, removeFavourites } = useFavouritesStore();
 
     const isFavourited = useMemo(() => {
-        return favouritesList.some((movie) => movie.title === title);
-    }, [favouritesList, title]);
+        return favouritesList.some((movie) => (String(movie.id) === String(id) && movie.type === type));
+    }, [favouritesList, id , type]);
 
     const handleClick = useCallback((e) => {
         e.preventDefault();
@@ -14,18 +14,17 @@ const HeartFavourites = ({ id, title, poster, rating, onClick, children, classNa
 
         if (!isFavourited) {
             addFavourites({
+                id : id ,
                 title: title,
                 poster: poster,
-                ratings: rating
+                rating: rating,
+                type: type
             });
         } else {
-            const movieToRemove = favouritesList.find((movie) => movie.title === title);
-            if (movieToRemove) {
-                removeFavourites(movieToRemove.id || id);
-            }
+            removeFavourites(id, type);
         }
         onClick?.(e);
-    }, [isFavourited, addFavourites, removeFavourites, title, poster, rating, onClick, favouritesList]);
+    }, [isFavourited, addFavourites, removeFavourites, title, poster, rating, onClick, favouritesList , id , type]);
 
     return (
         <button onClick={handleClick} className={className}>

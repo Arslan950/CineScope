@@ -1,13 +1,14 @@
 import MoviesDetailsSkeleton from "../../components/skeletons/MoviesDetailsSkeleton.jsx"
 import { AnimatedSubscribeButton } from '../../components/ui/AnimatedButton'
 import HeartFavourites from "../../components/Cards/HeartFavourites.jsx";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import api from "../../lib/axiosInstance.js"
 import { toast } from 'react-toastify';
 import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon } from "lucide-react"
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
+import { useFavouritesStore } from "../../store/FavouritesStore.js"
 
 
 const MovieDescription = () => {
@@ -17,6 +18,8 @@ const MovieDescription = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const id = searchParams.get("id");
   const navigate = useNavigate();
+
+  const { favouritesList, addFavourites, removeFavourites } = useFavouritesStore();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -55,6 +58,10 @@ const MovieDescription = () => {
 
     return () => controller.abort();
   }, [id])
+
+  const isFavourited = useMemo(() => {
+    return favouritesList.some((movie) => (String(movie.id) === String(movieData?.id) && movie.type === movieData?.type))
+  }, [favouritesList, movieData?.id, movieData?.type]);
 
   if (loading) {
     return (
@@ -113,14 +120,19 @@ const MovieDescription = () => {
             <div className="flex items-center gap-4 pt-8 sm:justify-start justify-center">
               <HeartFavourites
                 SVGClassName={"hidden"}
+                id={movieData?.id}
+                title={movieData?.title}
+                poster={movieData?.poster}
+                rating={movieData?.rating}
+                type={movieData?.type}
               >
                 <AnimatedSubscribeButton
                   className={`bg-[#5fa2fa] text-white`}
-                  subscribeStatus={false}
+                  subscribeStatus={isFavourited}
                 >
                   <span className="group inline-flex items-center">
                     Add to Favourites
-                    <ChevronRightIcon className="size-5 transition-transform duration-300 group-hover:translate-x-1"/>
+                    <ChevronRightIcon className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                   <span className="group inline-flex items-center">
                     <CheckIcon />

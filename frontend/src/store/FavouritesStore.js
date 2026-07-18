@@ -15,15 +15,15 @@ export const useFavouritesStore = create((set) => ({
 
   addFavourites: (fav) => {
     set((state) => {
-      const newList = [{ id: Date.now(), ...fav }, ...state.favouritesList];
+      const newList = [{...fav }, ...state.favouritesList];
       saveFavourites(newList); 
       return { favouritesList: newList };
     });
   },
 
-  removeFavourites: (id) => {
+  removeFavourites: (id,type) => {
     set((state) => {
-      const newList = state.favouritesList.filter((fav) => fav.id !== id);
+      const newList = state.favouritesList.filter((fav) => !(String(fav.id) === String(id) && fav.type === type));
       saveFavourites(newList);
       return { favouritesList: newList };
     });

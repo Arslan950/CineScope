@@ -30,7 +30,8 @@ const Favourites = () => {
             id={movie.id}
             title={movie.title}
             poster={movie.poster}
-            rating={movie.ratings}
+            rating={movie.rating}
+            type={movie.type}
           />
         ))}
       </section>

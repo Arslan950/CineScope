@@ -1,13 +1,14 @@
 import TvDetailsSkeleton from "../../components/skeletons/TvDetailsSkeleton.jsx"
 import { AnimatedSubscribeButton } from '../../components/ui/AnimatedButton'
 import HeartFavourites from "../../components/Cards/HeartFavourites.jsx";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import api from "../../lib/axiosInstance.js";
 import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon } from "lucide-react"
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
+import { useFavouritesStore } from "../../store/FavouritesStore.js"
 
 const TvDescription = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,7 @@ const TvDescription = () => {
   const id = searchParams.get("id");
   const navigate = useNavigate();
 
+  const { favouritesList, addFavourites, removeFavourites } = useFavouritesStore();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -49,12 +51,16 @@ const TvDescription = () => {
           toast.error(unexpectedMsg);
         }
         setLoading(false);
-      } 
+      }
     }
     getTVDetails();
 
     return () => controller.abort();
   }, [id])
+
+  const isFavourited = useMemo(() => {
+    return favouritesList.some((movie) => (String(movie.id) === String(tvData?.id) && movie.type === tvData?.type))
+  }, [favouritesList, tvData?.id, tvData?.type]);
 
 
   if (loading) {
@@ -114,10 +120,15 @@ const TvDescription = () => {
             <div className="flex items-center gap-4 pt-8 sm:justify-start justify-center">
               <HeartFavourites
                 SVGClassName={"hidden"}
+                id={tvData?.id}
+                title={tvData?.title}
+                poster={tvData?.poster}
+                rating={tvData?.rating}
+                type={tvData?.type}
               >
                 <AnimatedSubscribeButton
                   className={`bg-[#5fa2fa] text-white`}
-                  subscribeStatus={false}
+                  subscribeStatus={isFavourited}
                 >
                   <span className="group inline-flex items-center">
                     Add to Favourites

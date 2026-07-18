@@ -24,7 +24,7 @@ export default React.memo(function Card({ id, title, poster, rating, type , visi
       navigate(`/explore/tv?${params.toString()}`);
     }
 
-  },[id])
+  },[id ,type , navigate])
 
   return (
     <div
@@ -75,7 +75,7 @@ export default React.memo(function Card({ id, title, poster, rating, type , visi
         transition={{ duration: 0.2, ease: 'easeOut' }}
       >
         <div className='px-5 py-3'>
-          <HeartFavourites id={id} title={title} poster={poster} rating={rating} />
+          <HeartFavourites id={id} title={title} poster={poster} rating={rating} type={type}/>
         </div>
       </motion.div>
     </div>
