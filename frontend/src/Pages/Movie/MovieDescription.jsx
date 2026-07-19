@@ -160,22 +160,26 @@ const MovieDescription = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Runtime</span>
-                  <span className="text-white font-medium">{`${movieData?.runtime} min`}</span>
+                  <span className="text-white font-medium">{(movieData?.runtime !== "Not specified") ? `${movieData?.runtime} min` : movieData?.runtime}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Rating</span>
                   <div className="flex items-center gap-2 text-white font-medium">
-                    <span className="text-yellow-500">★</span> {movieData?.rating}
+                    <span className="text-yellow-500">★</span> {(movieData?.rating > 0) ? movieData?.rating : "Not specified"}
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Budget</span>
-                  <span className="text-white font-medium">{`$ ${movieData?.budget}`}</span>
+                  <span className="text-white font-medium">{(movieData?.budget !== "Not specified") ? `$ ${movieData?.budget}` : movieData?.budget}</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">IMDb ID</span>
-                  <span className="text-white font-medium">{movieData?.imdb_id}</span>
-                </div>
+                {
+                  movieData?.imdb_if && (
+                    <div className="flex flex-col">
+                      <span className="text-slate-400 text-sm mb-1">IMDb ID</span>
+                      <span className="text-white font-medium">{movieData?.imdb_id}</span>
+                    </div>
+                  )
+                }
               </div>
             </div>
 
@@ -190,19 +194,23 @@ const MovieDescription = () => {
               </div>
             </div>
 
-            <div>
-              <span className="text-slate-400 text-sm block mb-3">Production</span>
-              <div className="flex items-center gap-4 bg-[#1e293b] p-4 rounded-xl w-fit border border-slate-700">
-                <div className="bg-white p-2 rounded-lg">
-                  <img
-                    src={movieData?.production_company?.logo}
-                    alt={movieData?.production_company?.name}
-                    className="h-8 object-contain"
-                  />
+            {
+              movieData?.production_company && (
+                <div>
+                  <span className="text-slate-400 text-sm block mb-3">Production</span>
+                  <div className="flex items-center gap-4 bg-[#1e293b] p-4 rounded-xl w-fit border border-slate-700">
+                    <div className="bg-white p-2 rounded-lg">
+                      <img
+                        src={movieData?.production_company?.logo}
+                        alt={movieData?.production_company?.name}
+                        className="h-8 object-contain"
+                      />
+                    </div>
+                    <span className="text-white text-sm font-medium pr-4">{movieData?.production_company?.name}</span>
+                  </div>
                 </div>
-                <span className="text-white text-sm font-medium pr-4">{movieData?.production_company?.name}</span>
-              </div>
-            </div>
+              )
+            }
           </div>
 
           <div className="w-full md:w-[300px] lg:w-[350px] flex justify-center md:justify-end shrink-0">
