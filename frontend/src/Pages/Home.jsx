@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from 'react-router-dom'
 import CardSection from '../components/Cards/CardSection'
 import api from "../lib/axiosInstance.js"
@@ -6,50 +7,33 @@ import HomeSkeleton from "../components/skeletons/HomeSkeleton.jsx"
 import { toast } from 'react-toastify'
 
 const Home = () => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
-  const [hollywoodData, setHollywoodData] = useState([]);
-  const [bollywoodData, setBollywoodData] = useState([]);
-  const [webSeriesData, setWebSeriesData] = useState([]);
-
-  const [loading, setLoading] = useState(true)
+  const { data: dashboardData, isLoading, isError, error } = useQuery({
+    queryKey: ['dashboard_data'],
+    queryFn: async ({signal}) => {
+      const response = await api.get("/get-dashboard-data", { signal });
+      return response?.data?.data;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
   useEffect(() => {
-    const controller = new AbortController();
+    if (isError && error) {
+      if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
 
-    const getTrendingData = async () => {
-      try {
-        const response = await api.get("/get-dashboard-data",{ signal: controller.signal });
-
-        setHollywoodData(response?.data?.data?.hollywood);
-        setBollywoodData(response?.data?.data?.bollywood);
-        setWebSeriesData(response?.data?.data?.webSeries);
-
-        setLoading(false);
-      } catch (error) {
-        if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
-        if (error.response) {
-          const backendMessage = error.response?.data?.message
-          setErrorMessage(backendMessage)
-          toast.error(backendMessage);
-        } else if (error.request) {
-          const networkMsg = "Network error. Please check your connection.";
-          setErrorMessage(networkMsg);
-          toast.error(networkMsg);
-        } else {
-          const unexpectedMsg = "An unexpected error occurred.";
-          setErrorMessage(unexpectedMsg);
-          toast.error(unexpectedMsg);
-        }
-        setLoading(false)
-      } 
+      if (error.response) {
+        toast.error(error.response?.data?.message || "Server Error");
+      } else if (error.request) {
+        toast.error("Network error. Please check your connection.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     }
-    getTrendingData();
+  }, [isError, error])
 
-    return () => controller.abort();
-  }, [])
 
-  if (loading) {
+  if (isLoading) {
     return (
       <HomeSkeleton />
     )
@@ -62,7 +46,7 @@ const Home = () => {
         <div className="relative h-full flex flex-col justify-end p-8 md:p-12 text-white ">
           <div className="max-w-2xl ">
             <h1 className="text-xl md:text-5xl sm:text-nowrap font-black tracking-tight drop-shadow-lg text-white/90 hover:text-[#5fa2fa] duration-300 "
-              onClick={() => { naviagte('/explore/movie?id=969681') }}
+              onClick={() => { navigate('/explore/movie?id=969681') }}
             >Spider-Man: Brand New Day</h1>
             <div className="flex items-center space-x-4 mt-4 mb-6">
               <div className="flex items-center space-x-1">
@@ -81,12 +65,12 @@ const Home = () => {
       </div>
 
       <div className='space-y-6'>
-        <CardSection movieList={hollywoodData} name={`Hollywood`} />
-        <CardSection movieList={bollywoodData} name={`Bollywood`} />
-        <CardSection movieList={webSeriesData} name={`Web series`} />
+        <CardSection movieList={dashboardData?.hollywood} name={`Hollywood`} />
+        <CardSection movieList={dashboardData?.bollywood} name={`Bollywood`} />
+        <CardSection movieList={dashboardData?.webSeries} name={`Web series`} />
       </div>
     </section>
   )
 }
 
-export default Home ;
+export default Home;

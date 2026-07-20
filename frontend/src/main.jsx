@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicRoute from './components/PublicRoute.jsx';
@@ -25,7 +27,7 @@ const Loading = lazy(() => import('./components/Loading.jsx'));
 const Profile = lazy(() => import("./Pages/Profile.jsx"));
 const OnBoarding = lazy(() => import("./Pages/OnBoarding.jsx"));
 
-import { GoogleOAuthProvider } from "@react-oauth/google";
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -205,7 +207,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </GoogleOAuthProvider>
   </StrictMode>
 );
