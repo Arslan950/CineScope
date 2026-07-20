@@ -277,7 +277,6 @@ const updateUserInfo = asyncHandler(async (req, res) => {
 });
 
 const forgetPassword = asyncHandler(async (req, res) => {
-    try {
         const { email } = req.body;
 
         const user = await User.findOne({ email });
@@ -305,9 +304,6 @@ const forgetPassword = asyncHandler(async (req, res) => {
             .json(
                 new ApiResponse(200, {}, "Email has been sent to your registered mail")
             )
-    } catch (error) {
-        throw new ApiError(400, `Something went wrong : ${error}`)
-    }
 });
 
 const resetPassword = asyncHandler(async (req, res) => {

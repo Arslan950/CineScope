@@ -161,7 +161,7 @@ const TvDescription = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Runtime</span>
-                  <span className="text-white font-medium">{(tvData?.runtime !== "Not specified") ? `${tvData?.runtime} min` : tv?.runtime}</span>
+                  <span className="text-white font-medium">{(tvData?.runtime !== "Not specified") ? `${tvData?.runtime} min` : tvData?.runtime}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Rating</span>

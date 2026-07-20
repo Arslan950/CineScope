@@ -52,6 +52,7 @@ const MovieDescription = () => {
           setErrorMessage(unexpectedMsg);
           toast.error(unexpectedMsg);
         }
+        setLoading(false);
       }
     }
     getMovieDetails();
