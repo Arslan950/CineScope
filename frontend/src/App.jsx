@@ -5,17 +5,26 @@ import SecondryNavBar from './components/SecondryNavBar.jsx'
 import Footbar from './components/Footbar'
 import { Outlet, useLocation, ScrollRestoration } from 'react-router-dom'
 import { useThemeStore } from './store/ThemeStore'
-import { useAuthStore } from './store/AuthStore'
+import { useAuthStore } from './store/AuthStore.js';
+import { useFavouritesStore } from './store/FavouritesStore.js'
 import { ToastContainer, toast } from 'react-toastify'
 import Loading from "./components/Loading.jsx"
 
 function App() {
+  const location = useLocation();
   const theme = useThemeStore((state) => state.theme);
   const { checkAuth, isLoading, isLoggedIn } = useAuthStore();
+ const hydrateFavouritesList = useFavouritesStore((state) => state.hydrateFavouritesList);
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if(isLoggedIn){
+      hydrateFavouritesList();
+    }
+  },[isLoggedIn])
 
   useEffect(() => {
     document.querySelector('html').classList.remove('dark', 'light');

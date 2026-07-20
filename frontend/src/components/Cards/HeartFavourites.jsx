@@ -27,7 +27,7 @@ const HeartFavourites = ({ id, title, poster, rating, type, onClick, children, c
     }, [isFavourited, addFavourites, removeFavourites, title, poster, rating, onClick, favouritesList , id , type]);
 
     return (
-        <button onClick={handleClick} className={className}>
+        <button type='button' onClick={handleClick} className={className}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

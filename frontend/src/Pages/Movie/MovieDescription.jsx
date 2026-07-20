@@ -166,7 +166,7 @@ const MovieDescription = () => {
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Rating</span>
                   <div className="flex items-center gap-2 text-white font-medium">
-                    <span className="text-yellow-500">★</span> {(movieData?.rating > 0) ? movieData?.rating : "Not specified"}
+                    <span className="text-yellow-500">★</span> {movieData?.rating ||  "Not specified"}
                   </div>
                 </div>
                 <div className="flex flex-col">
@@ -174,7 +174,7 @@ const MovieDescription = () => {
                   <span className="text-white font-medium">{(movieData?.budget !== "Not specified") ? `$ ${movieData?.budget}` : movieData?.budget}</span>
                 </div>
                 {
-                  movieData?.imdb_if && (
+                  movieData?.imdb_id && (
                     <div className="flex flex-col">
                       <span className="text-slate-400 text-sm mb-1">IMDb ID</span>
                       <span className="text-white font-medium">{movieData?.imdb_id}</span>
