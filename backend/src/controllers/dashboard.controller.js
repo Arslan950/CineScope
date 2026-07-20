@@ -1,6 +1,7 @@
 import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
+import {client , isRedisConnected} from "../db/redis.js"
 import axios from "axios";
 import axiosRetry from "axios-retry"
 import https from "https";
@@ -20,6 +21,17 @@ axiosRetry(axios, {
 })
 
 const getTrendingData = asyncHandler(async (req, res) => {
+    const cache_key = "dashboard_data";
+    if(isRedisConnected){
+        const cachedData = await client.get(cache_key);
+
+        if(cachedData){
+            return res
+                .status(200)
+                .json(new ApiResponse(200, JSON.parse(cachedData),"data fetched from redis successfully" ))
+        }
+    }
+
     const API_KEY = process.env.TMDB_API_KEY;
 
     const urls = {
@@ -53,6 +65,10 @@ const getTrendingData = asyncHandler(async (req, res) => {
 
         if (finalData.hollywood.length === 0 && finalData.bollywood.length === 0) {
             throw new ApiError(404, "No trending data found from TMDB");
+        }
+
+        if(isRedisConnected){
+            await client.setEx(cache_key,43200,JSON.stringify(finalData))
         }
 
         return res

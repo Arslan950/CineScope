@@ -2,10 +2,12 @@ import dotenv from "dotenv"
 import "dotenv/config"
 import app from "./app.js"
 import { connectDB } from "./db/server.js";
+import { connectRedis } from "./db/redis.js";
 const port = process.env.PORT;
 
 connectDB()
-    .then(() => {
+    .then(async () => {
+        await connectRedis();
         app.listen(port, () => {
             console.log(`http://localhost:${process.env.PORT}`);
         })
