@@ -7,7 +7,7 @@ const sendEmail = async (options) => {
         theme: "cerberus",
         product: {
             name: "CineScope",
-            link: process.env.CORS
+            link: process.env.FRONTEND_URL
         }
     })
 
