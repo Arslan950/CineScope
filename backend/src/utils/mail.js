@@ -1,6 +1,7 @@
 import Mailgen from "mailgen";
 import mailgen from "mailgen";
 import nodemailer from "nodemailer";
+import {ApiError} from "./api-error.js"
 
 const sendEmail = async (options) => {
     const mailGenerator = new Mailgen({
@@ -15,15 +16,16 @@ const sendEmail = async (options) => {
     const emailHTML = mailGenerator.generate(options.mailgenContent);
 
     const transport = nodemailer.createTransport({
-        service: "gmail",
+        host: "smtp-relay.brevo.com",
+        port: 587,
         auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
+            user: process.env.BREVO_SMTP_USER,
+            pass: process.env.BREVO_SMTP_PASS
         }
     });
 
     const mail = {
-        from: "teamCineScope@example.com",
+        from: process.env.MAIL_FROM,
         to: options.email,
         subject: options.subject,
         text: emailTextual,
@@ -33,7 +35,7 @@ const sendEmail = async (options) => {
     try {
         await transport.sendMail(mail)
     } catch (error) {
-        console.error("Something went wrong ", error);
+       throw new ApiError(400,"Something went wrong : ",error)
     }
 }
 
