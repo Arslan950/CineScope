@@ -295,7 +295,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
             subject: "Request to change password",
             mailgenContent: resetPasswordMail(
                 user?.fullName,
-                `http://localhost:5174/resetPassword/${unHashedToken}`
+                `${process.env.CORS}/resetPassword/${unHashedToken}`
             )
         })
 
