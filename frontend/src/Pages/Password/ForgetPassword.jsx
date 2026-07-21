@@ -16,7 +16,7 @@ const ForgetPassword = () => {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/forget-password`, {
                 "email": email
             });
-            toast("Email sent to your inbox")
+            toast.success("Email sent to your inbox")
         } catch (error) {
             if (error.response) {
                 const backendMessage = error.response?.data?.message || "Something went wrong";

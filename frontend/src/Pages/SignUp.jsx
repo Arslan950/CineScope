@@ -44,7 +44,7 @@ const SignUp = () => {
       });
       sessionStorage.setItem("pendingVerificationEmail", email);
       setStep(2);
-      toast("verification email sent")
+      toast.success("An 4 digit OTP has been sent to you inbox")
       setErrorMessage("Success");
     } catch (error) {
       if (error.response) {
@@ -74,7 +74,6 @@ const SignUp = () => {
         "enteredOTP": OTP
       });
       sessionStorage.removeItem("pendingVerificationEmail");
-      toast.success("Account verified successfully!");
       login(email, password).then(() => {
         navigate('/onBoarding');
       })
@@ -100,17 +99,16 @@ const SignUp = () => {
   const handleGoogleSignUp = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
-      const { isSuccess, googleAuthError } = await googleAuth(codeResponse.code);
+      const { isSuccess } = await googleAuth(codeResponse.code);
 
       if (isSuccess) {
         navigate("/onBoarding");
       } else if (!isSuccess) {
-        toast.error(googleAuthError)
+        toast.error("Something went wrong")
       }
     },
     onError: (error) => {
-      console.error("Google Popup Error:", error);
-      toast.error("Google Authentication Popup Closed or Failed");
+      toast.error("Something went wrong")
     }
   });
 

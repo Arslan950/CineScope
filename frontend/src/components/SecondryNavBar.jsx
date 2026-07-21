@@ -1,24 +1,9 @@
 import React from 'react'
-import { useState } from 'react'
 import logo from '../assets/logo.svg'
-import { motion } from 'motion/react'
-import { NavLink, Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ThemeBtn from './ThemeBtn.jsx'
-import { useThemeStore } from '../store/ThemeStore.js'
-import { useAuthStore } from "../store/AuthStore.js"
-import { LogOutIcon, UserCircle } from "lucide-react"
 
 const SecondryNavBar = () => {
-    const [dropdownFlag, setDropdownFlag] = useState(false)
-    const navigate = useNavigate();
-    const theme = useThemeStore((state) => state.theme);
-    const { loggedOut } = useAuthStore();
-
-    const handleLogout = () => {
-        loggedOut();
-        navigate('/login')
-    }
-
     return (
         <header>
             <nav 

@@ -6,7 +6,6 @@ import { useAuthStore } from '../store/AuthStore.js';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import fallBack from "../assets/fallBack.png"
-import { toast } from 'react-toastify';
 
 const OnBoarding = () => {
 
@@ -62,7 +61,6 @@ const OnBoarding = () => {
     e.preventDefault();
     editUserInfo(preview, selectedGenres).then(() => {
       navigate("/home");
-      toast.success("Profile updated successfully!");
     })
   }
 

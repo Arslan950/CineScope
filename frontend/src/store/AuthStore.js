@@ -30,8 +30,6 @@ export const useAuthStore = create((set) => ({
 
             const userData = response?.data?.data;
             set({ user: userData, isLoggedIn: true, isLoading: false })
-            toast("Login succesfully");
-
         } catch (error) {
             if (error.response) {
                 const backendMessage = error.response?.data?.message || "Invalid credentials. Please try again.";
@@ -92,21 +90,17 @@ export const useAuthStore = create((set) => ({
 
             const userData = response?.data?.data
             set({ user: userData, isLoggedIn: true, isLoading: false })
-            toast("Google Auth successfull");
 
             return {
                 isSuccess: true,
-                googleAuthError: null
             };
 
         } catch (error) {
-            console.error("Backend Error during Google Auth:", error);
             const backendMessage = error.response?.data?.message || "Google Authentication Failed";
             toast.error(backendMessage);
 
             return {
                 isSuccess: false,
-                googleAuthError: error
             };
         }
     }

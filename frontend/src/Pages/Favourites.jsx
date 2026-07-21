@@ -21,7 +21,7 @@ const Favourites = () => {
   }
 
   return (
-    <div className='flex w-full flex-col items-center bg-greeen-500 p-2 sm:p-6 md:p-8 mt-17'>
+    <div className='flex w-full flex-col items-center p-2 sm:p-6 md:p-8 mt-17'>
       <section className='grid sm:w-full sm:max-w-8xl grid-cols-2 gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:pl-16 max-[373px]:grid-cols-1'>
         {favouritesList.map((movie) => (
           <Card

@@ -32,7 +32,6 @@ const TvDescription = () => {
 
         setTvData(response.data?.data);
         setLoading(false);
-        toast.success(`Fetched data succesfully`);
       } catch (error) {
         if (error.name === 'CanceledError' || error.name === 'AbortError') {
           return;

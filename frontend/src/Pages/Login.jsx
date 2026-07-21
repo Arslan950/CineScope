@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import AuthMarquee from '../components/AuthMarquee';
 import logo from "../assets/logo.svg";
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useAuthStore } from "../store/AuthStore.js"
 
 const Login = () => {
@@ -28,17 +28,16 @@ const Login = () => {
     const handleGoogleSignIn = useGoogleLogin({
         flow: 'auth-code',
         onSuccess: async (codeResponse) => {
-            const { isSuccess, googleAuthError } = await googleAuth(codeResponse.code);
+            const { isSuccess } = await googleAuth(codeResponse.code);
 
             if (isSuccess) {
                 navigate("/home");
             } else if (!isSuccess) {
-                toast.error(googleAuthError)
+                toast.error("Something went wrong")
             }
         },
         onError: (error) => {
-            console.error("Google Popup Error:", error);
-            toast.error("Google Authentication Popup Closed or Failed");
+            toast.error("Something went wrong");
         }
     })
 

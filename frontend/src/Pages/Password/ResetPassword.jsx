@@ -23,7 +23,7 @@ const ResetPassword = () => {
         "confirmNewPassword": confirmNewPassword
       });
 
-      toast("password updated Successfully !")
+      toast.success("password updated Successfully !")
       navigate('/login');
 
     } catch (error) {

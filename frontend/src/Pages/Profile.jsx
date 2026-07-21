@@ -3,7 +3,6 @@ import { CheckCircle2, Film, Mail, ShieldAlert, UserRound, Edit, Save, Camera, X
 import { useAuthStore } from "../store/AuthStore.js";
 import { useCloudinaryImageUpload } from "../hooks/useImageURL.js"
 import { genres } from "../lib/static-data.js"
-import { toast } from 'react-toastify';
 import fallBack from "../assets/fallBack.png"
 
 const fallbackAvatar = "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
@@ -63,7 +62,6 @@ const Profile = () => {
     const handleSave = (e) => {
         e.preventDefault();
         editUserInfo(avatarPreview,editedGenres,editedName);
-        toast("Profile updated succesfully")
         setIsEditing(false);
     };
 
