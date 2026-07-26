@@ -33,6 +33,7 @@ const userOTPValidator = () => {
             .notEmpty()
             .withMessage("OTP is required")
             .isLength({min : 4})
+            .isLength({max : 15})
             .withMessage("OTP must be at least 4 digit long")
     ]
 }
@@ -52,6 +53,7 @@ const userLoginValidator = () => {
             .notEmpty()
             .withMessage("Password is required")
             .isLength({ min: 8 })
+            .isLength({max : 15})
             .withMessage("Password must be at least 8 characters long"),
     ]
 };

@@ -1,7 +1,7 @@
 import Mailgen from "mailgen";
 import mailgen from "mailgen";
 import nodemailer from "nodemailer";
-import {ApiError} from "./api-error.js"
+import { ApiError } from "./api-error.js"
 
 const sendEmail = async (options) => {
     const mailGenerator = new Mailgen({
@@ -35,7 +35,7 @@ const sendEmail = async (options) => {
     try {
         await transport.sendMail(mail)
     } catch (error) {
-       throw new ApiError(400,"Something went wrong : ",error)
+        throw new ApiError(400, "Something went wrong")
     }
 }
 
