@@ -3,8 +3,6 @@ import axios from "axios";
 import api from "../lib/axiosInstance.js"
 import { toast } from "react-toastify";
 
-const Backend_url = import.meta.env.VITE_BACKEND_URL;
-
 export const useAuthStore = create((set) => ({
     user: null,
     isLoggedIn: false,
@@ -21,7 +19,7 @@ export const useAuthStore = create((set) => ({
 
     login: async (email, password) => {
         try {
-            const response = await axios.post(`${Backend_url}/auth/login`, {
+            const response = await axios.post("/api/auth/login", {
                 "email": email,
                 "password": password
             }, {
@@ -84,7 +82,7 @@ export const useAuthStore = create((set) => ({
 
     googleAuth: async (code) => {
         try {
-            const response = await axios.post(`${Backend_url}/auth/google`, {
+            const response = await axios.post("/api/auth/google", {
                 "code": code
             }, { withCredentials: true });
 

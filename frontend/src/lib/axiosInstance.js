@@ -1,10 +1,8 @@
 import axios from "axios";
 import { useAuthStore } from "../store/AuthStore.js";
 
-const Backend_url = import.meta.env.VITE_BACKEND_URL;
-
 const api = axios.create({
-    baseURL: Backend_url,
+    baseURL: "/api",
     withCredentials: true,
 });
 
@@ -19,7 +17,7 @@ api.interceptors.response.use(
             originalRequest._retry = true; 
 
             try {
-                await axios.post(`${Backend_url}/auth/refresh-accessToken`, {}, {
+                await axios.post("/api/auth/refresh-accessToken", {}, {
                     withCredentials: true
                 });
 
