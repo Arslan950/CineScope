@@ -13,7 +13,7 @@ const ForgetPassword = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/forget-password`, {
+            const response = await axios.post("/api/auth/forget-password", {
                 "email": email
             });
             toast.success("Email sent to your inbox")

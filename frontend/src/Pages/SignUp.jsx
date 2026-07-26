@@ -37,7 +37,7 @@ const SignUp = () => {
     e.preventDefault();
     try {
       setLoading(true)
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/register`, {
+      const response = await axios.post("/api/auth/register", {
         "fullName": fullName,
         "email": email,
         "password": password
@@ -69,7 +69,7 @@ const SignUp = () => {
     e.preventDefault();
     try {
       setLoading(true)
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/verifyOTP`, {
+      const response = await axios.post("/api/auth/verifyOTP", {
         "email": email,
         "enteredOTP": OTP
       });
