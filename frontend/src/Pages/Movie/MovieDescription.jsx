@@ -93,7 +93,7 @@ const MovieDescription = () => {
   return (
     <section className="mt-16 min-h-screen">
       <section
-        className="relative w-full h-[80dvh] bg-cover bg-center"
+        className="relative w-full h-[65vh] sm:h-[80vh] bg-cover bg-center"
         style={{
           backgroundImage:
             `url('${backdrop_url}')`,

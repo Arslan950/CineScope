@@ -92,7 +92,7 @@ const TvDescription = () => {
   return (
     <section className="mt-16 min-h-screen">
       <section
-        className="relative w-full h-[80dvh] bg-cover bg-center"
+        className="relative w-full sm:h-[80vh] h-[65vh] bg-cover bg-center"
         style={{
           backgroundImage:
             `url('${backdrop_url}')`,

@@ -3,7 +3,7 @@ import axios from "axios";
 import api from "../lib/axiosInstance.js"
 import { toast } from "react-toastify";
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
     user: null,
     isLoggedIn: false,
     isLoading: true,
@@ -51,8 +51,13 @@ export const useAuthStore = create((set) => ({
     },
 
     forceLogout: () => {
+        const wasLoggedIn = get().isLoggedIn;
+
         set({ user: null, isLoggedIn: false, isLoading: false });
-        toast.info("Session expired. Please log in again.");
+
+        if (wasLoggedIn) {
+            toast.info("Please log in again.");
+        }
     },
 
     editUserInfo: async (preview, selectedGenres, fullName) => {
@@ -62,7 +67,7 @@ export const useAuthStore = create((set) => ({
         if (fullName) formData.fullName = fullName;
 
         try {
-            const response = await api.patch('/auth/editInfo',formData);
+            const response = await api.patch('/auth/editInfo', formData);
             const userData = response?.data?.data;
             set({ user: userData })
 

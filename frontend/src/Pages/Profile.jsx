@@ -66,7 +66,7 @@ const Profile = () => {
     };
 
     return (
-        <section className='flex w-full flex-grow items-center justify-center px-4 py-8 sm:px-6 lg:px-8'>
+        <section className='flex w-full flex-grow items-center justify-center px-4 py-8 sm:px-6 lg:px-8 sm:mt-0 mt-13'>
             <div className='w-full max-w-5xl overflow-hidden rounded-lg border border-slate-300/70 bg-white/80 shadow-xl shadow-slate-950/10 dark:border-slate-700 dark:bg-slate-900/40 dark:shadow-black/20'>
                 <div className='h-28 bg-gradient-to-r from-[#5fa2fa]/35 via-cyan-400/15 to-slate-500/10 dark:from-[#5fa2fa]/25 dark:via-cyan-400/10 dark:to-slate-900'></div>
 
