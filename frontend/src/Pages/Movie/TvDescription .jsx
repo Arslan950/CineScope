@@ -9,12 +9,10 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { useFavouritesStore } from "../../store/FavouritesStore.js"
+import { useQuery } from "@tanstack/react-query";
 
 const TvDescription = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tvData, setTvData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
   const id = searchParams.get("id");
   const navigate = useNavigate();
 
@@ -22,56 +20,51 @@ const TvDescription = () => {
   const addFavourites = useFavouritesStore((state) => state.addFavourites);
   const removeFavourites = useFavouritesStore((state) => state.removeFavourites);
 
+  const { data: tvData, isLoading, isError, error } = useQuery({
+    queryKey: ['tvData', id],
+    queryFn: async ({ signal }) => {
+      const response = await api.post("/explore/tv-result", {
+        "id": id
+      }, { signal });
+
+      return response.data?.data
+    },
+    staleTime: 3 * 60 * 1000,
+  });
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    const getTVDetails = async () => {
-      try {
-        setErrorMessage("");
-        const response = await api.post("/explore/tv-result", {
-          "id": id
-        }, { signal: controller.signal });
-
-        setTvData(response.data?.data);
-        setLoading(false);
-      } catch (error) {
-        if (error.name === 'CanceledError' || error.name === 'AbortError') {
-          return;
-        }
-        if (error.response) {
-          const backendMessage = error.response?.data?.message
-          setErrorMessage(backendMessage)
-          toast.error(backendMessage);
-        } else if (error.request) {
-          const networkMsg = "Network error. Please check your connection.";
-          setErrorMessage(networkMsg);
-          toast.error(networkMsg);
-        } else {
-          const unexpectedMsg = "An unexpected error occurred.";
-          setErrorMessage(unexpectedMsg);
-          toast.error(unexpectedMsg);
-        }
-        setLoading(false);
+    if (isError && error) {
+      if (error.name === 'CanceledError' || error.name === 'AbortError') {
+        return;
+      }
+      if (error.response) {
+        const backendMessage = error.response?.data?.message
+        setErrorMessage(backendMessage)
+        toast.error(backendMessage);
+      } else if (error.request) {
+        const networkMsg = "Network error. Please check your connection.";
+        setErrorMessage(networkMsg);
+        toast.error(networkMsg);
+      } else {
+        const unexpectedMsg = "An unexpected error occurred.";
+        setErrorMessage(unexpectedMsg);
+        toast.error(unexpectedMsg);
       }
     }
-    getTVDetails();
-
-    return () => controller.abort();
-  }, [id])
+  }, [isError, error])
 
   const isFavourited = useMemo(() => {
     return favouritesList.some((movie) => (String(movie.id) === String(tvData?.id) && movie.type === tvData?.type))
   }, [favouritesList, tvData?.id, tvData?.type]);
 
 
-  if (loading) {
+  if (isLoading) {
     return (
       <TvDetailsSkeleton />
     )
   }
 
-  if (errorMessage.length !== 0) {
+  if (isError && error) {
     return (
       <div className="mt-30 flex flex-col items-center gap-y-10">
         <div className="flex items-center justify-center gap-x-2">

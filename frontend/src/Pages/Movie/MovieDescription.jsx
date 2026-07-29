@@ -9,13 +9,11 @@ import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, Chevron
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { useFavouritesStore } from "../../store/FavouritesStore.js"
+import { useQuery } from "@tanstack/react-query"
 
 
 const MovieDescription = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [movieData, setMovieData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const id = searchParams.get("id");
   const navigate = useNavigate();
 
@@ -23,55 +21,50 @@ const MovieDescription = () => {
   const addFavourites = useFavouritesStore((state) => state.addFavourites);
   const removeFavourites = useFavouritesStore((state) => state.removeFavourites);
 
+  const { data: movieData, isLoading, isError, error } = useQuery({
+    queryKey: ['movieData', id],
+    queryFn: async ({ signal }) => {
+      const response = await api.post("/explore/movie-result", {
+        "id": id
+      }, { signal });
+
+      return response.data?.data
+    },
+    staleTime: 3 * 60 * 1000,
+  });
+
   useEffect(() => {
-    const controller = new AbortController();
-
-    const getMovieDetails = async () => {
-      try {
-        setLoading(true);
-        setErrorMessage("");
-        const response = await api.post("/explore/movie-result", {
-          "id": id
-        }, { signal: controller.signal });
-
-        setMovieData(response.data?.data);
-        setLoading(false)
-      } catch (error) {
-        if (error.name === 'CanceledError' || error.name === 'AbortError') {
-          return;
-        }
-        if (error.response) {
-          const backendMessage = error.response?.data?.message
-          setErrorMessage(backendMessage)
-          toast.error(backendMessage);
-        } else if (error.request) {
-          const networkMsg = "Network error. Please check your connection.";
-          setErrorMessage(networkMsg);
-          toast.error(networkMsg);
-        } else {
-          const unexpectedMsg = "An unexpected error occurred.";
-          setErrorMessage(unexpectedMsg);
-          toast.error(unexpectedMsg);
-        }
-        setLoading(false);
+    if (isError && error) {
+      if (error.name === 'CanceledError' || error.name === 'AbortError') {
+        return;
+      }
+      if (error.response) {
+        const backendMessage = error.response?.data?.message
+        setErrorMessage(backendMessage)
+        toast.error(backendMessage);
+      } else if (error.request) {
+        const networkMsg = "Network error. Please check your connection.";
+        setErrorMessage(networkMsg);
+        toast.error(networkMsg);
+      } else {
+        const unexpectedMsg = "An unexpected error occurred.";
+        setErrorMessage(unexpectedMsg);
+        toast.error(unexpectedMsg);
       }
     }
-    getMovieDetails();
-
-    return () => controller.abort();
-  }, [id])
+  }, [isError, error])
 
   const isFavourited = useMemo(() => {
     return favouritesList.some((movie) => (String(movie.id) === String(movieData?.id) && movie.type === movieData?.type))
   }, [favouritesList, movieData?.id, movieData?.type]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <MoviesDetailsSkeleton />
     )
   }
 
-  if (errorMessage.length !== 0) {
+  if (isError && error) {
     return (
       <div className="mt-30 flex flex-col items-center gap-y-10">
         <div className="flex items-center justify-center gap-x-2">
@@ -245,7 +238,7 @@ const MovieDescription = () => {
 
           {movieData?.cast?.map((casts, index) => (
             <div key={index} className="min-w-[160px] w-[160px] flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img src={casts?.picture} alt={casts?.real_name} className="w-full h-52 object-cover object-top" loading="lazy"/>
+              <img src={casts?.picture} alt={casts?.real_name} className="w-full h-52 object-cover object-top" loading="lazy" />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-sm font-bold truncate">{casts?.real_name} </h3>
                 <p className="text-slate-400 text-xs mt-1 truncate">{casts?.role}</p>

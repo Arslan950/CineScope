@@ -1,68 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import Loading from "../components/Loading.jsx"
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../components/Loading.jsx";
 import Card from "../components/Cards/Card.jsx";
-import api from "../lib/axiosInstance.js"
+import api from "../lib/axiosInstance.js";
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Explore = () => {
-
     const [searchParams, setSearchParams] = useSearchParams();
-    const searchedTerm = searchParams.get("search");
+    const searchedTerm = searchParams.get("search") || "";
     const [page, setPage] = useState(1);
-    const [maxPage, setMaxPage] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const [results, setResults] = useState([]);
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
-        window.scrollTo({ 
-            top: 0, 
-            left: 0, 
-            behavior: "smooth" 
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
         });
     };
 
+    const { data, isLoading, isError, error } = useQuery({
+        queryKey: ["searchResults", searchedTerm, page],
+        queryFn: async ({ signal }) => {
+            const response = await api.post("/explore/search-results", {
+                "searchedTerm": searchedTerm,
+                "page": page
+            }, { signal });
+
+            return response.data?.data;
+        },
+        staleTime: 3 * 60 * 1000
+    });
+
+    const results = data?.results || [];
+    const maxPage = data?.total_pages || 0;
+
     useEffect(() => {
-        const controller = new AbortController();
+        if (isError && error) {
+            if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
+            if (error.response) {
+                const backendMessage = error.response?.data?.message || "Something went wrong";
+                toast.error(backendMessage);
+            } else if (error.request) {
+                const networkMsg = "Network error. Please check your connection.";
+                toast.error(networkMsg);
+            } else {
+                const unexpectedMsg = "An unexpected error occurred.";
+                toast.error(unexpectedMsg);
+            }
+        }
+    }, [error, isError]);
 
-        const getSearchResults = async () => {
-            setErrorMessage("");
-            setLoading(true);
-            try {
-                const response = await api.post("/explore/search-results", {
-                    "searchedTerm": searchedTerm,
-                    "page": page
-                }, { signal: controller.signal });
-
-                setResults(response.data?.data?.results);
-                setMaxPage(response.data?.data?.total_pages);
-                setLoading(false);
-            } catch (error) {
-                if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
-                if (error.response) {
-                    const backendMessage = error.response?.data?.message || "Something went wrong";
-                    setErrorMessage(backendMessage);
-                    toast.error(backendMessage);
-                } else if (error.request) {
-                    const networkMsg = "Network error. Please check your connection.";
-                    setErrorMessage(networkMsg);
-                    toast.error(networkMsg);
-                } else {
-                    const unexpectedMsg = "An unexpected error occurred.";
-                    setErrorMessage(unexpectedMsg);
-                    toast.error(unexpectedMsg);
-                }
-                setLoading(false);
-            } 
-        };
-
-        getSearchResults();
-
-        return () => controller.abort();
-    }, [page, searchedTerm]);
+    useEffect(() => {
+        setPage(1);
+    }, [searchedTerm]);
 
     return (
         <section className='min-h-screen w-full flex flex-col items-center px-4 pt-20 pb-10 sm:px-6 md:px-8'>
@@ -75,13 +67,13 @@ const Explore = () => {
                 </h1>
             </div>
 
-            {loading && (
+            {isLoading && (
                 <div className='flex justify-center py-16 w-full'>
                     <Loading className={"h-fit"} />
                 </div>
             )}
 
-            {!loading && errorMessage && results.length === 0 && (
+            {!isLoading && isError && results.length === 0 && (
                 <div className='w-full max-w-md text-center py-16'>
                     <p className='text-gray-400 text-sm sm:text-base'>
                         No results found{searchedTerm ? ` for "${searchedTerm}"` : ""}.
@@ -89,7 +81,7 @@ const Explore = () => {
                 </div>
             )}
 
-            {!loading && !errorMessage && results.length > 0 && (
+            {!isLoading && !isError && results.length > 0 && (
                 <div className='w-full max-w-8xl'>
                     <section className='grid grid-cols-2 gap-3 xs:gap-4 sm:gap-5 grid-col-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5'>
                         {results.map((movie) => (
@@ -107,7 +99,7 @@ const Explore = () => {
                 </div>
             )}
 
-            {!loading && !errorMessage && results.length > 0 && (
+            {!isLoading && !isError && maxPage > 0 && (
                 <div className="join mt-10 flex-wrap justify-center">
                     {Array.from({ length: maxPage }, (_, i) => i + 1).map((num) => (
                         <input
