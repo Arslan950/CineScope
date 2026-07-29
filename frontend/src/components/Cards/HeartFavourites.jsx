@@ -1,30 +1,27 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useFavouritesStore } from '../../store/FavouritesStore';
 
 const HeartFavourites = ({ id, title, poster, rating, type, onClick, children, className = "", SVGClassName = "" }) => {
-    const { favouritesList, addFavourites, removeFavourites } = useFavouritesStore();
-
-    const isFavourited = useMemo(() => {
-        return favouritesList.some((movie) => (String(movie.id) === String(id) && movie.type === type));
-    }, [favouritesList, id , type]);
+    
+    const addFavourites = useFavouritesStore(state => state.addFavourites);
+    const removeFavourites = useFavouritesStore(state => state.removeFavourites);
+    
+    const isFavourited = useFavouritesStore(
+        (state) => state.favouritesList.some((movie) => String(movie.id) === String(id) && movie.type === type)
+    );
 
     const handleClick = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
-
+        
         if (!isFavourited) {
-            addFavourites({
-                id : id ,
-                title: title,
-                poster: poster,
-                rating: rating,
-                type: type
-            });
+            addFavourites({ id, title, poster, rating, type });
         } else {
             removeFavourites(id, type);
         }
+        
         onClick?.(e);
-    }, [isFavourited, addFavourites, removeFavourites, title, poster, rating, onClick, favouritesList , id , type]);
+    }, [isFavourited, addFavourites, removeFavourites, id, title, poster, rating, type, onClick]);
 
     return (
         <button type='button' onClick={handleClick} className={className}>
@@ -35,7 +32,6 @@ const HeartFavourites = ({ id, title, poster, rating, type, onClick, children, c
                 stroke="currentColor"
                 className={`size-6 duration-150 ${SVGClassName}`}
                 fill={isFavourited ? "#cf1313" : "transparent"}
-
             >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
             </svg>
@@ -44,4 +40,4 @@ const HeartFavourites = ({ id, title, poster, rating, type, onClick, children, c
     );
 };
 
-export default HeartFavourites;
+export default React.memo(HeartFavourites);

@@ -28,6 +28,8 @@ export const useAuthStore = create((set, get) => ({
 
             const userData = response?.data?.data;
             set({ user: userData, isLoggedIn: true, isLoading: false })
+
+            return true ;
         } catch (error) {
             if (error.response) {
                 const backendMessage = error.response?.data?.message || "Invalid credentials. Please try again.";
@@ -39,6 +41,7 @@ export const useAuthStore = create((set, get) => ({
                 const unexpectedMsg = "An unexpected error occurred.";
                 toast.error(unexpectedMsg);
             }
+            return false ;
         }
     },
 

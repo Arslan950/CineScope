@@ -13,8 +13,7 @@ const NavBar = () => {
     const [dropdownFlag, setDropdownFlag] = useState(false)
     const navigate = useNavigate();
     const theme = useThemeStore((state) => state.theme);
-    const { loggedOut } = useAuthStore();
-
+    const loggedOut = useAuthStore((state) => state.loggedOut);
     const user = useAuthStore((state) => state.user);
     const avatar = user?.avatar || "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
 

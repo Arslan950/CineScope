@@ -22,4 +22,4 @@ const SecondryNavBar = () => {
     )
 }
 
-export default SecondryNavBar
+export default React.memo(SecondryNavBar);

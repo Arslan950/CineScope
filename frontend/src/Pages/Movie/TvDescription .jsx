@@ -18,7 +18,10 @@ const TvDescription = () => {
   const id = searchParams.get("id");
   const navigate = useNavigate();
 
-  const { favouritesList, addFavourites, removeFavourites } = useFavouritesStore();
+  const favouritesList = useFavouritesStore((state) => state.favouritesList);
+  const addFavourites = useFavouritesStore((state) => state.addFavourites);
+  const removeFavourites = useFavouritesStore((state) => state.removeFavourites);
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -191,6 +194,7 @@ const TvDescription = () => {
                       src={tvData.production_company.logo}
                       alt={tvData.production_company.name}
                       className="h-8 object-contain"
+                      loading="lazy"
                     />
                   </div>
                   <span className="text-white text-sm font-medium pr-4">{tvData.production_company.name}</span>
@@ -204,6 +208,7 @@ const TvDescription = () => {
               src={tvData?.poster}
               alt={tvData?.title}
               className="w-64 sm:w-80 md:w-full rounded-xl shadow-2xl shadow-black/40 object-cover"
+              loading="lazy"
             />
           </div>
         </div>
@@ -218,6 +223,7 @@ const TvDescription = () => {
                 src={creator?.picture}
                 alt={creator?.real_name}
                 className="w-full h-52 object-cover object-top"
+                loading="lazy"
               />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-sm font-bold truncate">{creator?.real_name}</h3>
@@ -237,6 +243,7 @@ const TvDescription = () => {
                 src={season?.poster_path}
                 alt={season?.name}
                 className="w-full h-72 sm:h-80 object-cover object-center"
+                loading="lazy"
               />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-base font-bold truncate">{season?.name}</h3>
@@ -256,6 +263,7 @@ const TvDescription = () => {
                 src={castMember?.picture}
                 alt={castMember?.real_name}
                 className="w-full h-52 object-cover object-top"
+                loading="lazy"
               />
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-sm font-bold truncate">{castMember?.real_name} </h3>

@@ -14,15 +14,18 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
-    const { login, googleAuth } = useAuthStore();
+    const login = useAuthStore((state) => state.login);
+    const googleAuth = useAuthStore((state) => state.googleAuth);
     const isFormValid = email.trim() !== "" && password.trim() !== "";
 
     const handleLogIn = async (e) => {
         e.preventDefault();
         if (!isFormValid) return;
-        login(email, password).then(() => {
-            navigate('/home');
-        })
+        const success = await login(email, password);
+
+        if(success){
+            navigate("/home");
+        }
     }
 
     const handleGoogleSignIn = useGoogleLogin({
@@ -43,7 +46,7 @@ const Login = () => {
 
     return (
         <section className='w-full flex-1 flex items-stretch min-h-0'>
-            
+
             <div className="hidden lg:block lg:w-1/2 relative overflow-hidden min-h-0">
                 <div className="absolute inset-0">
                     <AuthMarquee />
@@ -52,12 +55,12 @@ const Login = () => {
 
             <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto">
                 <div className="w-full max-w-md m-auto flex flex-col items-center gap-y-5">
-                    
+
                     <div className="w-full sm:flex sm:items-center sm:justify-center gap-x-2 sm:block hidden">
                         <img src={logo} width={40} alt="CineScope logo" />
                         <h1 className="sm:text-3xl text-2xl font-semibold">CineScope</h1>
                     </div>
-                    
+
                     <div className="w-full flex flex-col justify-center items-center gap-y-2">
                         <h1 className="sm:text-4xl text-3xl font-semibold">Welcome back</h1>
                         <p className="text-lg font-semibold dark:text-white/70 text-black/70">Start exploring cinema</p>

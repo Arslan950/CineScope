@@ -17,4 +17,4 @@ const HomeSkeleton = () => {
   )
 }
 
-export default HomeSkeleton
+export default React.memo(HomeSkeleton);

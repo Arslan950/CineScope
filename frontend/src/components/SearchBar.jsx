@@ -1,3 +1,4 @@
+import React from 'react';
 import { SearchIcon } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -59,5 +60,5 @@ const SearchBar = (
     )
 }
 
-export default SearchBar
+export default React.memo(SearchBar);
 

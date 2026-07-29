@@ -83,4 +83,4 @@ const MoviesDetailsSkeleton = () => {
   )
 }
 
-export default MoviesDetailsSkeleton
+export default React.memo(MoviesDetailsSkeleton);

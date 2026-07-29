@@ -2,7 +2,7 @@ import { useFavouritesStore } from '../store/FavouritesStore';
 import Card from '../components/Cards/Card'
 import { HeartIcon } from 'lucide-react'
 const Favourites = () => {
-  const { favouritesList } = useFavouritesStore();
+  const favouritesList = useFavouritesStore((state) => state.favouritesList);
 
   if (favouritesList.length === 0) {
     return (

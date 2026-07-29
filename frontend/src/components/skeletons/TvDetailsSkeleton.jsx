@@ -113,4 +113,4 @@ const TvDetailsSkeleton = () => {
   )
 }
 
-export default TvDetailsSkeleton
+export default React.memo(TvDetailsSkeleton);

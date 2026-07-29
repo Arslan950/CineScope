@@ -19,7 +19,8 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const { login, googleAuth } = useAuthStore();
+  const login = useAuthStore((state) => state.login);
+  const googleAuth = useAuthStore((state) => state.googleAuth);
 
   useEffect(() => {
     const savedEmail = sessionStorage.getItem("pendingVerificationEmail");
@@ -74,9 +75,11 @@ const SignUp = () => {
         "enteredOTP": OTP
       });
       sessionStorage.removeItem("pendingVerificationEmail");
-      login(email, password).then(() => {
+
+      const isSuccess = await login(email, password);
+      if (isSuccess) {
         navigate('/onBoarding');
-      })
+      }
     } catch (error) {
       if (error.response) {
         const backendMessage = error.response?.data?.message || "Something went wrong";
@@ -208,8 +211,8 @@ const SignUp = () => {
                     type="submit"
                     disabled={!isFormValid}
                     className={`w-full py-2 mt-2 rounded-lg font-semibold text-white transition ${isFormValid
-                        ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
-                        : "bg-[#5fa2fa]/40 cursor-not-allowed"
+                      ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+                      : "bg-[#5fa2fa]/40 cursor-not-allowed"
                       }`}
                   >
                     Sign up
@@ -282,8 +285,8 @@ const SignUp = () => {
                     type="submit"
                     disabled={!isOTPValid}
                     className={`w-full py-2 mt-2 rounded-lg font-semibold text-white transition ${isOTPValid
-                        ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
-                        : "bg-[#5fa2fa]/40 cursor-not-allowed"
+                      ? "bg-[#5fa2fa] hover:bg-[#4b8ee6]"
+                      : "bg-[#5fa2fa]/40 cursor-not-allowed"
                       }`}
                   >
                     Submit

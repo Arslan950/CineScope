@@ -3,8 +3,10 @@ import { useThemeStore } from '../store/ThemeStore'
 
 const ThemeBtn = () => {
 
-    const { theme ,darkTheme, lightTheme } = useThemeStore();
-
+    const theme = useThemeStore((state) => state.theme);
+    const darkTheme = useThemeStore((state) => state.darkTheme);
+    const lightTheme = useThemeStore((state) => state.lightTheme);
+    
     const onChangeBtn = (e) => {
         const darkModeStatus = e.currentTarget.checked
         if (darkModeStatus) {
@@ -18,7 +20,7 @@ const ThemeBtn = () => {
     return (
         <label className="swap swap-rotate mr-4">
             {/* this hidden checkbox controls the state */}
-            <input type="checkbox"  onChange={onChangeBtn} checked = {theme === 'dark'}/>
+            <input type="checkbox" onChange={onChangeBtn} checked={theme === 'dark'} />
 
             {/* sun icon */}
             <svg

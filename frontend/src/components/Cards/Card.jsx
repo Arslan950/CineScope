@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 import { useState } from 'react';
 import { ProgressiveBlur } from '../ui/progressive-blur';
-import { motion } from 'framer-motion'; // Corrected the import for motion
+import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom';
 import HeartFavourites from './HeartFavourites';
 
@@ -40,6 +40,7 @@ export default React.memo(function Card({ id, title, poster, rating, type , visi
         src={poster}
         alt='Poster'
         className='absolute inset-0 h-full w-full object-cover'
+        loading='lazy'
       />
       <ProgressiveBlur
         className='pointer-events-none absolute bottom-0 left-0 h-[75%] w-full rounded-3xl'

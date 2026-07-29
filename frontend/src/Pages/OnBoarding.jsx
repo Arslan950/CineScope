@@ -9,7 +9,7 @@ import fallBack from "../assets/fallBack.png"
 
 const OnBoarding = () => {
 
-  const { isLoggedIn , editUserInfo } = useAuthStore();
+  const editUserInfo = useAuthStore((state) => state.editUserInfo);
 
   const navigate = useNavigate();
 

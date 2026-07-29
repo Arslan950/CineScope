@@ -1,3 +1,4 @@
+import React from 'react';
 import { GithubIcon, LinkedinIcon, MailIcon } from 'lucide-react'
 
 const Footbar = () => {
@@ -28,4 +29,4 @@ const Footbar = () => {
   )
 }
 
-export default Footbar
+export default React.memo(Footbar);

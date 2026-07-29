@@ -7,4 +7,4 @@ const AuthMarquee = () => {
     )
 }
 
-export default AuthMarquee
+export default React.memo(AuthMarquee);

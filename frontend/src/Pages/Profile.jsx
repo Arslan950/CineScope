@@ -8,7 +8,7 @@ import fallBack from "../assets/fallBack.png"
 const fallbackAvatar = "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
 
 const Profile = () => {
-    const { editUserInfo } = useAuthStore();
+    const editUserInfo = useAuthStore((state) => state.editUserInfo);
     const user = useAuthStore((state) => state.user);
     const isEmailVerified = Boolean(user?.isEmailVerified);
     const initialGenres = Array.isArray(user?.genres) ? user.genres : [];
@@ -61,7 +61,7 @@ const Profile = () => {
 
     const handleSave = (e) => {
         e.preventDefault();
-        editUserInfo(avatarPreview,editedGenres,editedName);
+        editUserInfo(avatarPreview, editedGenres, editedName);
         setIsEditing(false);
     };
 

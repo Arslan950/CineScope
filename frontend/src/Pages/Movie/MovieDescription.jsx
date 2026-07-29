@@ -19,7 +19,9 @@ const MovieDescription = () => {
   const id = searchParams.get("id");
   const navigate = useNavigate();
 
-  const { favouritesList, addFavourites, removeFavourites } = useFavouritesStore();
+  const favouritesList = useFavouritesStore((state) => state.favouritesList);
+  const addFavourites = useFavouritesStore((state) => state.addFavourites);
+  const removeFavourites = useFavouritesStore((state) => state.removeFavourites);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -165,7 +167,7 @@ const MovieDescription = () => {
                 <div className="flex flex-col">
                   <span className="text-slate-400 text-sm mb-1">Rating</span>
                   <div className="flex items-center gap-2 text-white font-medium">
-                    <span className="text-yellow-500">★</span> {movieData?.rating ||  "Not specified"}
+                    <span className="text-yellow-500">★</span> {movieData?.rating || "Not specified"}
                   </div>
                 </div>
                 <div className="flex flex-col">
@@ -204,6 +206,7 @@ const MovieDescription = () => {
                         src={movieData?.production_company?.logo}
                         alt={movieData?.production_company?.name}
                         className="h-8 object-contain"
+                        loading="lazy"
                       />
                     </div>
                     <span className="text-white text-sm font-medium pr-4">{movieData?.production_company?.name}</span>
@@ -218,6 +221,7 @@ const MovieDescription = () => {
               src={movieData?.poster}
               alt={movieData?.title}
               className="w-64 sm:w-80 md:w-full rounded-xl shadow-2xl shadow-black/40 object-cover"
+              loading="lazy"
             />
           </div>
         </div>
@@ -231,6 +235,7 @@ const MovieDescription = () => {
               src={movieData?.director?.picture}
               alt={movieData?.director?.real_name}
               className="w-full h-52 object-cover object-top"
+              loading="lazy"
             />
             <div className="p-4 flex-1 flex flex-col justify-center">
               <h3 className="text-white text-sm font-bold truncate">{movieData?.director?.real_name}</h3>
@@ -240,7 +245,7 @@ const MovieDescription = () => {
 
           {movieData?.cast?.map((casts, index) => (
             <div key={index} className="min-w-[160px] w-[160px] flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img src={casts?.picture} alt={casts?.real_name} className="w-full h-52 object-cover object-top" />
+              <img src={casts?.picture} alt={casts?.real_name} className="w-full h-52 object-cover object-top" loading="lazy"/>
               <div className="p-4 flex-1 flex flex-col justify-center">
                 <h3 className="text-white text-sm font-bold truncate">{casts?.real_name} </h3>
                 <p className="text-slate-400 text-xs mt-1 truncate">{casts?.role}</p>
