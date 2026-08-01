@@ -1,7 +1,7 @@
 import Mailgen from "mailgen";
 import mailgen from "mailgen";
-import nodemailer from "nodemailer";
-import { ApiError } from "./api-error.js"
+import { BrevoClient } from "@getbrevo/brevo";
+import { ApiError } from "./api-error.js";
 
 const sendEmail = async (options) => {
     const mailGenerator = new Mailgen({
@@ -15,27 +15,26 @@ const sendEmail = async (options) => {
     const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
     const emailHTML = mailGenerator.generate(options.mailgenContent);
 
-    const transport = nodemailer.createTransport({
-        host: "smtp-relay.brevo.com",
-        port: 587,
-        auth: {
-            user: process.env.BREVO_SMTP_USER,
-            pass: process.env.BREVO_SMTP_PASS
-        }
-    });
-
-    const mail = {
-        from: process.env.MAIL_FROM,
-        to: options.email,
-        subject: options.subject,
-        text: emailTextual,
-        html: emailHTML,
-    }
-
     try {
-        await transport.sendMail(mail)
+        const brevo = new BrevoClient({
+            apiKey: process.env.BREVO_API_KEY,
+        })
+
+        const result = await brevo.transactionalEmails.sendTransacEmail({
+            subject: options.subject,
+            htmlContent: emailHTML,
+            sender: {
+                name: "Team CineScope",
+                email: process.env.MAIL_FROM,
+            },
+            to: [
+                {
+                    email: options.email
+                }
+            ]
+        });
     } catch (error) {
-        throw new ApiError(400, "Something went wrong")
+        throw new ApiError(400,"Something went wrong")
     }
 }
 
