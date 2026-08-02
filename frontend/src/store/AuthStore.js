@@ -96,9 +96,11 @@ export const useAuthStore = create((set, get) => ({
 
             const userData = response?.data?.data
             set({ user: userData, isLoggedIn: true, isLoading: false })
+            const newUser =  response?.data?.data?.newUser ;
 
             return {
                 isSuccess: true,
+                newUser : newUser
             };
 
         } catch (error) {

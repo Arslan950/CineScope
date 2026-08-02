@@ -23,7 +23,7 @@ const Login = () => {
         if (!isFormValid) return;
         const success = await login(email, password);
 
-        if(success){
+        if (success) {
             navigate("/home");
         }
     }
@@ -31,10 +31,14 @@ const Login = () => {
     const handleGoogleSignIn = useGoogleLogin({
         flow: 'auth-code',
         onSuccess: async (codeResponse) => {
-            const { isSuccess } = await googleAuth(codeResponse.code);
+            const { isSuccess, newUser } = await googleAuth(codeResponse.code);
 
             if (isSuccess) {
-                navigate("/home");
+                if (newUser) {
+                    navigate('/onBoarding');
+                } else {
+                    navigate('/home');
+                }
             } else if (!isSuccess) {
                 toast.error("Something went wrong")
             }

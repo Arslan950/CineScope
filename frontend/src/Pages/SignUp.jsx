@@ -102,10 +102,14 @@ const SignUp = () => {
   const handleGoogleSignUp = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
-      const { isSuccess } = await googleAuth(codeResponse.code);
+      const { isSuccess, newUser } = await googleAuth(codeResponse.code);
 
       if (isSuccess) {
-        navigate("/onBoarding");
+        if (newUser) {
+          navigate('/onBoarding');
+        } else {
+          navigate('/home');
+        }
       } else if (!isSuccess) {
         toast.error("Something went wrong")
       }

@@ -69,7 +69,8 @@ const googleAuth = asyncHandler(async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture, sub: googleId } = payload;
 
-    let user = await User.findOne({ email })
+    let user = await User.findOne({ email });
+    let newUser = false ;
 
     if (!user) {
         user = await User.create({
@@ -79,6 +80,7 @@ const googleAuth = asyncHandler(async (req, res) => {
             email: email,
             isEmailVerified: true,
         })
+        newUser = true ;
     } else if (!user.googleId) {
         user.googleId = googleId;
         await user.save({ validateBeforeSave: false });
@@ -88,14 +90,19 @@ const googleAuth = asyncHandler(async (req, res) => {
 
     const createdUser = await User.findById(user._id).select(
         "-password -refreshToken",
-    )
+    ).lean()
+
+    const finalResult = {
+        ...createdUser,
+        newUser : newUser
+    }
 
     return res
         .status(200)
         .cookie("accessToken", accessToken, optionsAccessToken)
         .cookie("refreshToken", refreshToken, optionsRefreshToken)
         .json(
-            new ApiResponse(200, createdUser, "Account created via Google")
+            new ApiResponse(200, finalResult , "Account created via Google")
         )
 });
 
