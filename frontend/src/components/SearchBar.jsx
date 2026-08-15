@@ -21,7 +21,7 @@ const SearchBar = (
             return 
         }
 
-        const params = new URLSearchParams({search : movieName.trim()})
+        const params = new URLSearchParams({search : movieName.trim() , page : 1})
 
         navigate(`/explore/?${params.toString()}`);
     }, [movieName, navigate]);

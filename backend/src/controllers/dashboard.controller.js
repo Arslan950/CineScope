@@ -44,7 +44,7 @@ const getTrendingData = asyncHandler(async (req, res) => {
         return {
             id: item.id,
             title: item.title || item.name || item.original_name,
-            poster: item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}` : null,
+            poster: item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}` : `https://placehold.co/300x450/252525/FFFFFF?text=${item.title}`,
             rating: `${item.vote_average.toFixed(1)}/10`,
             type: type
         }

@@ -1,30 +1,92 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Cell, LabelList, ResponsiveContainer } from "recharts";
+import { useThemeStore } from '../../store/ThemeStore';
 import millify from 'millify';
- 
-const BudgetRevenueChart = ({ budget, revenue, height = 140 }) => {
-    const data = [
-        { name: 'Budget', value: budget, fill: '#FB7185' },
-        { name: 'Revenue', value: revenue, fill: '#639922' },
-    ];
+
+const CustomLabel = (props) => {
+    const { x, y, width, height, value, fill } = props;
     return (
-        <ResponsiveContainer width="100%" height={height}>
-            <BarChart
-                data={data}
-                layout="vertical"
-                margin={{ top: 8, right: 40, left: 8, bottom: 8 }}
-            >
-                <XAxis type="number" hide domain={[0, 'dataMax']} />
-                <YAxis type="category" dataKey="name" width={70} tickLine={false} axisLine={false} />
-                <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28}>
-                    {data.map((entry) => (
-                        <Cell key={entry.name} fill={entry.fill} />
-                    ))}
-                    <LabelList dataKey="value" position="right" formatter={(v) => millify(v)}/>
-                </Bar>
-            </BarChart>
-        </ResponsiveContainer>
-    )
+        <text
+            x={x + width + 12}
+            y={y + height / 2}
+            fill={fill}
+            dy={5}
+            fontSize={18}
+            textAnchor="start"
+        >
+            {`$${millify(value)}`}
+        </text>
+    );
+};
+
+const CustomYAxisTick = ({ x, y, payload }) => {
+    const theme = useThemeStore((state) => state.theme);
+    const textColor = theme === 'dark' ? '#ffffff' : '#28282B';
+    return (
+        <text
+            x={0}
+            y={y}
+            dy={5}
+            fill={textColor}
+            fontSize={14}
+            fontWeight={600}
+            textAnchor="start"
+        >
+            {payload.value}
+        </text>
+    );
+};
+
+
+const BudgetRevenueChart = ({ budget, revenue, height = 160 }) => {
+    let data = [];
+
+    if (budget !== "Not specified") {
+        data = [{ name: 'Budget', value: budget, fill: '#F2545B' },]
+    }
+
+    if (revenue !== "Not specified") {
+        data = [...data, { name: 'Revenue', value: revenue, fill: ' #06D6A0' }]
+    }
+
+    return (
+        <div className="w-full hover:scale-105 duration-300">
+            <ResponsiveContainer width="100%" height={height}>
+                <BarChart
+                    data={data}
+                    layout="vertical"
+                    margin={{ top: 50, right: 70, left: 0, bottom: 0 }}
+                    barCategoryGap="25%"
+                >
+                    <XAxis type="number" hide domain={[0, 'dataMax']} />
+
+                    <YAxis
+                        type="category"
+                        dataKey="name"
+                        width={75}
+                        tickLine={false}
+                        axisLine={false}
+                        tick={<CustomYAxisTick />}
+                    />
+
+                    <Bar
+                        dataKey="value"
+                        radius={[0, 6, 6, 0]}
+                        barSize={40}
+                        activeBar={false}
+                    >
+                        {data.map((entry) => (
+                            <Cell
+                                key={entry.name}
+                                fill={entry.fill}
+                            />
+                        ))}
+                        <LabelList content={<CustomLabel />} />
+                    </Bar>
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
 }
- 
+
 export default BudgetRevenueChart;

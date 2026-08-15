@@ -9,10 +9,13 @@ import { toast } from 'react-toastify';
 const Explore = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const searchedTerm = searchParams.get("search") || "";
-    const [page, setPage] = useState(1);
+    const page = Number(searchParams.get("page")) || 1;
 
     const handlePageChange = (newPage) => {
-        setPage(newPage);
+        setSearchParams(prevParams => {
+            prevParams.set('page', Number(newPage));
+            return prevParams;
+        })
         window.scrollTo({
             top: 0,
             left: 0,
@@ -52,9 +55,6 @@ const Explore = () => {
         }
     }, [error, isError]);
 
-    useEffect(() => {
-        setPage(1);
-    }, [searchedTerm]);
 
     return (
         <section className='min-h-screen w-full flex flex-col items-center px-4 pt-20 pb-10 sm:px-6 md:px-8'>
@@ -104,7 +104,7 @@ const Explore = () => {
                     {Array.from({ length: maxPage }, (_, i) => i + 1).map((num) => (
                         <input
                             key={num}
-                            className="join-item btn btn-square btn-sm sm:btn-md"
+                            className="join-item btn btn-square btn-sm sm:btn-md checked:bg-[#5fa2fa] checked:border-blue-500 checked:text-white hover:checked:bg-blue-600"
                             type="radio"
                             name="options"
                             aria-label={String(num)}

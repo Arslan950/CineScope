@@ -8,7 +8,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import api from "../../lib/axiosInstance.js"
 import { toast } from 'react-toastify';
-import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon, SquareArrowOutUpRight } from "lucide-react"
+import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon, SquareArrowOutUpRight, icons } from "lucide-react"
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { useFavouritesStore } from "../../store/FavouritesStore.js"
@@ -100,18 +100,31 @@ const MovieDescription = () => {
 
   const stats = [
     {
+      icon: <MonitorPlay className="stroke-blue-400" />,
       stat_title: "Status",
       stat_data: movieData?.status
     },
     {
+      icon: <Calendar className="stroke-blue-400" />,
       stat_title: "Release Date",
       stat_data: movieData?.release_date
     },
     {
+      icon: <Clock className="stroke-blue-400" />,
       stat_title: "Runtime",
       stat_data: formatRuntime(movieData?.runtime)
     },
     {
+      icon: (
+        <a
+          href={`https://www.imdb.com/title/${movieData?.imdb_id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center" // Optional: keeps the icon aligned
+        >
+          <SquareArrowOutUpRight className="stroke-amber-400 hover:cursor-pointer hover:stroke-amber-300" />
+        </a>
+      ),
       stat_title: "IMDB ID",
       stat_data: movieData?.imdb_id
     }
@@ -172,14 +185,70 @@ const MovieDescription = () => {
           </div>
         </motion.div>
       </section>
-      {/* stats */}
-      <section className="xl:max-w-[75%] xl:mx-auto p-4 mb-16 mt-10 flex ">
+      {/* poster and stats */}
+      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 grid xl:grid-cols-[auto_1fr] grid-cols-1 gap-8">
+        <div className="sm:w-84 w-70 shrink-0 mx-auto xl:mx-0">
+          <img src={movieData?.poster} alt={movieData?.title} className="rounded-xl w-full h-auto shadow-2xl shadow-black" />
+        </div>
 
+        <div className="w-full h-full xl:p-6 rounded-xl mx-auto xl:mx-0">
+          <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 md:gap-6">
+            {
+              stats.map((stat) => (
+                stat.stat_data && (<div
+                  key={stat.stat_title}
+                  className="bg-zinc-600/40 p-3 rounded-xl xl:w-40 w-full h-25  flex flex-col gap-y-2.5"
+                >
+                  <span className="flex items-center gap-x-2">
+                    {stat.icon}
+                    <h2 className="dark:text-white/70 text-black/75 font-semibold line-clamp-1">
+                      {stat.stat_title}
+                    </h2>
+                  </span>
+                  <p className="font-semibold dark:text-white/88 text-black/88 text-center">
+                    {stat.stat_data}
+                  </p>
+                </div>)
+              ))
+            }
+          </div>
+          <div className="grid lg:grid-cols-2 grid-col-1 mt-6">
+            {movieData.rating != 0 && (<span className="p-2">
+              <h2 className="font-bold dark:text-zinc-50/85">RATING</h2>
+              <span className="flex items-center justify-center"><RatingChart rating={movieData?.rating} /></span>
+            </span>)}
+            {(movieData?.budget != "Not specified" || movieData?.revenue != "Not specified") && (<span className="p-2">
+              <h2 className="font-bold dark:text-zinc-50/85">BUDGET/REVENUE</h2>
+              <span className="flex items-center justify-center"><BudgetRevenueChart budget={movieData?.budget} revenue={movieData?.revenue} /></span>
+            </span>)}
+          </div>
+          {/* genres */}
+          {movieData?.genres.length != 0 && (<div className="flex flex-col gap-y-3 mt-7">
+            <h2 className="font-bold dark:text-zinc-50/85">GENRES</h2>
+            <div className="flex items-center flex-wrap gap-3">
+              {
+                movieData?.genres.map((genre) => (
+                  <p key={genre} className="bg-zinc-600/40 py-2 px-3 rounded-full border dark:border-white/40 border-black/50">{genre}</p>
+                ))
+              }
+            </div>
+          </div>)}
+        </div>
+      </section>
+      {/* production */}
+      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 border-t border-slate-800">
+        <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Production</h2>
+        {movieData?.production_company && (<div className="flex flex-col gap-y-3 mt-7">
+          <div className="flex items-center gap-x-8">
+            <img src={movieData?.production_company?.logo} alt={movieData?.production_company?.name} className="bg-white p-4 rounded-xl w-40" />
+            <p className="text-2xl font-semibold">{movieData?.production_company?.name}</p>
+          </div>
+        </div>)}
       </section>
       {/* Cast and crew */}
-      {movieData?.cast.length != 0 && (<section className="sm:max-w-[80%] mx-auto p-4 mb-16 border-t border-slate-800">
+      {movieData?.cast.length != 0 && (<section className="sm:max-w-[75%] mx-auto p-4 mb-16 border-t border-slate-800">
         <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Cast and Crew</h2>
-        <div className="flex items-center gap-x-5 overflow-x-scroll">
+        <div className="flex items-center gap-x-6 overflow-x-scroll">
           <CastCard
             name={movieData?.director?.real_name}
             role={movieData?.director?.role}
@@ -197,7 +266,7 @@ const MovieDescription = () => {
       </section>)}
       {/* trailer */}
       {movieData?.trailer && (
-        <div className="sm:max-w-[80%] max-w-7xl mx-auto p-4 mb-16 border-t border-slate-800">
+        <div className="sm:max-w-[75%] max-w-7xl mx-auto p-4 mb-16 border-t border-slate-800">
           <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Trailer</h2>
           <div className="w-full max-w-7xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-black">
             <iframe
