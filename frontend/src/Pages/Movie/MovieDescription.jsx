@@ -1,11 +1,14 @@
 import MoviesDetailsSkeleton from "../../components/skeletons/MoviesDetailsSkeleton.jsx"
 import { AnimatedSubscribeButton } from '../../components/ui/AnimatedButton'
 import HeartFavourites from "../../components/Cards/HeartFavourites.jsx";
+import CastCard from "../../components/Cards/CastCard.jsx";
+import RatingChart from "../../components/charts/RatingChart.jsx";
+import BudgetRevenueChart from "../../components/charts/BudgetRevenueChart.jsx";
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import api from "../../lib/axiosInstance.js"
 import { toast } from 'react-toastify';
-import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon } from "lucide-react"
+import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon, SquareArrowOutUpRight } from "lucide-react"
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { useFavouritesStore } from "../../store/FavouritesStore.js"
@@ -83,15 +86,45 @@ const MovieDescription = () => {
     )
   }
 
-  const backdrop_url = movieData.backdrop;
+  function formatRuntime(totalMinutes) {
+    if (!totalMinutes) return "N/A";
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const hourString = hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : '';
+    const minuteString = minutes > 0 ? `${minutes} min` : '';
+
+    return `${hourString} ${minuteString}`.trim();
+  }
+
+  const stats = [
+    {
+      stat_title: "Status",
+      stat_data: movieData?.status
+    },
+    {
+      stat_title: "Release Date",
+      stat_data: movieData?.release_date
+    },
+    {
+      stat_title: "Runtime",
+      stat_data: formatRuntime(movieData?.runtime)
+    },
+    {
+      stat_title: "IMDB ID",
+      stat_data: movieData?.imdb_id
+    }
+  ];
 
   return (
     <section className="mt-16 min-h-screen">
+      {/* hero section */}
       <section
         className="relative w-full h-[65vh] sm:h-[80vh] bg-cover bg-center"
         style={{
           backgroundImage:
-            `url('${backdrop_url}')`,
+            `url('${movieData?.backdrop}')`,
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-[#111826] via-[#111826]/80 sm:via-[#111826]/60 to-transparent" />
@@ -139,120 +172,34 @@ const MovieDescription = () => {
           </div>
         </motion.div>
       </section>
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16">
-        <div className="flex flex-col-reverse md:flex-row gap-12 items-start">
-          <div className="flex-1 w-full space-y-10">
-            <div>
-              <h2 className="text-2xl font-semibold text-white mb-6">Movie Details</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Status</span>
-                  <span className="text-white font-medium">{movieData?.status}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Release Date</span>
-                  <span className="text-white font-medium">{movieData?.release_date}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Runtime</span>
-                  <span className="text-white font-medium">{(movieData?.runtime !== "Not specified") ? `${movieData?.runtime} min` : movieData?.runtime}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Rating</span>
-                  <div className="flex items-center gap-2 text-white font-medium">
-                    <span className="text-yellow-500">★</span> {movieData?.rating || "Not specified"}
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Budget</span>
-                  <span className="text-white font-medium">{(movieData?.budget !== "Not specified") ? `$ ${movieData?.budget}` : movieData?.budget}</span>
-                </div>
-                {
-                  movieData?.imdb_id && (
-                    <div className="flex flex-col">
-                      <span className="text-slate-400 text-sm mb-1">IMDb ID</span>
-                      <span className="text-white font-medium">{movieData?.imdb_id}</span>
-                    </div>
-                  )
-                }
-              </div>
-            </div>
+      {/* stats */}
+      <section className="xl:max-w-[75%] xl:mx-auto p-4 mb-16 mt-10 flex ">
 
-            <div>
-              <span className="text-slate-400 text-sm block mb-3">Genres</span>
-              <div className="flex gap-3 flex-wrap">
-                {movieData?.genres?.map((genres, index) => (
-                  <span key={index} className="px-4 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-sm text-slate-200">
-                    {genres}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {
-              movieData?.production_company && (
-                <div>
-                  <span className="text-slate-400 text-sm block mb-3">Production</span>
-                  <div className="flex items-center gap-4 bg-[#1e293b] p-4 rounded-xl w-fit border border-slate-700">
-                    <div className="bg-white p-2 rounded-lg">
-                      <img
-                        src={movieData?.production_company?.logo}
-                        alt={movieData?.production_company?.name}
-                        className="h-8 object-contain"
-                        loading="lazy"
-                      />
-                    </div>
-                    <span className="text-white text-sm font-medium pr-4">{movieData?.production_company?.name}</span>
-                  </div>
-                </div>
-              )
-            }
-          </div>
-
-          <div className="w-full md:w-[300px] lg:w-[350px] flex justify-center md:justify-end shrink-0">
-            <img
-              src={movieData?.poster}
-              alt={movieData?.title}
-              className="w-64 sm:w-80 md:w-full rounded-xl shadow-2xl shadow-black/40 object-cover"
-              loading="lazy"
+      </section>
+      {/* Cast and crew */}
+      {movieData?.cast.length != 0 && (<section className="sm:max-w-[80%] mx-auto p-4 mb-16 border-t border-slate-800">
+        <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Cast and Crew</h2>
+        <div className="flex items-center gap-x-5 overflow-x-scroll">
+          <CastCard
+            name={movieData?.director?.real_name}
+            role={movieData?.director?.role}
+            picture={movieData?.director?.picture}
+          />
+          {movieData?.cast?.map((casts) => (
+            <CastCard
+              key={casts?.real_name}
+              picture={casts?.picture}
+              name={casts?.real_name}
+              role={casts?.role}
             />
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
-        <h2 className="text-2xl font-semibold text-white mb-8">Top Cast & Crew</h2>
-        <div className="flex  overflow-x-auto gap-6 pb-6  scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-          <div className="min-w-[160px] w-[160px] flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-            <img
-              src={movieData?.director?.picture}
-              alt={movieData?.director?.real_name}
-              className="w-full h-52 object-cover object-top"
-              loading="lazy"
-            />
-            <div className="p-4 flex-1 flex flex-col justify-center">
-              <h3 className="text-white text-sm font-bold truncate">{movieData?.director?.real_name}</h3>
-              <p className="text-blue-400 text-xs mt-1 truncate">{movieData?.director?.role}</p>
-            </div>
-          </div>
-
-          {movieData?.cast?.map((casts, index) => (
-            <div key={index} className="min-w-[160px] w-[160px] flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img src={casts?.picture} alt={casts?.real_name} className="w-full h-52 object-cover object-top" loading="lazy" />
-              <div className="p-4 flex-1 flex flex-col justify-center">
-                <h3 className="text-white text-sm font-bold truncate">{casts?.real_name} </h3>
-                <p className="text-slate-400 text-xs mt-1 truncate">{casts?.role}</p>
-              </div>
-            </div>
           ))}
         </div>
-      </div>
-
+      </section>)}
+      {/* trailer */}
       {movieData?.trailer && (
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 mb-16 border-t border-slate-800">
-          <h2 className="text-2xl font-semibold text-white mb-8">Trailer</h2>
-
-          <div className="w-full max-w-5xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-black">
+        <div className="sm:max-w-[80%] max-w-7xl mx-auto p-4 mb-16 border-t border-slate-800">
+          <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Trailer</h2>
+          <div className="w-full max-w-7xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-black">
             <iframe
               width="100%"
               height="100%"

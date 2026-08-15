@@ -5,12 +5,11 @@ import ThemeBtn from './ThemeBtn.jsx'
 
 const SecondryNavBar = () => {
     return (
-        <header>
-            <nav 
-            className='bg-slate-100 dark:bg-[#111826] text-slate-900 dark:text-white px-4 py-4 w-full shadow-md shadow-slate-200 dark:shadow-black/20 sm:duration-300 flex justify-between items-center'>
+        <header className="fixed z-10 top-0 left-0 w-full bg-white dark:bg-[#111826] border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+            <nav className='w-full px-4 xl:px-8 py-2.5 flex items-center justify-between min-h-[64px]'>
                 <div className='sm:ml-20'>
                     <Link to="/" className='flex items-center gap-x-3'>
-                        <img src={logo} alt="CineScope"/>
+                        <img src={logo} alt="CineScope" />
                         <h1 className='sm:text-xl font-semibold text-lg'>CineScope</h1>
                     </Link>
                 </div>

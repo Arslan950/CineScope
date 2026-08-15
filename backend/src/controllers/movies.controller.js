@@ -4,7 +4,6 @@ import { asyncHandler } from "../utils/async-handler.js";
 import axios from "axios";
 import axiosRetry from "axios-retry";
 import https from "https";
-import { millify } from "millify";
 
 const agent = new https.Agent({ keepAlive: true, timeout: 60000 });
 
@@ -75,7 +74,7 @@ const formatMovieData = (item) => {
     const firstProducer = item.production_companies[0];
 
     const production_company = firstProducer ? {
-        logo: firstProducer.logo_path ? `https://image.tmdb.org/t/p/w200${firstProducer.logo_path}` : `https://placehold.co/300x800/111826/FFFFFF?text=${firstProducer.name}`,
+        logo: firstProducer.logo_path ? `https://image.tmdb.org/t/p/w200${firstProducer.logo_path}` : `https://placehold.co/70x42/111826/FFFFFF?text=${firstProducer.name}`,
         name: firstProducer.name
     } : null;
 
@@ -103,7 +102,8 @@ const formatMovieData = (item) => {
         release_date: item.release_date,
         overview: item.overview,
         status: item.status,
-        budget: (item.budget > 0) ? millify(item.budget) : "Not specified",
+        budget: (item.budget > 0) ? item.budget : "Not specified",
+        revenue : (item.revenue > 0) ? item.revenue : "Not specified",
         trailer: trailerKey ? `https://www.youtube.com/embed/${trailerKey}` : null,
         genres: genres,
         director: director,
@@ -148,7 +148,7 @@ const formatTVData = (item) => {
 
     const firstProducer = item.production_companies?.[0];
     const production_company = firstProducer ? {
-        logo: firstProducer.logo_path ? `https://image.tmdb.org/t/p/w200${firstProducer.logo_path}` : `https://placehold.co/200x300/111826/FFFFFF?text=${encodeURIComponent(firstProducer.name)}`,
+        logo: firstProducer.logo_path ? `https://image.tmdb.org/t/p/w200${firstProducer.logo_path}` : `https://placehold.co/70x42/111826/FFFFFF?text=${encodeURIComponent(firstProducer.name)}`,
         name: firstProducer.name
     } : null;
 
@@ -179,6 +179,9 @@ const formatTVData = (item) => {
         rating: item.vote_average ? `${item.vote_average.toFixed(1)}/10` : item.vote_average,
         type : "tv",
         release_date: item.first_air_date,
+        in_production : item.in_production || "Not specified",
+        number_of_seasons : item.number_of_seasons || "Not specified",
+        number_of_episodes : item.number_of_episodes || "Not specified",
         overview: item.overview,
         status: item.status,
         trailer: trailerKey ? `https://www.youtube.com/embed/${trailerKey}` : null,

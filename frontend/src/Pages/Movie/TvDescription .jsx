@@ -1,10 +1,11 @@
 import TvDetailsSkeleton from "../../components/skeletons/TvDetailsSkeleton.jsx"
 import { AnimatedSubscribeButton } from '../../components/ui/AnimatedButton'
 import HeartFavourites from "../../components/Cards/HeartFavourites.jsx";
+import CastCard from "../../components/Cards/CastCard.jsx";
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import api from "../../lib/axiosInstance.js";
-import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon } from "lucide-react"
+import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon, SquareArrowOutUpRight } from "lucide-react"
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
@@ -83,15 +84,41 @@ const TvDescription = () => {
     )
   }
 
-  const backdrop_url = tvData.backdrop;
+  const stats = [
+    {
+      stat_title: "Status",
+      stat_data: tvData?.status
+    },
+    {
+      stat_title: "Release Date",
+      stat_data: tvData?.release_date
+    },
+    {
+      stat_title: "Episode Runtime",
+      stat_data: tvData?.runtime
+    },
+    {
+      stat_title: "In production",
+      stat_data: String(tvData?.in_production)
+    },
+    {
+      stat_title: "Number of seasons",
+      stat_data: tvData?.number_of_seasons
+    },
+    {
+      stat_title: "Number of episodes",
+      stat_data: tvData?.number_of_episodes
+    },
+  ];
 
   return (
     <section className="mt-16 min-h-screen">
+      {/* hero section */}
       <section
         className="relative w-full sm:h-[80vh] h-[65vh] bg-cover bg-center"
         style={{
           backgroundImage:
-            `url('${backdrop_url}')`,
+            `url('${tvData.backdrop}')`,
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-[#111826] via-[#111826]/80 sm:via-[#111826]/60 to-transparent" />
@@ -139,143 +166,68 @@ const TvDescription = () => {
           </div>
         </motion.div>
       </section>
+      {/* stats */}
+      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 flex ">
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16">
-        <div className="flex flex-col-reverse md:flex-row gap-12 items-start">
-          <div className="flex-1 w-full space-y-10">
-            <div>
-              <h2 className="text-2xl font-semibold text-white mb-6">TV Series Details</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Status</span>
-                  <span className="text-white font-medium">{tvData?.status}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Release Date</span>
-                  <span className="text-white font-medium">{tvData?.release_date}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Runtime</span>
-                  <span className="text-white font-medium">{(tvData?.runtime !== "Not specified") ? `${tvData?.runtime} min` : tvData?.runtime}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-400 text-sm mb-1">Rating</span>
-                  <div className="flex items-center gap-2 text-white font-medium">
-                    <span className="text-yellow-500">★</span> {tvData?.rating}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <span className="text-slate-400 text-sm block mb-3">Genres</span>
-              <div className="flex gap-3 flex-wrap">
-                {tvData?.genres?.map((genre, index) => (
-                  <span key={index} className="px-4 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-sm text-slate-200">
-                    {genre}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {tvData?.production_company && (
-              <div>
-                <span className="text-slate-400 text-sm block mb-3">Production</span>
-                <div className="flex items-center gap-4 bg-[#1e293b] p-4 rounded-xl w-fit border border-slate-700">
-                  <div className="bg-white p-2 rounded-lg">
-                    <img
-                      src={tvData.production_company.logo}
-                      alt={tvData.production_company.name}
-                      className="h-8 object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                  <span className="text-white text-sm font-medium pr-4">{tvData.production_company.name}</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="w-full md:w-[300px] lg:w-[350px] flex justify-center md:justify-end shrink-0">
-            <img
-              src={tvData?.poster}
-              alt={tvData?.title}
-              className="w-64 sm:w-80 md:w-full rounded-xl shadow-2xl shadow-black/40 object-cover"
-              loading="lazy"
+      </section>
+      {/* creator */}
+      {tvData?.creators.length != 0 && (<section className="sm:max-w-[80%] mx-auto p-4 mb-16 border-t border-slate-800">
+        <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Creators</h2>
+        <div className="flex items-center gap-x-5 overflow-x-auto">
+          {tvData?.creators?.map((casts) => (
+            <CastCard
+              key={casts?.real_name}
+              picture={casts?.picture}
+              name={casts?.real_name}
+              role={casts?.role}
             />
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
-        <h2 className="text-2xl font-semibold text-white mb-8">Creators</h2>
-        <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-          {tvData?.creators?.map((creator, index) => (
-            <div key={index} className="min-w-[160px] w-[160px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img
-                src={creator?.picture}
-                alt={creator?.real_name}
-                className="w-full h-52 object-cover object-top"
-                loading="lazy"
-              />
-              <div className="p-4 flex-1 flex flex-col justify-center">
-                <h3 className="text-white text-sm font-bold truncate">{creator?.real_name}</h3>
-                <p className="text-blue-400 text-xs mt-1 truncate">{creator?.role}</p>
-              </div>
-            </div>
           ))}
         </div>
-      </div>
+      </section>)}
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
-        <h2 className="text-2xl font-semibold text-white mb-8">Seasons</h2>
+      {/* seasons */}
+      {tvData.seasons.length != 0 && (<div className="sm:max-w-[80%] max-w-7xl mx-auto p-4 border-t border-slate-800 mb-16">
+        <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Seasons</h2>
         <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
           {tvData?.seasons?.map((season, index) => (
-            <div key={index} className="min-w-[200px] w-[200px] sm:min-w-[220px] sm:w-[220px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
+            <div key={index} className="min-w-[200px] w-[200px] sm:min-w-[220px] sm:w-[220px] snap-start flex flex-col dark:bg-zinc-700 bg-slate-50 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
               <img
                 src={season?.poster_path}
                 alt={season?.name}
                 className="w-full h-72 sm:h-80 object-cover object-center"
                 loading="lazy"
               />
-              <div className="p-4 flex-1 flex flex-col justify-center">
-                <h3 className="text-white text-base font-bold truncate">{season?.name}</h3>
-                <p className="text-slate-400 text-sm mt-1 truncate">{season?.episode_count} Episodes</p>
+              <div className="card-body p-3">
+                <h3 className="card-title">{season?.name}</h3>
+                <p className="text-sm mt-1 truncate">{season?.episode_count} Episodes</p>
               </div>
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 border-t border-slate-800">
-        <h2 className="text-2xl font-semibold text-white mb-8">Top Cast</h2>
-        <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-          {tvData?.cast?.map((castMember, index) => (
-            <div key={index} className="min-w-[160px] w-[160px] snap-start flex flex-col bg-slate-800/40 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg">
-              <img
-                src={castMember?.picture}
-                alt={castMember?.real_name}
-                className="w-full h-52 object-cover object-top"
-                loading="lazy"
-              />
-              <div className="p-4 flex-1 flex flex-col justify-center">
-                <h3 className="text-white text-sm font-bold truncate">{castMember?.real_name} </h3>
-                <p className="text-slate-400 text-xs mt-1 truncate">{castMember?.role}</p>
-              </div>
-            </div>
+      </div>)}
+      {/* Cast and crew */}
+      {tvData?.cast.length != 0 && (<section className="sm:max-w-[80%] mx-auto p-4 mb-16 border-t border-slate-800">
+        <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Cast and Crew</h2>
+        <div className="flex items-center gap-x-5 overflow-x-auto">
+          {tvData?.cast?.map((casts) => (
+            <CastCard
+              key={casts?.real_name}
+              picture={casts?.picture}
+              name={casts?.real_name}
+              role={casts?.role}
+            />
           ))}
         </div>
-      </div>
-
+      </section>)}
+      {/* trailer */}
       {tvData?.trailer && (
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 mb-16 border-t border-slate-800">
-          <h2 className="text-2xl font-semibold text-white mb-8">Trailer</h2>
-
-          <div className="w-full max-w-5xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-black">
+        <div className="sm:max-w-[80%] max-w-7xl mx-auto p-4 mb-16 border-t border-slate-800">
+          <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Trailer</h2>
+          <div className="w-full max-w-7xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-black">
             <iframe
               width="100%"
               height="100%"
-              src={tvData.trailer}
+              src={tvData?.trailer}
               title={`${tvData?.title} Trailer`}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
