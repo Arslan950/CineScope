@@ -7,7 +7,7 @@ const CustomLabel = (props) => {
     const { x, y, width, height, value, fill } = props;
     return (
         <text
-            x={x + width + 12}
+            x={x + width + 4}
             y={y + height / 2}
             fill={fill}
             dy={5}
@@ -55,7 +55,7 @@ const BudgetRevenueChart = ({ budget, revenue, height = 160 }) => {
                 <BarChart
                     data={data}
                     layout="vertical"
-                    margin={{ top: 50, right: 70, left: 0, bottom: 0 }}
+                    margin={{ top: 50, right: 75, left: 0, bottom: 0 }}
                     barCategoryGap="25%"
                 >
                     <XAxis type="number" hide domain={[0, 'dataMax']} />

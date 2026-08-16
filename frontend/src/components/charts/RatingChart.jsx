@@ -17,7 +17,7 @@ const getScoreColor = (score, maxScore) => {
     const percentage = score / maxScore;
     if (percentage >= 0.75) return '#10B981'; 
     if (percentage >= 0.50) return '#F5C518'; 
-    return '#EF4444'; // Red
+    return '#EF4444';
 };
 
 const RatingChart = ({ rating}) => {
