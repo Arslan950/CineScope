@@ -271,20 +271,20 @@ const SignUp = () => {
                   className="w-full h-fit flex flex-col items-center gap-y-4"
                   onSubmit={handleVerifyOTP}
                 >
-                  <div className="w-full flex flex-col gap-y-1">
-                    <label htmlFor="enteredOTP" className="text-sm font-medium dark:text-white/80 text-black/80">
-                      OTP
-                    </label>
-                    <input
-                      id="enteredOTP"
-                      type="text"
-                      value={OTP}
-                      onChange={(e) => setOTP(e.target.value)}
-                      placeholder="Enter OTP"
-                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  <label className="otp otp-lg otp-info">
+                    {Array.from({length : 4}).map((_,i) => (
+                      <span className="bg-[#111826]"></span>
+                    ))}
+                    <input 
+                      type="text" 
+                      autoComplete="one-time-code" 
+                      inputMode="numeric" 
+                      maxLength="4" 
+                      pattern="[0-9]{4}" 
+                      required
+                      onChange={(e) => setOTP(e.target.value)} 
                     />
-                  </div>
-
+                  </label>
                   <button
                     type="submit"
                     disabled={!isOTPValid}
