@@ -212,12 +212,12 @@ const MovieDescription = () => {
               ))
             }
           </div>
-          <div className="grid lg:grid-cols-2 grid-col-1 mt-6">
+          <div className="grid lg:grid-cols-[auto_1fr] grid-col-1 mt-6 sm:gap-x-12">
             {movieData.rating != 0 && (<span className="p-2">
               <h2 className="font-bold dark:text-zinc-50/85">RATING</h2>
               <span className="flex items-center justify-center"><RatingChart rating={movieData?.rating} /></span>
             </span>)}
-            {(movieData?.budget != "Not specified" || movieData?.revenue != "Not specified") && (<span className="p-2">
+            {(movieData?.budget != "Not specified" || movieData?.revenue != "Not specified") && (<span className="p-2 sm:w-120">
               <h2 className="font-bold dark:text-zinc-50/85">BUDGET/REVENUE</h2>
               <span className="flex items-center justify-center"><BudgetRevenueChart budget={movieData?.budget} revenue={movieData?.revenue} /></span>
             </span>)}

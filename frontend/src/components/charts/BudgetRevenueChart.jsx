@@ -50,12 +50,12 @@ const BudgetRevenueChart = ({ budget, revenue, height = 160 }) => {
     }
 
     return (
-        <div className="w-full hover:scale-105 duration-300">
+        <div className="w-full hover:scale-105 duration-300 h-56">
             <ResponsiveContainer width="100%" height={height}>
                 <BarChart
                     data={data}
                     layout="vertical"
-                    margin={{ top: 50, right: 75, left: 0, bottom: 0 }}
+                    margin={{ top: 50, right: 97, left: 0, bottom: 0 }}
                     barCategoryGap="25%"
                 >
                     <XAxis type="number" hide domain={[0, 'dataMax']} />
