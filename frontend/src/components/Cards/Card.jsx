@@ -1,84 +1,68 @@
-'use client';
-import React, { useCallback } from 'react';
-import { useState } from 'react';
-import { ProgressiveBlur } from '../ui/progressive-blur';
-import { motion } from 'motion/react'
+import React, { useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
-import HeartFavourites from './HeartFavourites';
+import HeartFavourites from "./HeartFavourites.jsx";
+import { StarIcon } from "lucide-react";
 
-export default React.memo(function Card({ id, title, poster, rating, type , visiblity }) {
-  const [isHover, setIsHover] = useState(false);
+const Card = ({ title, poster, rating, type, id }) => {
+
   const navigate = useNavigate();
 
+  const formatRating = (rating) => {
+    const value = parseFloat(rating);
+    return !value || Number.isNaN(value) ? "Not Rated" : rating.replace("/10", "");
+  };
+
+  const displayRating = formatRating(rating);
+
   const handleClick = useCallback(() => {
-    
-    if(!id){
-      return 
+
+    if (!id) {
+      return
     }
 
-    const params = new URLSearchParams({id : id});
+    const params = new URLSearchParams({ id: id });
 
-    if(type === "movie"){
+    if (type === "movie") {
       navigate(`/explore/movie?${params.toString()}`);
-    }else if(type === "tv"){
+    } else if (type === "tv") {
       navigate(`/explore/tv?${params.toString()}`);
     }
 
-  },[id ,type , navigate])
+  }, [id, type, navigate])
 
   return (
-    <div
+    <article
       onClick={(e) => {
         e.preventDefault();
         handleClick();
       }}
-      className='relative my-4 flex-shrink-0 sm:h-[340px] sm:w-[240px] h-[245px] w-[175px] overflow-hidden sm:rounded-3xl rounded-2xl dark:ring-1 dark:ring-white/75 ring-1 ring-black'
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-    >
-      <img
-        src={poster}
-        alt='Poster'
-        className='absolute inset-0 h-full w-full object-cover'
-        loading='lazy'
-      />
-      <ProgressiveBlur
-        className='pointer-events-none absolute bottom-0 left-0 h-[75%] w-full rounded-3xl'
-        blurIntensity={1}
-        animate={isHover ? 'visible' : 'hidden'}
-        variants={{
-          hidden: { opacity: 0 },
-          visible: { opacity: 1 },
-        }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-      />
-      <motion.div
-        className='absolute bottom-0 left-0'
-        animate={isHover ? 'visible' : 'hidden'}
-        variants={{
-          hidden: { opacity: 0 },
-          visible: { opacity: 1 },
-        }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-      >
-        <div className='flex flex-col items-start gap-0 px-5 py-4'>
-          <p className='text-xl font-semibold text-white duration-300 hover:text-[#5fa2fa]'>{title}</p>
-          <span className='text-white'>⭐ {rating}</span>
-        </div>
-      </motion.div>
-      <motion.div
-        className='absolute bottom-0 right-0'
-        animate={isHover ? 'visible' : 'hidden'}
-        variants={{
-          hidden: { opacity: visiblity },
-          visible: { opacity: 1 },
-        }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-      >
-        <div className='px-5 py-3'>
-          <HeartFavourites id={id} title={title} poster={poster} rating={rating} type={type}/>
-        </div>
-      </motion.div>
-    </div>
+      className="group w-40 shrink-0 snap-start sm:w-auto sm:shrink">
+      <div className="relative xl:w-65 xl:h-90 lg:w-58 lg:h-85 md:w-52 md:h-75 w-40  h-60 overflow-hidden rounded-lg border border-slate-300 shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl dark:border-slate-800">
+        <img
+          src={poster}
+          alt={title}
+          loading="lazy"
+          className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+        />
+        <span className="absolute left-2 top-2 rounded bg-black/70 px-2 py-0.5 sm:text-[14px] text-xs font-medium uppercase tracking-wide text-slate-200 backdrop-blur inline-flex items-center gap-1">
+          <StarIcon size={14} className="fill-amber-300 stroke-amber-300" />
+          {displayRating}
+        </span>
+        <span className="absolute right-2 top-2 rounded-full dark:bg-black/65 bg-slate-100/75 p-1.5">
+          <HeartFavourites
+            id={id}
+            title={title}
+            poster={poster}
+            rating={rating}
+            type={type}
+          />
+        </span>
+      </div>
+      <h3 className="mt-2 line-clamp-1 sm:text-lg font-semibold text-slate-900 transition-colors duration-300 group-hover:text-[#5fa2fa] dark:text-slate-100 ml-1 ">
+        {title}
+      </h3>
+    </article>
   );
-});
+};
+
+export default React.memo(Card);

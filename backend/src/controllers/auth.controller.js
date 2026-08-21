@@ -3,12 +3,14 @@ import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.model.js";
-import { IntialUser } from "../models/intialUser.model.js"
+import { IntialUser } from "../models/intialUser.model.js";
+import { favourites } from "../models/favourites.model.js";
 import { sendEmail, emailVerificationMail, resetPasswordMail } from "../utils/mail.js"
-import { optionsAccessToken , optionsRefreshToken } from "../utils/cookies-options.js";
+import { optionsAccessToken, optionsRefreshToken } from "../utils/cookies-options.js";
 import bcrypt from "bcrypt"
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateTokens = async (userID) => {
     try {
@@ -70,7 +72,7 @@ const googleAuth = asyncHandler(async (req, res) => {
     const { email, name, picture, sub: googleId } = payload;
 
     let user = await User.findOne({ email });
-    let newUser = false ;
+    let newUser = false;
 
     if (!user) {
         user = await User.create({
@@ -80,7 +82,7 @@ const googleAuth = asyncHandler(async (req, res) => {
             email: email,
             isEmailVerified: true,
         })
-        newUser = true ;
+        newUser = true;
     } else if (!user.googleId) {
         user.googleId = googleId;
         await user.save({ validateBeforeSave: false });
@@ -94,7 +96,7 @@ const googleAuth = asyncHandler(async (req, res) => {
 
     const finalResult = {
         ...createdUser,
-        newUser : newUser
+        newUser: newUser
     }
 
     return res
@@ -102,7 +104,7 @@ const googleAuth = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, optionsAccessToken)
         .cookie("refreshToken", refreshToken, optionsRefreshToken)
         .json(
-            new ApiResponse(200, finalResult , "Account created via Google")
+            new ApiResponse(200, finalResult, "Account created via Google")
         )
 });
 
@@ -277,40 +279,40 @@ const updateUserInfo = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, updatedUser , "Info updated succesfully")
+            new ApiResponse(200, updatedUser, "Info updated succesfully")
         )
 
 
 });
 
 const forgetPassword = asyncHandler(async (req, res) => {
-        const { email } = req.body;
+    const { email } = req.body;
 
-        const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-        if (!user) { throw new ApiError(400, "No such user exist with this email") }
+    if (!user) { throw new ApiError(400, "No such user exist with this email") }
 
-        const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken();
+    const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken();
 
-        user.resetPasswordToken = hashedToken;
-        user.resetPasswordExpires = tokenExpiry;
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = tokenExpiry;
 
-        await user.save({ validateBeforeSave: false })
+    await user.save({ validateBeforeSave: false })
 
-        await sendEmail({
-            email: user?.email,
-            subject: "Request to change password",
-            mailgenContent: resetPasswordMail(
-                user?.fullName,
-                `${process.env.FRONTEND_URL}/resetPassword/${unHashedToken}`
-            )
-        })
+    await sendEmail({
+        email: user?.email,
+        subject: "Request to change password",
+        mailgenContent: resetPasswordMail(
+            user?.fullName,
+            `${process.env.FRONTEND_URL}/resetPassword/${unHashedToken}`
+        )
+    })
 
-        return res
-            .status(200)
-            .json(
-                new ApiResponse(200, {}, "Email has been sent to your registered mail")
-            )
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, {}, "Email has been sent to your registered mail")
+        )
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
@@ -352,7 +354,40 @@ const getCurrentUserInfo = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(200, req.user, "Fetched user data succesfully !")
         )
-})
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const session = await mongoose.startSession();
+
+    try {
+        session.startTransaction();
+
+        const deletedUser = await User.findByIdAndDelete({ _id: userId }).session(session);
+
+        if (!deletedUser) {
+            throw new ApiError(400, "Unable to delete user")
+        }
+
+        await favourites.deleteMany({ user: userId }).session(session);
+
+        await session.commitTransaction();
+
+    } catch (error) {
+        session.abortTransaction();
+        throw new ApiError(400, "Unable to delete your")
+    } finally {
+        session.endSession();
+    }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", optionsAccessToken)
+        .clearCookie("refreshToken", optionsRefreshToken)
+        .json(
+            new ApiResponse(200, {}, "User account and associated data deleted successfully")
+        );
+});
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingToken = req.cookies?.refreshToken || req.body?.refreshToken;
@@ -391,5 +426,6 @@ export {
     forgetPassword,
     resetPassword,
     getCurrentUserInfo,
+    deleteUser,
     refreshAccessToken,
 }

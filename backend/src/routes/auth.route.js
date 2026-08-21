@@ -8,6 +8,7 @@ import {
     getCurrentUserInfo,
     updateUserInfo ,
     forgetPassword,
+    deleteUser,
     resetPassword,
     refreshAccessToken
 } from "../controllers/auth.controller.js";
@@ -38,6 +39,8 @@ router.route("/userInfo").get(verifyAccessToken,getCurrentUserInfo);
 router.route("/editInfo").patch(verifyAccessToken,updateUserInfo);
 
 router.route("/forget-password").post(userForgotPasswordValidator(),validation,forgetPassword);
+
+router.route("/delete-account").delete(verifyAccessToken,deleteUser);
 
 router.route("/reset-password/:resetPasswordToken").post(userResetForgotPasswordValidator(),validation,resetPassword);
 

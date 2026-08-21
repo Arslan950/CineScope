@@ -82,11 +82,10 @@ const Explore = () => {
             )}
 
             {!isLoading && !isError && results.length > 0 && (
-                <div className='w-full max-w-8xl'>
-                    <section className='grid grid-cols-2 gap-3 xs:gap-4 sm:gap-5 grid-col-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5'>
+                <div className='w-full mx-auto'>
+                    <section className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 sm:gap-x-6 md:gap-x-8 lg:gap-x-10 xl:gap-x-12 gap-y-10 justify-items-center'>
                         {results.map((movie) => (
                             <Card
-                                visiblity={1}
                                 key={movie.id}
                                 id={movie.id}
                                 title={movie.title}

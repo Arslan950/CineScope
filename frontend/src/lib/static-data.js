@@ -90,12 +90,12 @@ export const cinematicAvatars = [
 ];
 
 export const genres = [
-    { title: "Action", emoji: "💥" },
-    { title: "Comedy", emoji: "😂" },
-    { title: "Drama", emoji: "🎭" },
-    { title: "Horror", emoji: "🔪" },
-    { title: "Sci-Fi", emoji: "👽" },
-    { title: "Romance", emoji: "❤️" },
-    { title: "Thriller", emoji: "🫣" },
-    { title: "Fantasy", emoji: "🧝" }
+    { title: "Action" },
+    { title: "Comedy" },
+    { title: "Drama" },
+    { title: "Horror" },
+    { title: "Sci-Fi" },
+    { title: "Romance" },
+    { title: "Thriller" },
+    { title: "Fantasy" }
 ];

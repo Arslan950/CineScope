@@ -120,7 +120,7 @@ const MovieDescription = () => {
           href={`https://www.imdb.com/title/${movieData?.imdb_id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center" // Optional: keeps the icon aligned
+          className="flex items-center justify-center"
         >
           <SquareArrowOutUpRight className="stroke-amber-400 hover:cursor-pointer hover:stroke-amber-300" />
         </a>
@@ -188,7 +188,7 @@ const MovieDescription = () => {
       {/* poster and stats */}
       <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 grid xl:grid-cols-[auto_1fr] grid-cols-1 gap-8">
         <div className="sm:w-84 w-70 shrink-0 mx-auto xl:mx-0">
-          <img src={movieData?.poster} alt={movieData?.title} className="rounded-xl w-full h-auto shadow-2xl shadow-black" />
+          <img src={movieData?.poster} alt={movieData?.title} className="rounded-xl w-full h-auto shadow-2xl shadow-black duration-300 hover:scale-105" />
         </div>
 
         <div className="w-full h-full xl:p-6 rounded-xl mx-auto xl:mx-0">

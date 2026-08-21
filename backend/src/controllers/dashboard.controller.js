@@ -51,6 +51,7 @@ const getTrendingData = asyncHandler(async (req, res) => {
 
         if (includeBackdrop && item.backdrop_path) {
             dataTosend.backdrop = `https://image.tmdb.org/t/p/w1920${item.backdrop_path}`;
+            dataTosend.overview = item.overview ;
         }
 
         return dataTosend;

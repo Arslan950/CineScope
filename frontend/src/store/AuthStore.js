@@ -29,7 +29,7 @@ export const useAuthStore = create((set, get) => ({
             const userData = response?.data?.data;
             set({ user: userData, isLoggedIn: true, isLoading: false })
 
-            return true ;
+            return true;
         } catch (error) {
             if (error.response) {
                 const backendMessage = error.response?.data?.message || "Invalid credentials. Please try again.";
@@ -41,7 +41,7 @@ export const useAuthStore = create((set, get) => ({
                 const unexpectedMsg = "An unexpected error occurred.";
                 toast.error(unexpectedMsg);
             }
-            return false ;
+            return false;
         }
     },
 
@@ -96,11 +96,11 @@ export const useAuthStore = create((set, get) => ({
 
             const userData = response?.data?.data
             set({ user: userData, isLoggedIn: true, isLoading: false })
-            const newUser =  response?.data?.data?.newUser ;
+            const newUser = response?.data?.data?.newUser;
 
             return {
                 isSuccess: true,
-                newUser : newUser
+                newUser: newUser
             };
 
         } catch (error) {
@@ -110,6 +110,27 @@ export const useAuthStore = create((set, get) => ({
             return {
                 isSuccess: false,
             };
+        }
+    },
+
+    deleteUser: async () => {
+        try {
+            await api.delete('/auth/delete-account');
+            set({ user: null, isLoggedIn: false })
+            return true;
+        } catch (error) {
+            if (error.response) {
+                const backendMessage = error.response?.data?.message || "Somewith went wrong(3)"
+                toast.error(backendMessage)
+            } else if (error.request) {
+                const networkMsg = "Network error. Please check your connection.";
+                toast.error(networkMsg);
+            } else {
+                const unexpectedMsg = "An unexpected error occurred.";
+                toast.error(unexpectedMsg);
+            }
+
+            return false ;
         }
     }
 }));

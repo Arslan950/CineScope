@@ -10,7 +10,7 @@ const CardSection = ({ movieList, name }) => {
         <ChevronRightIcon className="ml-2 size-5 transition-transform duration-300 group-hover:translate-x-1" />
       </div>
 
-      <div className="flex items-center justify-evenly gap-x-4 overflow-x-auto scrollbar-hide sm:p-4 sm:px-0 md:px-2 px-1 rounded-3xl max-[1026px]:bg-none min-[1026px]:bg-neutral-500/15">
+      <div className="flex items-center justify-evenly sm:gap-x-4 gap-x-6 overflow-x-auto scrollbar-hide">
         {
           movieList.map((movie) => (
             <Card
