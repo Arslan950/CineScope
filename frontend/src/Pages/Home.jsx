@@ -42,13 +42,13 @@ const Home = () => {
 
   return (
     <section className='w-full mt-16'>
-      <div className="relative w-full h-[80vh] min-h-[500px]">
+      <div className="relative w-full sm:h-[80vh] h-[60vh]">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('${dashboardData?.hollywood[0].backdrop}')` }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-end gap-y-4 px-6 pb-16 sm:px-12">
           <span className="flex items-center gap-x-2 text-sm font-semibold text-emerald-400">

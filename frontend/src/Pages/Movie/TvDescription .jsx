@@ -127,9 +127,7 @@ const TvDescription = () => {
             `url('${tvData.backdrop}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111826] via-[#111826]/80 sm:via-[#111826]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#111826]/90 sm:from-[#111826]/80 via-[#111826]/40 sm:via-transparent to-transparent" />
-
+        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/50 via-black/30 to-transparen" />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -213,11 +211,11 @@ const TvDescription = () => {
           </div>)}
           {/* production */}
           {tvData?.production_company && (<div className="flex flex-col gap-y-3 mt-7">
-              <h2 className="font-bold dark:text-zinc-50/85">PRODUCTION</h2>
-              <div className="flex items-center gap-x-8">
-                <img src={tvData?.production_company?.logo} alt={tvData?.production_company?.name} className="bg-white p-2.5 rounded-xl w-40"/>
-                <p className="text-2xl font-semibold">{tvData?.production_company?.name}</p>
-              </div>
+            <h2 className="font-bold dark:text-zinc-50/85">PRODUCTION</h2>
+            <div className="flex items-center gap-x-8">
+              <img src={tvData?.production_company?.logo} alt={tvData?.production_company?.name} className="bg-white p-2.5 rounded-xl w-40" />
+              <p className="text-2xl font-semibold">{tvData?.production_company?.name}</p>
+            </div>
           </div>)}
         </div>
       </section>

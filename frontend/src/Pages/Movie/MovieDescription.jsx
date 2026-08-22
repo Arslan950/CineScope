@@ -140,9 +140,8 @@ const MovieDescription = () => {
             `url('${movieData?.backdrop}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111826] via-[#111826]/80 sm:via-[#111826]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#111826]/90 sm:from-[#111826]/80 via-[#111826]/40 sm:via-transparent to-transparent" />
-
+        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/50 via-black/30 to-transparen" />
+       
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
