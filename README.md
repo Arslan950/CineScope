@@ -194,4 +194,4 @@ Movie and TV metadata, ratings, imagery, and trailers are retrieved from [TMDB](
 
 - Email: arslan48950@gmail.com
 - Project: [github.com/Arslan950/CineScope](https://github.com/Arslan950/CineScope)
-- Demo: [cinescope-liart-eight.vercel.app](https://cinescope-25sj.onrender.com/)
+- Link: [cinescope-25sj.onrender.com](https://cinescope-25sj.onrender.com/)
