@@ -1,114 +1,197 @@
-<div align="center">
-<img src="./frontend/src/assets/logo.svg" alt="CineScope Logo" width="100" />
-
 # CineScope
 
-_Experience Cinema Like Never Before_
-
-<br>
-
-<img alt="last-commit" src="https://img.shields.io/github/last-commit/Arslan950/CineScope---ReactProject?style=flat&logo=git&logoColor=white&color=0080ff">
-<img alt="repo-top-language" src="https://img.shields.io/github/languages/top/Arslan950/CineScope---ReactProject?style=flat&color=0080ff">
-<img alt="repo-language-count" src="https://img.shields.io/github/languages/count/Arslan950/CineScope---ReactProject?style=flat&color=0080ff">
-
-<br>
-<br>
-
-_Built with the tools and technologies:_
-
-<br>
-
-<a href="https://react.dev/" target="_blank"><img alt="React" src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black" /></a>&nbsp;&nbsp;&nbsp;<a href="https://vitejs.dev/" target="_blank"><img alt="Vite" src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white" /></a>&nbsp;&nbsp;&nbsp;<a href="https://tailwindcss.com/" target="_blank"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white" /></a>&nbsp;&nbsp;&nbsp;<a href="https://github.com/pmndrs/zustand" target="_blank"><img alt="Zustand" src="https://img.shields.io/badge/Zustand-443E38?style=flat&logo=react&logoColor=white" /></a>&nbsp;&nbsp;&nbsp;<a href="https://axios-http.com/" target="_blank"><img alt="Axios" src="https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white" /></a>
-
-<a href="https://www.framer.com/motion/" target="_blank"><img alt="Framer Motion" src="https://img.shields.io/badge/Framer_Motion-0055FF?style=flat&logo=framer&logoColor=white" /></a>&nbsp;&nbsp;&nbsp;<a href="https://ui.aceternity.com/" target="_blank"><img alt="Aceternity UI" src="https://img.shields.io/badge/Aceternity_UI-222222?style=flat&logoColor=white" /></a>&nbsp;&nbsp;&nbsp;<a href="https://daisyui.com/" target="_blank"><img alt="DaisyUI" src="https://img.shields.io/badge/DaisyUI-1AD1A5?style=flat&logo=daisyui&logoColor=white" /></a>
-
+<div align="center">
+  <img src="./frontend/src/assets/logo.svg" alt="CineScope logo" width="100" />
+  <h3>Experience cinema like never before.</h3>
+  <p>A full-stack movie and TV discovery platform powered by TMDB.</p>
 </div>
 
----
+## Overview
 
-CineScope is a sleek and modern web application designed for movie enthusiasts. It offers a rich user interface for discovering, searching, and managing your favorite films. With its intuitive design and powerful features, CineScope provides a seamless experience for exploring the world of cinema.
+CineScope helps users discover movies and TV shows, inspect detailed metadata, search across titles, and maintain a personal favourites list. The application includes authentication, onboarding preferences, profile management, responsive light/dark themes, and a backend API that protects credentials and normalizes TMDB responses.
 
-## **Features**
+## Features
 
-* **Modern UI/UX:** A visually appealing and user-friendly interface that enhances the movie browsing experience.
-* **Movie Discovery:** Explore a comprehensive database of movies, including detailed information, ratings, and posters.
-* **Advanced Search:** Easily find any movie with the powerful and intuitive search functionality.
-* **Favorites Management:** Create a personalized collection of your favorite movies and manage them with ease.
-* **Theming:** Switch between **light and dark modes** for a comfortable viewing experience in any lighting condition.
-* **Responsive Design:** Enjoy a fully responsive layout that works seamlessly on desktops, tablets, and mobile devices.
+- Trending home dashboard with Hollywood, Bollywood, and TV sections
+- Movie and TV search with paginated results
+- Detailed movie and TV pages with posters, backdrops, ratings, genres, trailers, cast, creators/directors, production details, seasons, budget, and revenue where available
+- Email registration with OTP verification
+- Email/password login and Google authentication
+- Access-token and refresh-token authentication using HTTP-only cookies
+- Automatic access-token refresh in the frontend API client
+- Password reset by email
+- Profile editing, avatar upload, and genre-preference onboarding
+- Authenticated favourites synchronization backed by MongoDB
+- Redis caching for dashboard data
+- Responsive UI with light/dark mode, animations, loading states, and toast notifications
 
-## **Technologies Used**
+## Tech stack
 
-* **React:** A JavaScript library for building user interfaces.
-* **React Router:** For handling client-side routing.
-* **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
-* **Zustand:** A state management tool used for current theme and favourites list.
-* **Framer Motion:** For creating fluid and complex animations.
-* **OMDb API:** To fetch detailed movie information.
-* **Daisy UI:** A component library for Tailwind CSS.
-* **Aceternity UI:** A collection of modern UI components.
-* **Lucide Icons:** A clean and consistent icon set.
+### Frontend
 
-## **Getting Started**
+- React 19 and React Router
+- Vite
+- Tailwind CSS and DaisyUI
+- Zustand for authentication, theme, and favourites state
+- Axios and TanStack Query
+- Motion, Recharts, Lucide React, React Toastify, and Lottie
 
-To get a local copy up and running, follow these simple steps.
+### Backend
 
-### **Prerequisites**
+- Node.js with Express 5
+- MongoDB with Mongoose
+- Redis/Upstash Redis for caching
+- JWT, bcrypt, cookie-parser, and CORS
+- TMDB API for movie and TV data
+- Brevo for transactional email
+- Google OAuth and Cloudinary image uploads
 
-Make sure you have Node.js and npm installed on your machine.
-
-* npm
-    ```sh
-    npm install npm@latest -g
-    ```
-
-### **Installation**
-
-1.  Clone the repo
-    ```sh
-    git clone https://github.com/Arslan950/CineScope.git
-    ```
-2.  Install NPM packages
-    ```sh
-    npm install
-    ```
-3.  Enter your API Key in a `.env` file
-    ```JS
-    VITE_OMDB_API_KEY = 'YOUR API KEY'
-    ```
-4.  Run the application
-    ```sh
-    npm run dev
-    ```
-
-## Project Structure
+## Project structure
 
 ```text
 CineScope/
-├── src/
-│   ├── animation/       # Lottie JSON animations
-│   ├── assets/          # Static assets (Logos, Images)
-│   ├── components/      # Reusable UI components
-│   │   ├── Cards/       # Movie display cards
-│   │   ├── ui/          # Aceternity/Primitive UI elements
-│   │   └── ...
-│   ├── hooks/           # Custom hooks (useFetchDetails)
-│   ├── MoviesDB/        # Static movie lists (Trending, Bollywood)
-│   ├── Pages/           # Application Views (Home, Explore, MovieDetail)
-│   ├── store/           # Zustand state management (Theme, Favourites)
-│   ├── App.jsx          # Main layout structure
-│   └── main.jsx         # Entry point & Routing
-└── ...
+├── backend/
+│   ├── src/
+│   │   ├── controllers/       # Authentication, dashboard, movie, and favourite logic
+│   │   ├── db/                # MongoDB and Redis connections
+│   │   ├── middleware/        # Authentication and request validation
+│   │   ├── models/            # User and favourites schemas
+│   │   ├── routes/            # Express API routes
+│   │   ├── utils/             # API responses, errors, mail, and cookie helpers
+│   │   └── index.js           # Backend entry point
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── Pages/             # Application screens and detail views
+│   │   ├── components/        # Shared UI, cards, navigation, and skeletons
+│   │   ├── hooks/             # Reusable hooks such as image upload
+│   │   ├── lib/               # API client and static data
+│   │   └── store/             # Zustand stores
+│   └── package.json
+├── package.json               # Root scripts for running both apps
+└── README.md
 ```
 
+## Requirements
 
+- Node.js 18 or newer
+- npm
+- MongoDB database
+- Redis-compatible database (Upstash Redis is supported)
+- TMDB API key
+- Google OAuth credentials if Google sign-in is enabled
+- Brevo credentials for OTP and password-reset email
+- Cloudinary upload preset and cloud name for avatar uploads
 
+## Installation
 
+```bash
+git clone https://github.com/Arslan950/CineScope.git
+cd CineScope
 
+npm install
+npm install --prefix backend
+npm install --prefix frontend
+```
 
+## Environment variables
 
-## **Contact**
+Create `backend/.env`:
 
-Email : arslan48950@gmail.com
+```env
+PORT=5000
+NODE_ENV=development
+CORS=http://localhost:5174
+FRONTEND_URL=http://localhost:5174
 
-Project Link : [https://cinescope-liart-eight.vercel.app/](https://cinescope-liart-eight.vercel.app/)
+MONGO_URI=your_mongodb_connection_string
+REDIS_URL=your_redis_connection_string
+TMDB_API_KEY=your_tmdb_api_key
+
+ACCESS_TOKEN_SECRET=your_access_token_secret
+ACCESS_TOKEN_EXPIRY=15m
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
+REFRESH_TOKEN_EXPIRY=7d
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+OTP_SERVER_SECRET=your_otp_signing_secret
+BREVO_API_KEY=your_brevo_api_key
+MAIL_FROM=verified_sender@example.com
+```
+
+Create `frontend/.env`:
+
+```env
+VITE_BACKEND_URL=http://localhost:5000
+VITE_GOOGLE_CLIENT_ID=your_google_client_id
+VITE_CLOUD_NAME=your_cloudinary_cloud_name
+VITE_CLOUD_PRESET=your_unsigned_upload_preset
+```
+
+Never commit either `.env` file or expose backend secrets in frontend variables.
+
+## Running locally
+
+Run both services from the repository root:
+
+```bash
+npm run dev
+```
+
+Or run them independently:
+
+```bash
+npm run dev --prefix backend
+npm run dev --prefix frontend
+```
+
+The frontend runs at `http://localhost:5174` and proxies `/api` requests to the backend configured by `VITE_BACKEND_URL`. The backend listens on the port configured by `PORT`.
+
+## API reference
+
+All protected endpoints require the access-token cookie. Responses use a consistent `{ success, message, data }` shape.
+
+| Method | Endpoint | Description | Auth |
+| --- | --- | --- | --- |
+| GET | `/api/healthcheck/` | Check API availability | Public |
+| POST | `/api/auth/register` | Register and send OTP | Public |
+| POST | `/api/auth/verifyOTP` | Verify registration OTP | Public |
+| POST | `/api/auth/login` | Log in with email and password | Public |
+| POST | `/api/auth/google` | Authenticate with Google | Public |
+| POST | `/api/auth/refresh-accessToken` | Refresh the access token | Public |
+| POST | `/api/auth/forget-password` | Request a password-reset email | Public |
+| POST | `/api/auth/reset-password/:resetPasswordToken` | Set a new password | Public |
+| POST | `/api/auth/logout` | Log out the current user | Protected |
+| GET | `/api/auth/userInfo` | Get the current user | Protected |
+| PATCH | `/api/auth/editInfo` | Update profile and preferences | Protected |
+| DELETE | `/api/auth/delete-account` | Delete the current account | Protected |
+| GET | `/api/get-dashboard-data/` | Get cached trending dashboard data | Protected |
+| POST | `/api/explore/search-results` | Search movies and TV shows | Protected |
+| POST | `/api/explore/movie-result` | Get movie details | Protected |
+| POST | `/api/explore/tv-result` | Get TV details | Protected |
+| GET | `/api/favourites/get-list` | Get the user’s favourites | Protected |
+| PUT | `/api/favourites/sync` | Sync favourites changes | Protected |
+
+## Frontend routes
+
+- `/` - Landing page
+- `/login`, `/signup` - Authentication
+- `/forgetPassword`, `/resetPassword/:resetPasswordToken` - Password recovery
+- `/onBoarding` - Avatar and genre preferences
+- `/home` - Trending dashboard
+- `/explore` - Search and discovery
+- `/explore/movie` and `/explore/tv` - Detailed media views
+- `/favorites` - Saved favourites
+- `/profile` - Account settings
+
+## Data and attribution
+
+Movie and TV metadata, ratings, imagery, and trailers are retrieved from [TMDB](https://www.themoviedb.org/). CineScope is not endorsed or certified by TMDB. Cloudinary is used for profile image uploads.
+
+## Contact
+
+- Email: arslan48950@gmail.com
+- Project: [github.com/Arslan950/CineScope](https://github.com/Arslan950/CineScope)
+- Demo: [cinescope-liart-eight.vercel.app](https://cinescope-25sj.onrender.com/)

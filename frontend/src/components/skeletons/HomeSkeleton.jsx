@@ -3,7 +3,7 @@ import React from 'react';
 const HomeSkeleton = () => {
   return (
     <section className='w-full mt-16'>
-      <div className="relative w-full h-[80vh] min-h-[500px] bg-gray-800 skeleton shimmer-light">
+      <div className="relative w-full sm:h-[80vh] h-[60vh] bg-gray-800 skeleton shimmer-light">
         <div className="absolute inset-0 flex flex-col justify-end gap-y-4 px-6 pb-16 sm:px-12">
           <div className="h-5 w-32 bg-gray-700 rounded-md skeleton shimmer-light"></div>
           
