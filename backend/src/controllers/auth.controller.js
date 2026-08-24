@@ -4,7 +4,7 @@ import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.model.js";
 import { IntialUser } from "../models/intialUser.model.js";
-import { favourites } from "../models/favourites.model.js";
+import { Favourites } from "../models/favourites.model.js";
 import { sendEmail, emailVerificationMail, resetPasswordMail } from "../utils/mail.js"
 import { optionsAccessToken, optionsRefreshToken } from "../utils/cookies-options.js";
 import bcrypt from "bcrypt"
@@ -369,7 +369,7 @@ const deleteUser = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Unable to delete user")
         }
 
-        await favourites.deleteMany({ user: userId }).session(session);
+        await Favourites.deleteMany({ user: userId }).session(session);
 
         await session.commitTransaction();
 

@@ -5,6 +5,7 @@ import CardSection from '../components/Cards/CardSection'
 import api from "../lib/axiosInstance.js"
 import HomeSkeleton from "../components/skeletons/HomeSkeleton.jsx"
 import { toast } from 'react-toastify'
+import { motion } from 'motion/react'
 import { Info, Star, TrendingUp } from 'lucide-react'
 
 const Home = () => {
@@ -42,22 +43,27 @@ const Home = () => {
 
   return (
     <section className='w-full mt-16'>
-      <div className="relative w-full sm:h-[80vh] h-[60vh]">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('${dashboardData?.hollywood[0].backdrop}')` }}
-        />
+      <section
+        className="relative w-full h-[65vh] sm:h-[80vh] bg-cover bg-center"
+        style={{
+          backgroundImage:
+            `url('${dashboardData?.hollywood[0].backdrop}')`,
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/60 via-black/40 to-transparen" />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent" />
-
-        <div className="absolute inset-0 flex flex-col justify-end gap-y-4 px-6 pb-16 sm:px-12">
-          <span className="flex items-center gap-x-2 text-sm font-semibold text-emerald-400">
-            <TrendingUp size={18} strokeWidth={2.5} />
-            Trending #1 today
-          </span>
-
-          <div className="max-w-xl space-y-4">
-            <h1 className="text-4xl font-bold text-white sm:text-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="absolute bottom-6 left-0 w-full px-6 sm:bottom-10 sm:left-8 sm:p-4 sm:w-auto"
+        >
+          <div className="max-w-3xl">
+            <span className="flex items-center gap-x-2 sm:text-lg text-sm font-semibold text-emerald-400 mb-2">
+              <TrendingUp size={18} strokeWidth={2.5} />
+              Trending #1 today
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-bold text-white text-left mb-2">
               {dashboardData?.hollywood[0].title}
             </h1>
 
@@ -68,20 +74,22 @@ const Home = () => {
               <p className="capitalize">{dashboardData?.hollywood[0].type}</p>
             </span>
 
-            <p className="text-base text-white/80 sm:text-lg">
+            <p className="text-white/90 text-sm sm:text-xl mt-3 leading-relaxed">
               {dashboardData?.hollywood[0].overview}
             </p>
 
-            <button
-              onClick={() => navigate(`/explore/movie?id=${dashboardData?.hollywood[0]?.id}`)}
-              className="flex items-center gap-x-2 rounded-lg bg-[#5fa2fa] px-5 py-3 font-semibold transition-colors duration-200 hover:bg-blue-500"
-            >
-              <Info size={20} />
-              More info
-            </button>
+            <div className="flex items-center gap-4 pt-8 justify-start">
+              <button
+                onClick={() => navigate(`/explore/movie?id=${dashboardData?.hollywood[0]?.id}`)}
+                className="flex items-center gap-x-2 rounded-lg bg-[#5fa2fa] px-5 py-3 font-semibold transition-colors duration-200 hover:bg-blue-500"
+              >
+                <Info size={20} />
+                More info
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </section>
 
       <div className='space-y-6 sm:p-7 p-2'>
         <CardSection movieList={dashboardData?.hollywood.slice(1, 6)} name={`Hollywood`} />

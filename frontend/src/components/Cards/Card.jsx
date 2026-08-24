@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import HeartFavourites from "./HeartFavourites.jsx";
 import { StarIcon } from "lucide-react";
 
-const Card = ({ title, poster, rating, type, id }) => {
+const Card = ({ title, poster, rating, type, id, className = "", allowed = true}) => {
 
   const navigate = useNavigate();
 
@@ -34,9 +34,11 @@ const Card = ({ title, poster, rating, type, id }) => {
     <article
       onClick={(e) => {
         e.preventDefault();
-        handleClick();
+        if (allowed) {
+          handleClick();
+        }
       }}
-      className="group w-40 shrink-0 snap-start sm:w-auto sm:shrink">
+      className={`group w-40 shrink-0 snap-start sm:w-auto sm:shrink ${allowed ? "cursor-pointer" : ""}`}>
       <div className="relative xl:w-65 xl:h-90 lg:w-58 lg:h-85 md:w-52 md:h-75 w-40  h-60 overflow-hidden rounded-lg border border-slate-300 shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl dark:border-slate-800">
         <img
           src={poster}
@@ -48,7 +50,7 @@ const Card = ({ title, poster, rating, type, id }) => {
           <StarIcon size={14} className="fill-amber-300 stroke-amber-300" />
           {displayRating}
         </span>
-        <span className="absolute right-2 top-2 rounded-full dark:bg-black/65 bg-slate-100/75 p-1.5">
+        <span className={`absolute right-2 top-2 rounded-full dark:bg-black/65 bg-slate-100/75 p-1.5 ${className}`}>
           <HeartFavourites
             id={id}
             title={title}

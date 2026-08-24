@@ -26,6 +26,7 @@ const ResetPassword = lazy(() => import('./Pages/Password/ResetPassword.jsx'));
 const Loading = lazy(() => import('./components/Loading.jsx'));
 const Profile = lazy(() => import("./Pages/Profile.jsx"));
 const OnBoarding = lazy(() => import("./Pages/OnBoarding.jsx"));
+const ShareCollection = lazy(() => import("./Pages/ShareCollection.jsx"));
 
 const queryClient = new QueryClient();
 
@@ -113,6 +114,29 @@ const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: "share",
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedRoute>
+                <Suspense fallback={<Loading />}>
+                  <NotFound />
+                </Suspense>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path: ":shareToken",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ShareCollection />
+              </Suspense>
+            )
+          }
+        ]
       },
       {
         path: "login",

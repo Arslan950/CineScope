@@ -22,8 +22,16 @@ const FavouritesSchema = new Schema({
         type: {
             type: String
         },
-    }]
+    }],
+    shareToken : {
+        type : String,
+        unique : true,
+        sparse: true
+    },
+    shareTokenStatus : {
+        type : String,
+    }
 
 }, { timestamps: true });
 
-export const favourites = mongoose.model("favourites", FavouritesSchema);
+export const Favourites = mongoose.model("favourites", FavouritesSchema);

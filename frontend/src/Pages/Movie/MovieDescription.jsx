@@ -21,8 +21,6 @@ const MovieDescription = () => {
   const navigate = useNavigate();
 
   const favouritesList = useFavouritesStore((state) => state.favouritesList);
-  const addFavourites = useFavouritesStore((state) => state.addFavourites);
-  const removeFavourites = useFavouritesStore((state) => state.removeFavourites);
 
   const { data: movieData, isLoading, isError, error } = useQuery({
     queryKey: ['movieData', id],

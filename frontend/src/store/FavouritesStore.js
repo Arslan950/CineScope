@@ -29,6 +29,7 @@ const syncWithBackend = debounce(async (list) => {
 export const useFavouritesStore = create(
   persist((set, get) => ({
     favouritesList: [],
+    shareUrl : "",
 
     hydrateFavouritesList: async () => {
       const hasPendingSync = localStorage.getItem('favourites_sync_pending');
@@ -49,14 +50,15 @@ export const useFavouritesStore = create(
             const unexpectedMsg = "An unexpected error occurred.";
             toast.error(unexpectedMsg);
           }
+          return ;
         }
-        return;
       }
 
       try {
         const response = await api.get("/favourites/get-list");
         const backendList = response?.data?.data?.favourites || [];
-        set({ favouritesList: backendList });
+        const sharedUrl = response.data?.data?.sharedUrl  || "" ;
+        set({ favouritesList: backendList , shareUrl : sharedUrl});
       } catch (error) {
         if (error.response) {
           const backendMessage = error.response?.data?.message || "Something went wrong";
@@ -88,6 +90,14 @@ export const useFavouritesStore = create(
         return { favouritesList: newList };
       });
     },
+
+    addUrl : (url) => {
+      set({shareUrl : url});
+    },
+
+    removeUrl : () => {
+      set({shareUrl : ""})
+    }
   }),
     {
       name: "favourites"
