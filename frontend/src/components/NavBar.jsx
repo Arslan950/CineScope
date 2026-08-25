@@ -30,7 +30,7 @@ const NavBar = () => {
     ];
 
     return (
-        <header className="fixed z-10 top-0 left-0 w-full bg-white dark:bg-[#111826] border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+        <header className="fixed z-10 top-0 left-0 w-full bg-white dark:bg-[#090d14] shadow shadow-md duration-200">
             <nav className='w-full px-4 xl:px-8 py-2.5 flex items-center min-h-[64px]'>
                 <div className='flex xl:hidden w-full justify-between items-center relative z-20'>
                     <Link to="/" className='flex items-center gap-x-2 w-fit'>
@@ -38,7 +38,7 @@ const NavBar = () => {
                         <h1 className='text-lg font-bold text-slate-900 dark:text-white'>CineScope</h1>
                     </Link>
 
-                    <label className="btn btn-circle swap swap-rotate dark:bg-[#111826] bg-white border-none shadow-none">
+                    <label className="btn btn-circle swap swap-rotate dark:bg-[#090d14] bg-white border-none shadow-none">
                         <input type="checkbox"
                             onChange={() => {
                                 setTimeout(() => setDropdownFlag(!dropdownFlag), 120);
@@ -54,7 +54,7 @@ const NavBar = () => {
                             initial={{ opacity: 0.6, y: -0, x: 10 }}
                             whileInView={{ opacity: 1, x: -5 }}
                             transition={{ delay: 0.1, duration: 0.3, ease: "easeInOut" }}
-                            className="absolute right-0 top-10 mt-4 m-3 w-40 bg-white dark:bg-[#212938] text-slate-900 dark:text-white rounded-md shadow-lg border border-slate-100 dark:border-slate-700 z-50 overflow-hidden"
+                            className="absolute right-0 top-10 mt-4 m-3 w-40 bg-white dark:bg-[#090d14] text-slate-900 dark:text-white rounded-md shadow-lg border border-slate-100 dark:border-slate-700 z-50 overflow-hidden"
                         >
                             <ul className="flex flex-col">
                                 {avatar && (

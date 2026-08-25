@@ -17,11 +17,11 @@ const SearchBar = (
 
     const handleSearch = useCallback((e) => {
         e.preventDefault();
-        if(!movieName.trim()) {
-            return 
+        if (!movieName.trim()) {
+            return
         }
 
-        const params = new URLSearchParams({search : movieName.trim() , page : 1})
+        const params = new URLSearchParams({ search: movieName.trim(), page: 1 })
 
         navigate(`/explore/?${params.toString()}`);
     }, [movieName, navigate]);
@@ -37,13 +37,7 @@ const SearchBar = (
                     placeholder='Search for movies'
                     value={movieName}
                     onChange={(e) => setMovieName(e.target.value)}
-                    className={`w-full  
-                               bg-slate-100 dark:bg-[#1f2a38] 
-                               text-slate-900 dark:text-white 
-                               placeholder:text-slate-400 dark:placeholder:text-gray-400 
-                               border border-slate-300 dark:border-white/70 
-                               focus:ring-2 focus:ring-blue-500 focus:outline-none
-                               duration-200 ${className} `}
+                    className={`w-full bg-slate-100 dark:bg-[#111826] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 border border-slate-400 dark:border-white/40 focus:ring-2 focus:ring-blue-500 focus:outline-none duration-200 ${className}`}
                 />
                 <div className={`absolute top-1/2 right-2 -translate-y-1/2 `}>
                     <button

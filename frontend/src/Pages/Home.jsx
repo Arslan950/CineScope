@@ -81,7 +81,7 @@ const Home = () => {
             <div className="flex items-center gap-4 pt-8 justify-start">
               <button
                 onClick={() => navigate(`/explore/movie?id=${dashboardData?.hollywood[0]?.id}`)}
-                className="flex items-center gap-x-2 rounded-lg bg-[#5fa2fa] px-5 py-3 font-semibold transition-colors duration-200 hover:bg-blue-500"
+                className="flex items-center gap-x-2 rounded-lg bg-[#5fa2fa] px-5 py-3 font-semibold text-white duration-200 hover:bg-blue-500"
               >
                 <Info size={20} />
                 More info

@@ -7,7 +7,7 @@ import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { useThemeStore } from './store/ThemeStore'
 import { useAuthStore } from './store/AuthStore.js';
 import { useFavouritesStore } from './store/FavouritesStore.js'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import Loading from "./components/Loading.jsx"
 
 function App() {
@@ -38,25 +38,34 @@ function App() {
   }
 
   return (
-    <main className='min-h-screen w-screen dark:bg-[#111826] bg-slate-100 dark:text-white text-black font-Poppins flex flex-col sm:duration-300'>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme={theme}
+    <main className="relative flex min-h-screen w-full flex-col overflow-hidden font-Poppins duration-300 dark:text-white text-black">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background: `${(theme === "dark") ? "radial-gradient(125% 125% at 50% 10%, #04060a 40%, #0d1a36 100%)" : "radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%)"}`
+        }}
       />
-      {(isLoggedIn) ? <NavBar /> : <SecondryNavBar />}
-      <section className='flex flex-grow flex-col items-center'>
-        <Outlet />
-      </section>
-      <Footbar />
-      <ScrollRestoration />
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={theme}
+        />
+        {isLoggedIn ? <NavBar /> : <SecondryNavBar />}
+        <section className="flex flex-grow flex-col items-center">
+          <Outlet />
+        </section>
+        <Footbar />
+        <ScrollRestoration />
+      </div>
     </main>
   )
 }

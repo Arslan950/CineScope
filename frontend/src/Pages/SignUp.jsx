@@ -170,7 +170,7 @@ const SignUp = () => {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="John Doe"
-                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition dark:bg-[#090d14] bg-slate-100"
                     />
                   </div>
 
@@ -184,7 +184,7 @@ const SignUp = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      className="w-full px-3 py-2 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition dark:bg-[#090d14] bg-slate-100"
                     />
                   </div>
 
@@ -199,7 +199,7 @@ const SignUp = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
-                        className="w-full px-3 py-2 pr-10 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        className="w-full px-3 py-2 pr-10 rounded-lg bg-transparent border border-black/20 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition dark:bg-[#090d14] bg-slate-100"
                       />
                       <button
                         type="button"
@@ -271,9 +271,9 @@ const SignUp = () => {
                   className="w-full h-fit flex flex-col items-center gap-y-4"
                   onSubmit={handleVerifyOTP}
                 >
-                  <label className="otp otp-lg otp-info">
+                  <label className="otp otp-lg ">
                     {Array.from({length : 4}).map((_,i) => (
-                      <span className="bg-[#111826]"></span>
+                      <span className="dark:bg-[#090d14] bg-slate-100"></span>
                     ))}
                     <input 
                       type="text" 

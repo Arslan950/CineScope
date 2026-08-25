@@ -15,6 +15,7 @@ CineScope helps users discover movies and TV shows, inspect detailed metadata, s
 - Trending home dashboard with Hollywood, Bollywood, and TV sections
 - Movie and TV search with paginated results
 - Detailed movie and TV pages with posters, backdrops, ratings, genres, trailers, cast, creators/directors, production details, seasons, budget, and revenue where available
+- Share your favourites collection through a public link, with link revocation
 - Email registration with OTP verification
 - Email/password login and Google authentication
 - Access-token and refresh-token authentication using HTTP-only cookies
@@ -173,6 +174,9 @@ All protected endpoints require the access-token cookie. Responses use a consist
 | POST | `/api/explore/tv-result` | Get TV details | Protected |
 | GET | `/api/favourites/get-list` | Get the user’s favourites | Protected |
 | PUT | `/api/favourites/sync` | Sync favourites changes | Protected |
+| POST | `/api/favourites/generate-link` | Generate or retrieve a share link for the favourites collection | Protected |
+| POST | `/api/favourites/revoke-link` | Revoke the active favourites collection share link | Protected |
+| GET | `/api/favourites/get-shared-list/:Sharetoken` | Get a shared favourites collection by token | Public |
 
 ## Frontend routes
 
@@ -184,6 +188,7 @@ All protected endpoints require the access-token cookie. Responses use a consist
 - `/explore` - Search and discovery
 - `/explore/movie` and `/explore/tv` - Detailed media views
 - `/favorites` - Saved favourites
+- `/share/:shareToken` - View a shared favourites collection
 - `/profile` - Account settings
 
 ## Data and attribution
