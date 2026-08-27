@@ -138,8 +138,8 @@ const MovieDescription = () => {
             `url('${movieData?.backdrop}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/50 via-black/30 to-transparen" />
-       
+        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/60 via-black/40 to-transparen" />
+
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,7 +151,7 @@ const MovieDescription = () => {
               {movieData?.title}
             </h1>
 
-            <p className="text-slate-300 sm:text-slate-400 text-sm sm:text-base mt-3 leading-relaxed">
+            <p className="text-white/90 text-sm sm:text-base mt-3 leading-relaxed">
               {movieData?.overview}
             </p>
 
@@ -233,15 +233,15 @@ const MovieDescription = () => {
         </div>
       </section>
       {/* production */}
-      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 border-t border-slate-800">
+      {movieData?.production_company && (<section className="sm:max-w-[75%] mx-auto p-4 mb-16 border-t border-slate-800">
         <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Production</h2>
-        {movieData?.production_company && (<div className="flex flex-col gap-y-3 mt-7">
+        <div className="flex flex-col gap-y-3 mt-7">
           <div className="flex items-center gap-x-8">
-            <img src={movieData?.production_company?.logo} alt={movieData?.production_company?.name} className="bg-white p-4 rounded-xl w-40" />
+            <img src={movieData?.production_company?.logo} alt={movieData?.production_company?.name} className="bg-white p-1.5 rounded-lg w-60" />
             <p className="text-2xl font-semibold">{movieData?.production_company?.name}</p>
           </div>
-        </div>)}
-      </section>
+        </div>
+      </section>)}
       {/* Cast and crew */}
       {movieData?.cast.length != 0 && (<section className="sm:max-w-[75%] mx-auto p-4 mb-16 border-t border-slate-800">
         <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Cast and Crew</h2>

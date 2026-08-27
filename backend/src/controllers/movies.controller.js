@@ -43,10 +43,10 @@ const getSearchData = asyncHandler(async (req, res) => {
         const rawResults = response?.data?.results;
 
         if (rawResults.length === 0) {
-            throw new ApiError(400, "No data round from TMDB");
+            throw new ApiError(400, "No data found from TMDB");
         }
 
-        const formattedResults = rawResults.map(formatData);
+        const formattedResults = rawResults.filter(item => item.media_type !== 'person').map(formatData);
 
         const finalData = {
             page: page,

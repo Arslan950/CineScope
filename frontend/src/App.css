@@ -1,0 +1,11 @@
+body {
+  background: radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%);
+  color: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: radial-gradient(125% 125% at 50% 10%, #04060a 40%, #0d1a36 100%);
+    color: #fff;
+  }
+}

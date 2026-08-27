@@ -127,7 +127,7 @@ const TvDescription = () => {
             `url('${tvData.backdrop}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/50 via-black/30 to-transparen" />
+        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/60 via-black/40 to-transparen" />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -139,7 +139,7 @@ const TvDescription = () => {
               {tvData?.title}
             </h1>
 
-            <p className="text-slate-300 sm:text-slate-400 text-sm sm:text-base mt-3 leading-relaxed">
+            <p className="text-white/90 text-sm sm:text-base mt-3 leading-relaxed">
               {tvData?.overview}
             </p>
 
@@ -213,7 +213,7 @@ const TvDescription = () => {
           {tvData?.production_company && (<div className="flex flex-col gap-y-3 mt-7">
             <h2 className="font-bold dark:text-zinc-50/85">PRODUCTION</h2>
             <div className="flex items-center gap-x-8">
-              <img src={tvData?.production_company?.logo} alt={tvData?.production_company?.name} className="bg-white p-2.5 rounded-xl w-40" />
+              <img src={tvData?.production_company?.logo} alt={tvData?.production_company?.name} className="bg-white p-1.5 rounded-lg w-60" />
               <p className="text-2xl font-semibold">{tvData?.production_company?.name}</p>
             </div>
           </div>)}

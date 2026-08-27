@@ -6,6 +6,19 @@ import api from "../lib/axiosInstance.js";
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+const getPaginationRange = (currentPage, totalPages) => {
+    if (totalPages <= 7) {
+        return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 3) {
+        return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (currentPage >= totalPages - 2) {
+        return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+};
+
 const Explore = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const searchedTerm = searchParams.get("search") || "";
@@ -55,7 +68,6 @@ const Explore = () => {
         }
     }, [error, isError]);
 
-
     return (
         <section className='min-h-screen w-full flex flex-col items-center px-4 pt-20 pb-10 sm:px-6 md:px-8'>
             <div className='w-full max-w-8xl text-center mb-6 sm:mb-10'>
@@ -100,21 +112,31 @@ const Explore = () => {
 
             {!isLoading && !isError && maxPage > 0 && (
                 <div className="join mt-10 flex-wrap justify-center">
-                    {Array.from({ length: maxPage }, (_, i) => i + 1).map((num) => (
-                        <input
-                            key={num}
-                            className="join-item btn btn-square btn-sm sm:btn-md checked:bg-[#5fa2fa] checked:border-blue-500 checked:text-white hover:checked:bg-blue-600"
-                            type="radio"
-                            name="options"
-                            aria-label={String(num)}
-                            checked={page === num}
-                            onChange={() => handlePageChange(num)}
-                        />
-                    ))}
+                    {getPaginationRange(page, maxPage).map((item, index) => {
+                        if (item === '...') {
+                            return (
+                                <button key={`ellipsis-${index}`} disabled className="join-item btn btn-square btn-sm sm:btn-md  border-none text-gray-500">
+                                    ...
+                                </button>
+                            );
+                        }
+
+                        return (
+                            <input
+                                key={item}
+                                className="join-item btn btn-square btn-sm sm:btn-md checked:bg-[#5fa2fa] checked:border-blue-500 checked:text-white hover:checked:bg-blue-600 bg-transparent"
+                                type="radio"
+                                name="options"
+                                aria-label={String(item)}
+                                checked={page === item}
+                                onChange={() => handlePageChange(item)}
+                            />
+                        );
+                    })}
                 </div>
             )}
         </section>
-    )
-}
+    );
+};
 
 export default Explore;

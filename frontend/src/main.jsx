@@ -15,7 +15,7 @@ const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
 const Search = lazy(() => import('./Pages/Search.jsx'));
 const MoviesDetail = lazy(() => import('./Pages/Movie/MoviesDetail.jsx'));
 const MovieDescription = lazy(() => import('./Pages/Movie/MovieDescription.jsx'));
-const TvDescription = lazy(() => import('./Pages/Movie/TvDescription .jsx'));
+const TvDescription = lazy(() => import('./Pages/Movie/TvDescription.jsx'));
 const Home = lazy(() => import('./Pages/Home.jsx'));
 const Explore = lazy(() => import('./Pages/Explore.jsx'));
 const Login = lazy(() => import('./Pages/Login.jsx'));
