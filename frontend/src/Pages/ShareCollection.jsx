@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom';
 import api from "../lib/axiosInstance.js";
 import Loading from "../components/Loading.jsx";
 import Card from "../components/Cards/Card.jsx";
@@ -12,7 +13,8 @@ const ShareCollection = () => {
     const { shareToken } = useParams();
     const [filter, setFilter] = useState('All');
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-    const classNameForSVG = (!isLoggedIn) ? "hidden" : "block" ;
+    const classNameForSVG = (!isLoggedIn) ? "hidden" : "block";
+    const navigate = useNavigate();
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['shared-collection', shareToken],
@@ -114,12 +116,15 @@ const ShareCollection = () => {
                     </div>
                 </div>
 
-                {filteredList.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 sm:gap-x-6 md:gap-x-8 lg:gap-x-10 xl:gap-x-12 gap-y-10 justify-items-center">
+                {favourites.length > 0 ? (
+                    filteredList.length > 0 ? (<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl-only:grid-cols-4 gap-x-4 sm:gap-x-6 md:gap-x-8 lg:gap-x-10 xl:gap-x-12 gap-y-10 justify-items-center">
                         {filteredList.map((media) => (
                             <Card
                                 className={classNameForSVG}
                                 allowed={isLoggedIn}
+                                onAuthRequired={() => {
+                                    document.getElementById('my_modal_5').showModal()
+                                }}
                                 key={media.id}
                                 id={media.id}
                                 title={media.title}
@@ -128,7 +133,9 @@ const ShareCollection = () => {
                                 type={media.type}
                             />
                         ))}
-                    </div>
+                    </div>) : (<div className="py-12 text-center text-slate-500 dark:text-slate-400">
+                        No {filter.toLowerCase()} found in this favorites.
+                    </div>)
                 ) : (
                     <div className="flex min-h-60 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 px-6 text-center dark:border-slate-700">
                         <HeartIcon size={52} className="mb-4 text-slate-300 dark:text-slate-600" strokeWidth={1.5} />
@@ -139,6 +146,39 @@ const ShareCollection = () => {
                     </div>
                 )}
             </div>
+
+            <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle backdrop-blur-sm">
+                <div className="modal-box bg-white dark:bg-[#090d14] border border-gray-200 dark:border-gray-800">
+
+                    <h3 className="font-bold text-xl text-gray-900 dark:text-white">
+                        Authentication Required
+                    </h3>
+
+                    <p className="py-4 text-gray-600 dark:text-gray-400">
+                        Login to view movie/tv show details.
+                    </p>
+
+                    <div className="modal-action flex items-center gap-2">
+                        <form method="dialog">
+                            <button className="btn">
+                                Cancel
+                            </button>
+                        </form>
+
+                        <button 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            navigate("/login");
+                        }}
+                        className="btn btn-primary bg-[#5fa2fa] hover:bg-blue-600 text-white border-none">
+                            Login
+                        </button>
+                    </div>
+
+                </div>
+            </dialog>
+
         </section>
     )
 }

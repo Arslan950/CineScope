@@ -8,6 +8,8 @@
     --font-Poppins : "Poppins" ;
 }
 
+@custom-variant xl-only (@media (min-width: 1280px) and (max-width: 1399px));
+
 body{
     overflow-x: hidden;
 }

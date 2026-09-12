@@ -171,8 +171,8 @@ const TvDescription = () => {
         </motion.div>
       </section>
       {/*poster and  stats */}
-      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 grid xl:grid-cols-[auto_1fr] grid-cols-1 gap-8">
-        <div className="sm:w-84 w-70 shrink-0 mx-auto xl:mx-0">
+      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 grid xl:grid-cols-[auto_1fr] xl-only:grid-cols-1 grid-cols-1 gap-8">
+        <div className="sm:w-84 w-70 shrink-0 mx-auto xl-only:mx-auto xl:mx-0">
           <img src={tvData?.poster} alt={tvData?.title} className="rounded-xl w-full h-auto shadow-2xl shadow-black duration-300 hover:scale-105" />
         </div>
 
@@ -213,7 +213,7 @@ const TvDescription = () => {
           {tvData?.production_company && (<div className="flex flex-col gap-y-3 mt-7">
             <h2 className="font-bold dark:text-zinc-50/85">PRODUCTION</h2>
             <div className="flex items-center gap-x-8">
-              <img src={tvData?.production_company?.logo} alt={tvData?.production_company?.name} className="bg-white p-1.5 rounded-lg w-60" />
+              <img src={tvData?.production_company?.logo} alt={tvData?.production_company?.name} className="bg-white p-1.5 rounded-lg w-45" />
               <p className="text-2xl font-semibold">{tvData?.production_company?.name}</p>
             </div>
           </div>)}

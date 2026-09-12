@@ -78,7 +78,7 @@ const Profile = () => {
 
                     <div className='flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 mb-8'>
 
-                        <div className='relative group flex-shrink-0'>
+                        <div className='relative group flex-shrink-0 flex justify-center'>
                             {loading && <span className="loading loading-infinity loading-lg text-[#5fa2fa] absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></span>}
 
                             <div className={`relative h-32 w-32 rounded-full border-4 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 overflow-hidden shadow-lg ${isEditing ? 'cursor-pointer' : ''}`}>
@@ -92,7 +92,7 @@ const Profile = () => {
                                 />
 
                                 {isEditing && (
-                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
                                         <Camera className="text-white drop-shadow-md" size={28} />
                                     </div>
                                 )}

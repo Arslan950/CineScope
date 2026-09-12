@@ -3,32 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import HeartFavourites from "./HeartFavourites.jsx";
 import { StarIcon } from "lucide-react";
 
-const Card = ({ title, poster, rating, type, id, className = "", allowed = true }) => {
-
+const Card = ({ title, poster, rating, type, id, className = "", allowed = true, onAuthRequired }) => {
   const navigate = useNavigate();
 
   const formatRating = (rating) => {
     const value = parseFloat(rating);
     return !value || Number.isNaN(value) ? "Not Rated" : rating.replace("/10", "");
   };
-
   const displayRating = formatRating(rating);
 
   const handleClick = useCallback(() => {
-
-    if (!id) {
-      return
-    }
-
+    if (!id) return;
     const params = new URLSearchParams({ id: id });
-
     if (type === "movie") {
       navigate(`/explore/movie?${params.toString()}`);
     } else if (type === "tv") {
       navigate(`/explore/tv?${params.toString()}`);
     }
-
-  }, [id, type, navigate])
+  }, [id, type, navigate]);
 
   return (
     <article
@@ -36,9 +28,11 @@ const Card = ({ title, poster, rating, type, id, className = "", allowed = true 
         e.preventDefault();
         if (allowed) {
           handleClick();
+        } else if (onAuthRequired) {
+          onAuthRequired();
         }
       }}
-      className={`group shrink-0 snap-start xl:w-65 lg:w-58 md:w-52 w-40 sm:shrink ${allowed ? "cursor-pointer" : ""}`}
+      className={`group shrink-0 snap-start xl:w-65 lg:w-58 md:w-52 w-40 cursor-pointer`}
     >
       <div className="relative xl:h-90 lg:h-85 md:h-75 h-60 w-full overflow-hidden rounded-lg border border-slate-300 shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl dark:border-slate-800">
         <img
@@ -52,13 +46,7 @@ const Card = ({ title, poster, rating, type, id, className = "", allowed = true 
           {displayRating}
         </span>
         <span className={`absolute right-2 top-2 rounded-full dark:bg-black/65 bg-slate-100/75 p-1.5 ${className}`}>
-          <HeartFavourites
-            id={id}
-            title={title}
-            poster={poster}
-            rating={rating}
-            type={type}
-          />
+          <HeartFavourites id={id} title={title} poster={poster} rating={rating} type={type} />
         </span>
       </div>
       <h3 className="mt-2 line-clamp-1 sm:text-lg font-semibold text-slate-900 transition-colors duration-300 group-hover:text-[#5fa2fa] dark:text-slate-100 ml-1 ">

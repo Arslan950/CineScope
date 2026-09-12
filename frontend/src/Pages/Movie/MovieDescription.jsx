@@ -183,8 +183,8 @@ const MovieDescription = () => {
         </motion.div>
       </section>
       {/* poster and stats */}
-      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 grid xl:grid-cols-[auto_1fr] grid-cols-1 gap-8">
-        <div className="sm:w-84 w-70 shrink-0 mx-auto xl:mx-0">
+      <section className="sm:max-w-[75%] mx-auto p-4 mb-16 mt-10 grid xl:grid-cols-[auto_1fr] xl-only:grid-cols-1 grid-cols-1 gap-8">
+        <div className="sm:w-84 w-70 shrink-0 mx-auto xl-only:mx-auto xl:mx-0">
           <img src={movieData?.poster} alt={movieData?.title} className="rounded-xl w-full h-auto shadow-2xl shadow-black duration-300 hover:scale-105" />
         </div>
 
