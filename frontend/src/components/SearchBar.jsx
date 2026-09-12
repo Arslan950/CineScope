@@ -5,12 +5,10 @@ import { useNavigate } from 'react-router-dom';
 
 const SearchBar = (
     {
-        className = "pl-12 pr-28 py-3 rounded-full",
+        className = "md:pl-12 pl-4 pr-10 md:pr-28 py-3 rounded-full",
         classNameforIcon = "",
-        classNameforButton = "px-3 py-1.5 rounded-full font-semibold",
-        Children = "Search"
+        classNameforButton = "p-1.5 md:px-3 md:py-1.5 rounded-full font-semibold",
     }
-
 ) => {
     const [movieName, setMovieName] = useState("");
     const navigate = useNavigate()
@@ -22,31 +20,32 @@ const SearchBar = (
         }
 
         const params = new URLSearchParams({ search: movieName.trim(), page: 1 })
-
         navigate(`/explore/?${params.toString()}`);
     }, [movieName, navigate]);
 
     return (
         <form onSubmit={handleSearch} className='w-full mt-4 sm:p-0 px-2.5'>
             <div className='relative w-full max-w-lg mx-auto '>
-                <div className={`absolute ${classNameforIcon} top-1/2 left-4 -translate-y-1/2 `}>
+                <div className={`absolute hidden md:block ${classNameforIcon} top-1/2 left-3 -translate-y-1/2 `}>
                     <SearchIcon className='h-5 w-6' opacity={0.7} />
                 </div>
+
                 <input
                     type="text"
                     placeholder='Search for movies'
                     value={movieName}
                     onChange={(e) => setMovieName(e.target.value)}
-                    className={`w-full bg-slate-100 dark:bg-[#111826] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 border border-slate-400 dark:border-white/40 focus:ring-2 focus:ring-blue-500 focus:outline-none duration-200 ${className}`}
+                    style={{ fontSize: '16px' }}
+                    className={`w-full md:text-sm bg-slate-100 dark:bg-[#111826] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-400 border border-slate-400 dark:border-white/40 focus:ring-2 focus:ring-blue-500 focus:outline-none duration-200 ${className}`}
                 />
-                <div className={`absolute top-1/2 right-2 -translate-y-1/2 `}>
+
+                <div className={`absolute top-1/2 right-1.5 md:right-2 -translate-y-1/2 `}>
                     <button
                         type='submit'
-                        className={`bg-blue-500 text-white hover:bg-blue-600 duration-300 ${classNameforButton}`}
+                        className={`md:bg-blue-500 text-white md:hover:bg-blue-600 duration-300 flex items-center justify-center ${classNameforButton}`}
                     >
-                        {
-                            Children
-                        }
+                        <span className="hidden md:inline">Search</span>
+                        <SearchIcon className="h-4 w-4 md:hidden not-dark:text-black/70" opacity={0.7} />
                     </button>
                 </div>
             </div>
@@ -55,4 +54,3 @@ const SearchBar = (
 }
 
 export default React.memo(SearchBar);
-

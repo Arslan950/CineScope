@@ -26,7 +26,6 @@ const NavBar = () => {
     const navLinks = [
         { name: 'Home', path: '/home', icon: <HomeIcon size={23} /> },
         { name: 'Favorites', path: '/favorites', icon: <HeartIcon size={23} /> },
-        { name: 'Search', path: '/search', icon: <SearchIcon size={23} /> }
     ];
 
     return (
@@ -34,11 +33,19 @@ const NavBar = () => {
             <nav className='w-full px-4 xl:px-8 py-2.5 flex items-center min-h-[64px]'>
                 <div className='flex xl:hidden w-full justify-between items-center relative z-20'>
                     <Link to="/" className='flex items-center gap-x-2 w-fit'>
-                        <img src={logo} alt="CineScope" className='w-8' />
-                        <h1 className='text-lg font-bold text-slate-900 dark:text-white'>CineScope</h1>
+                        <img src={logo} alt="CineScope" className='w-10' />
+                        <h1 className='text-lg font-bold text-slate-900 dark:text-white md:block hidden'>CineScope</h1>
                     </Link>
+                    <div className="flex-1 mx-2 -mt-4">
+                        <SearchBar
+                            className="pl-3 md:pl-10 pr-10 md:pr-[72px] py-1.5 w-full bg-slate-50 dark:bg-[#111826] text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:ring-1 focus:ring-blue-500 transition-all text-sm shadow-none rounded-md"
+                            classNameforIcon="text-slate-400 dark:text-slate-500"
+                            classNameforButton="text-xs font-semibold p-1.5 md:px-3 md:py-1 rounded-md"
+                        />
+                    </div>
 
-                    <label className="btn btn-circle swap swap-rotate dark:bg-[#090d14] bg-white border-none shadow-none">
+
+                    <label className="btn btn-sm not-dark:border-none swap swap-rotate dark:bg-[#090d14] bg-white shadow-none">
                         <input type="checkbox"
                             onChange={() => {
                                 setTimeout(() => setDropdownFlag(!dropdownFlag), 120);
@@ -131,7 +138,7 @@ const NavBar = () => {
                             <SearchBar
                                 className="pl-11 pr-4 py-2 w-full rounded-md bg-white dark:bg-[#1f2a38] text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:ring-1 focus:ring-blue-500 transition-all text-sm shadow-none"
                                 classNameforIcon="text-slate-400 dark:text-slate-500"
-                                classNameforButton="text-sm p-0.5 rounded-md"
+                                classNameforButton="text-sm p-0.5 rounded-md bg-blue-500 hover:bg-blue-600"
                             />
                         </div>
 

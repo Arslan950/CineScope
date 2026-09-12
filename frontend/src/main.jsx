@@ -12,7 +12,6 @@ import PublicRoute from './components/PublicRoute.jsx';
 const LandingPage = lazy(() => import('./Pages/LandingPage.jsx'));
 const Favourites = lazy(() => import('./Pages/Favourites.jsx'));
 const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
-const Search = lazy(() => import('./Pages/Search.jsx'));
 const MoviesDetail = lazy(() => import('./Pages/Movie/MoviesDetail.jsx'));
 const MovieDescription = lazy(() => import('./Pages/Movie/MovieDescription.jsx'));
 const TvDescription = lazy(() => import('./Pages/Movie/TvDescription.jsx'));
@@ -59,16 +58,6 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <Suspense fallback={<Loading />}>
               <Favourites />
-            </Suspense>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "Search",
-        element: (
-          <ProtectedRoute>
-            <Suspense fallback={<Loading />}>
-              <Search />
             </Suspense>
           </ProtectedRoute>
         ),
