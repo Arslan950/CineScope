@@ -1,176 +1,152 @@
-import React, { useState } from 'react'
-import logo from '../assets/logo.svg'
-import { motion } from 'motion/react'
-import { NavLink, Link, useNavigate } from 'react-router-dom'
-import ThemeBtn from './ThemeBtn.jsx'
-import { useThemeStore } from '../store/ThemeStore.js'
-import { useAuthStore } from "../store/AuthStore.js"
-import { LogOutIcon, SearchIcon, HomeIcon, HeartIcon } from "lucide-react";
-import SearchBar from "../components/SearchBar.jsx";
-import fallBack from "../assets/fallBack.png"
+import React, { useState } from 'react';
+import logo from '../assets/logo.svg';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Search, Moon, Sun, LogOut, Menu, X, ChevronRight, Home, Heart } from 'lucide-react';
+import { useAccount } from '../hooks/useAccount.js';
+import AccountMenu from './AccountMenu';
+import SearchBar from './SearchBar';
+
+const ICON_BUTTON = 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-100 dark:focus-visible:ring-offset-[#111826] border-slate-300 text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white';
+
+const navLinks = [
+  { id: 'home', label: 'Home', path: '/home', icon: Home },
+  { id: 'favourites', label: 'Favorites', path: '/favorites', icon: Heart },
+];
 
 const NavBar = () => {
-    const [dropdownFlag, setDropdownFlag] = useState(false)
-    const navigate = useNavigate();
-    const theme = useThemeStore((state) => state.theme);
-    const loggedOut = useAuthStore((state) => state.loggedOut);
-    const user = useAuthStore((state) => state.user);
-    const avatar = user?.avatar || "https://res.cloudinary.com/dadnb58fk/image/upload/v1783945175/sk4bfdfewzwc57pfodgu.png" || fallBack;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
-    const handleLogout = () => {
-        loggedOut().then(() => {
-            navigate('/login');
-        })
-    }
+  const location = useLocation();
+  const profileActive = location.pathname === '/profile';
 
-    const navLinks = [
-        { name: 'Home', path: '/home', icon: <HomeIcon size={23} /> },
-        { name: 'Favorites', path: '/favorites', icon: <HeartIcon size={23} /> },
-    ];
+  const { theme, avatar, userName, onToggleTheme, handleLogout } = useAccount();
 
-    return (
-        <header className="fixed z-10 top-0 left-0 w-full bg-white dark:bg-[#090d14] shadow shadow-md duration-200">
-            <nav className='w-full px-4 xl:px-8 py-2.5 flex items-center min-h-[64px]'>
-                <div className='flex xl:hidden w-full justify-between items-center relative z-20'>
-                    <Link to="/" className='flex items-center gap-x-2 w-fit'>
-                        <img src={logo} alt="CineScope" className='w-10' />
-                        <h1 className='text-lg font-bold text-slate-900 dark:text-white md:block hidden'>CineScope</h1>
-                    </Link>
-                    <div className="flex-1 mx-2 -mt-4">
-                        <SearchBar
-                            className="pl-3 md:pl-10 pr-10 md:pr-[72px] py-1.5 w-full bg-slate-50 dark:bg-[#111826] text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:ring-1 focus:ring-blue-500 transition-all text-sm shadow-none rounded-md"
-                            classNameforIcon="text-slate-400 dark:text-slate-500"
-                            classNameforButton="text-xs font-semibold p-1.5 md:px-3 md:py-1 rounded-md"
-                        />
-                    </div>
+  return (
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200 bg-slate-100 dark:border-white/10 dark:bg-[#090d14]">
+      <div className="flex h-16 w-full items-center gap-3 px-4 sm:gap-4 sm:px-6 lg:h-[68px] lg:gap-6 lg:px-8">
+
+        <Link to="/" onClick={() => setMenuOpen(false)} className="flex shrink-0 items-center gap-2 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa]">
+          <span className="flex h-10 w-10 items-center justify-center">
+            <img src={logo} alt="CineScope" />
+          </span>
+          <span className="font-heading text-lg font-semibold tracking-tight text-slate-900 dark:text-white sm:text-xl">
+            CineScope
+          </span>
+        </Link>
+
+        <nav aria-label="Main" className="hidden md:ml-3 md:block lg:ml-8">
+          <ul className="flex items-center gap-1">
+            {navLinks.map(({ id, label, path, icon: Icon }) => (
+              <li key={id}>
+                <NavLink
+                  to={path}
+                  end={path === '/'}
+                  className={({ isActive }) => `flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa] lg:px-3.5 ${isActive ? 'text-[#2b7ae4] dark:text-[#5fa2fa]' : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'}`}
+                >
+                  <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                  <span className="hidden lg:inline">{label}</span>
+                  <span className="sr-only lg:hidden">{label}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <SearchBar
+          containerClass="ml-auto hidden min-w-0 flex-1 md:block md:max-w-sm lg:max-w-xl"
+          inputClass="h-10"
+          buttonClass="h-7"
+          id="navbar-search"
+        />
+        <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
+          <button type="button" onClick={() => setMobileSearchOpen((open) => !open)} className={`${ICON_BUTTON} md:hidden`}>
+            {mobileSearchOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Search className="h-5 w-5" aria-hidden="true" />}
+          </button>
 
 
-                    <label className="btn btn-sm not-dark:border-none swap swap-rotate dark:bg-[#090d14] bg-white shadow-none">
-                        <input type="checkbox"
-                            onChange={() => {
-                                setTimeout(() => setDropdownFlag(!dropdownFlag), 120);
-                            }}
-                            checked={dropdownFlag}
-                        />
-                        <svg className="swap-off fill-black dark:fill-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" /></svg>
-                        <svg className="swap-on fill-black dark:fill-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" /></svg>
-                    </label>
+          <div className="hidden md:block">
+            <AccountMenu />
+          </div>
 
-                    {dropdownFlag && (
-                        <motion.div
-                            initial={{ opacity: 0.6, y: -0, x: 10 }}
-                            whileInView={{ opacity: 1, x: -5 }}
-                            transition={{ delay: 0.1, duration: 0.3, ease: "easeInOut" }}
-                            className="absolute right-0 top-10 mt-4 m-3 w-40 bg-white dark:bg-[#090d14] text-slate-900 dark:text-white rounded-md shadow-lg border border-slate-100 dark:border-slate-700 z-50 overflow-hidden"
-                        >
-                            <ul className="flex flex-col">
-                                {avatar && (
-                                    <li className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-                                        <Link to="/profile" onClick={() => {
-                                            setTimeout(() => setDropdownFlag(false), 120)
-                                        }} className="flex items-center gap-x-3">
-                                            <img src={avatar} alt="avatar" className="w-8 h-8 rounded-full object-cover border border-slate-300" />
-                                            <span className="text-sm font-medium">Profile</span>
-                                        </Link>
-                                    </li>
-                                )}
-                                {navLinks.map((link) => (
-                                    <li key={link.name} className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer">
-                                        <NavLink
-                                            to={link.path}
-                                            onClick={() => {
-                                                setTimeout(() => setDropdownFlag(false), 120)
-                                            }}
-                                            className={({ isActive }) => `flex items-center gap-x-3 group ${isActive ? "text-blue-500" : "text-slate-800 dark:text-white"}`}
-                                        >
-                                            {link.icon}
-                                            <p className='text-[1em] duration-200'>{link.name}</p>
-                                        </NavLink>
-                                    </li>
-                                ))}
-                                <li className="px-2.5 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer">
-                                    <div className='flex items-center ml-[7px]'>
-                                        <ThemeBtn />
-                                        <p>{theme}</p>
-                                    </div>
-                                </li>
-                                <li className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-700 cursor-pointer" onClick={handleLogout}>
-                                    <span className="flex items-center gap-x-3 text-red-500 ml-1">
-                                        <LogOutIcon size={24} />
-                                        <p className='text-[1em]'>Logout</p>
-                                    </span>
-                                </li>
-                            </ul>
-                        </motion.div>
-                    )}
-                </div>
+          <button type="button" onClick={() => setMenuOpen((open) => !open)} className={`${ICON_BUTTON} md:hidden`}>
+            {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+          </button>
+        </div>
+      </div>
 
-                <div className='hidden xl:flex flex-1 items-center justify-between w-full'>
+      <AnimatePresence initial={false}>
+        {mobileSearchOpen && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-slate-200 md:hidden dark:border-white/10">
+            <SearchBar
+              containerClass="px-4 py-3 sm:px-6"
+              inputClass="h-11"
+              buttonClass="h-8"
+              id="navbar-search-mobile"
+              autoFocus
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-                    <div className='flex items-center gap-x-20'>
-                        <Link to="/" className='flex items-center gap-x-2 w-fit shrink-0'>
-                            <img src={logo} alt="CineScope" className='w-8' />
-                            <h1 className='text-xl font-bold tracking-tight text-slate-900 dark:text-white'>CineScope</h1>
-                        </Link>
-
-                        <div className='flex items-center gap-x-8'>
-                            {navLinks.map((link) => (
-                                <NavLink
-                                    key={link.name}
-                                    to={link.path}
-                                    className={({ isActive }) =>
-                                        `flex items-center gap-x-2 text-sm font-semibold transition-colors duration-200 whitespace-nowrap ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300 hover:text-blue-500'
-                                        }`
-                                    }
-                                >
-                                    {link.icon}
-                                    {link.name}
-                                </NavLink>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="flex-1"></div>
-
-                    <div className='flex items-center gap-x-5 pl-8'>
-
-                        <div className="w-[300px] xl:w-[450px] -mt-4">
-                            <SearchBar
-                                className="pl-11 pr-4 py-2 w-full rounded-md bg-white dark:bg-[#1f2a38] text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:ring-1 focus:ring-blue-500 transition-all text-sm shadow-none"
-                                classNameforIcon="text-slate-400 dark:text-slate-500"
-                                classNameforButton="text-sm p-0.5 rounded-md bg-blue-500 hover:bg-blue-600"
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-x-4 ml-2">
-                            <ThemeBtn />
-                            {avatar && (
-                                <Link to="/profile" className="shrink-0">
-                                    <img
-                                        src={avatar}
-                                        alt="Profile"
-                                        className="w-9 h-9 rounded-full object-cover border-2 border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 transition-colors duration-200 shadow-sm"
-                                    />
-                                </Link>
-                            )}
-
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleLogout();
-                                }}
-                                className='flex items-center justify-center gap-x-2 bg-[#5fa2fa] hover:bg-blue-500 text-white px-4 py-2 rounded-md transition-all duration-200 shadow-sm'
-                            >
-                                <span className="text-sm font-semibold whitespace-nowrap">Logout</span>
-                                <LogOutIcon size={16} strokeWidth={2.5} />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
+      <AnimatePresence initial={false}>
+        {menuOpen && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-slate-200 bg-slate-100 md:hidden dark:border-white/10 dark:bg-[#111826]">
+            <nav aria-label="Mobile" className="px-4 pb-4 pt-3 sm:px-6">
+              <Link to="/profile" onClick={() => setMenuOpen(false)} className={`mb-2 flex items-center gap-3 rounded-xl border px-3 py-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa] ${profileActive ? 'border-[#5fa2fa] bg-[#5fa2fa]/10' : 'border-slate-300 hover:bg-slate-200 dark:border-white/10 dark:hover:bg-white/10'}`}>
+                <img src={avatar} alt="" className="h-10 w-10 rounded-full object-cover" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold text-slate-900 dark:text-white">{userName}</span>
+                  <span className="block truncate text-xs text-slate-500 dark:text-slate-400">View profile</span>
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500" aria-hidden="true" />
+              </Link>
+              <ul className="flex flex-col gap-1">
+                {navLinks.map(({ id, label, path, icon: Icon }) => (
+                  <li key={id}>
+                    <NavLink to={path} end={path === '/'} onClick={() => setMenuOpen(false)} className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa] ${isActive ? 'text-[#2b7ae4] dark:text-[#5fa2fa]' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`}>
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                      {label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={theme === 'dark'}
+                onClick={onToggleTheme}
+                className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa] text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                <span className="flex items-center gap-3">
+                  {theme === 'dark' ? (
+                    <Moon className="h-5 w-5" aria-hidden="true" />
+                  ) : (
+                    <Sun className="h-5 w-5" aria-hidden="true" />
+                  )}
+                  <span className="capitalize">{theme}</span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${theme === 'dark' ? 'bg-[#5fa2fa]/40' : 'bg-slate-300'
+                    }`}
+                >
+                  <span
+                    className={`absolute top-[3px] h-[14px] w-[14px] rounded-full transition-all bg-[#5fa2fa] ${theme === 'dark' ? 'left-[19px]' : 'left-[3px]'
+                      }`}
+                  />
+                </span>
+              </button>
+              <button type="button" onClick={() => { setMenuOpen(false); handleLogout(); }} className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#5fa2fa] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#4b91ee] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5fa2fa]">
+                <LogOut className="h-[18px] w-[18px]" aria-hidden="true" /> Logout
+              </button>
             </nav>
-        </header>
-    )
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
 }
 
-export default NavBar
+export default React.memo(NavBar);

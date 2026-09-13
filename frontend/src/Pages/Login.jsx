@@ -57,7 +57,7 @@ const Login = () => {
                 </div>
             </div>
 
-            <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto">
+            <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto mt-17">
                 <div className="w-full max-w-md m-auto flex flex-col items-center gap-y-5">
 
                     <div className="w-full sm:flex sm:items-center sm:justify-center gap-x-2 sm:block hidden">

@@ -41,10 +41,7 @@ function App() {
     <main className="relative flex min-h-screen w-full flex-col overflow-hidden font-Poppins duration-300 dark:text-white text-black">
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background: `${(theme === "dark") ? "radial-gradient(125% 125% at 50% 10%, #04060a 40%, #0d1a36 100%)" : "radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%)"}`
-        }}
+        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(125%_125%_at_50%_10%,#fff_40%,#6366f1_100%)] dark:bg-[radial-gradient(125%_125%_at_50%_10%,#04060a_40%,#0d1a36_100%)] transition-colors duration-500"
       />
       <div className="relative z-10 flex min-h-screen flex-col">
         <ToastContainer

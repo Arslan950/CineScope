@@ -151,7 +151,7 @@ const MovieDescription = () => {
               {movieData?.title}
             </h1>
 
-            <p className="text-white/90 text-sm sm:text-base mt-3 leading-relaxed">
+            <p className="text-white/90 text-sm sm:text-base mt-3 leading-relaxed sm:line-clamp-0 line-clamp-10">
               {movieData?.overview}
             </p>
 

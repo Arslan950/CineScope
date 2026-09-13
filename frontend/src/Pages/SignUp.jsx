@@ -137,7 +137,7 @@ const SignUp = () => {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto scrollbar-hide items-center justify-center">
+      <div className="w-full lg:w-1/2 flex flex-col px-4 py-6 overflow-y-auto scrollbar-hide items-center justify-center mt-17">
         {loading ? (
           <span className="loading loading-spinner loading-xl"></span>
         ) : (
