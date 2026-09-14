@@ -43,14 +43,13 @@ const Home = () => {
 
   return (
     <section className='w-full mt-16'>
-      <section
-        className="relative w-full h-[65vh] sm:h-[80vh] bg-cover bg-center"
-        style={{
-          backgroundImage:
-            `url('${dashboardData?.hollywood[0].backdrop}')`,
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/60 via-black/40 to-transparen" />
+      <section className="relative w-full overflow-hidden h-[calc(var(--vh,1vh)*75)] sm:h-[calc(var(--vh,1vh)*80)] md:h-[calc(var(--vh,1vh)*75)]">
+        <img
+          src={dashboardData?.hollywood[0].backdrop}
+          alt={dashboardData?.hollywood[0].title}
+          className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)] [will-change:transform]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-transparent" />
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -63,7 +62,7 @@ const Home = () => {
               <TrendingUp size={18} strokeWidth={2.5} />
               Trending #1 today
             </span>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white text-left mb-2">
+            <h1 className="text-3xl sm:text-5xl font-bold text-white text-left mb-2">
               {dashboardData?.hollywood[0].title}
             </h1>
 
@@ -74,7 +73,7 @@ const Home = () => {
               <p className="capitalize">{dashboardData?.hollywood[0].type}</p>
             </span>
 
-            <p className="text-white/90 text-sm sm:text-xl mt-3 leading-relaxed">
+            <p className="text-white/90 text-sm sm:text-lg mt-3 leading-relaxed">
               {dashboardData?.hollywood[0].overview}
             </p>
 

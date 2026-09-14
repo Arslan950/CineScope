@@ -18,6 +18,26 @@ function App() {
   const hydrateFavouritesList = useFavouritesStore((state) => state.hydrateFavouritesList);
 
   useEffect(() => {
+    const setViewportProperty = () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setViewportProperty();
+
+    let windowWidth = window.innerWidth;
+    const handleResize = () => {
+      if (window.innerWidth !== windowWidth) {
+        windowWidth = window.innerWidth;
+        setViewportProperty();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     checkAuth();
   }, []);
 

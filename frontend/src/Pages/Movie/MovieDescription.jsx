@@ -132,7 +132,7 @@ const MovieDescription = () => {
     <section className="mt-16 min-h-screen">
       {/* hero section */}
       <section
-        className="relative w-full h-[65vh] sm:h-[80vh] bg-cover bg-center"
+        className="relative w-full  h-[calc(var(--vh,1vh)*75)] sm:h-[calc(var(--vh,1vh)*80)] md:h-[calc(var(--vh,1vh)*75)] bg-cover bg-center"
         style={{
           backgroundImage:
             `url('${movieData?.backdrop}')`,
@@ -245,7 +245,7 @@ const MovieDescription = () => {
       {/* Cast and crew */}
       {movieData?.cast.length != 0 && (<section className="sm:max-w-[75%] mx-auto p-4 mb-16 border-t border-slate-800">
         <h2 className="sm:text-3xl text-2xl font-semibold mb-8">Cast and Crew</h2>
-        <div className="flex items-center gap-x-6 overflow-x-scroll">
+        <div className="flex items-center gap-x-3.5 overflow-x-scroll">
           <CastCard
             name={movieData?.director?.real_name}
             role={movieData?.director?.role}
