@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import {handleApiError} from "../lib/errorHandler.js";
 import axios from "axios";
 import api from "../lib/axiosInstance.js"
 import { toast } from "react-toastify";
@@ -31,16 +32,7 @@ export const useAuthStore = create((set, get) => ({
 
             return true;
         } catch (error) {
-            if (error.response) {
-                const backendMessage = error.response?.data?.message || "Invalid credentials. Please try again.";
-                toast.error(backendMessage);
-            } else if (error.request) {
-                const networkMsg = "Network error. Please check your connection.";
-                toast.error(networkMsg);
-            } else {
-                const unexpectedMsg = "An unexpected error occurred.";
-                toast.error(unexpectedMsg);
-            }
+            handleApiError(error);
             return false;
         }
     },
@@ -75,16 +67,7 @@ export const useAuthStore = create((set, get) => ({
             set({ user: userData })
 
         } catch (error) {
-            if (error.response) {
-                const backendMessage = error.response?.data?.message || "Somewith went wrong(2)"
-                toast.error(backendMessage)
-            } else if (error.request) {
-                const networkMsg = "Network error. Please check your connection.";
-                toast.error(networkMsg);
-            } else {
-                const unexpectedMsg = "An unexpected error occurred.";
-                toast.error(unexpectedMsg);
-            }
+            handleApiError(error);
         }
     },
 
@@ -119,17 +102,7 @@ export const useAuthStore = create((set, get) => ({
             set({ user: null, isLoggedIn: false })
             return true;
         } catch (error) {
-            if (error.response) {
-                const backendMessage = error.response?.data?.message || "Somewith went wrong(3)"
-                toast.error(backendMessage)
-            } else if (error.request) {
-                const networkMsg = "Network error. Please check your connection.";
-                toast.error(networkMsg);
-            } else {
-                const unexpectedMsg = "An unexpected error occurred.";
-                toast.error(unexpectedMsg);
-            }
-
+            handleApiError(error);
             return false ;
         }
     }

@@ -35,7 +35,7 @@ const UserSchema = new Schema({
     },
     genres: {
         type: [String],
-        default: ["Comedy", "sc-fi", "horror"]
+        default: ["Comedy", "sci-fi", "horror"]
     },
     isEmailVerified: {
         type: Boolean,
@@ -72,7 +72,7 @@ UserSchema.methods.generateAccessToken = function () {
     )
 };
 
-UserSchema.methods.generateRefreshToken = function name(params) {
+UserSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
             _id: this._id,

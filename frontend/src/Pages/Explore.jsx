@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Loading.jsx";
 import Card from "../components/Cards/Card.jsx";
 import api from "../lib/axiosInstance.js";
 import { useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { handleApiError } from '../lib/errorHandler.js';
 
 const getPaginationRange = (currentPage, totalPages) => {
     if (totalPages <= 7) {
@@ -39,10 +39,13 @@ const Explore = () => {
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ["searchResults", searchedTerm, page],
         queryFn: async ({ signal }) => {
-            const response = await api.post("/explore/search-results", {
-                "searchedTerm": searchedTerm,
-                "page": page
-            }, { signal });
+            const response = await api.get("/explore/search-results", {
+                params : {
+                    searchedTerm : searchedTerm ,
+                    page : page
+                },
+                signal
+            });
 
             return response.data?.data;
         },
@@ -55,16 +58,7 @@ const Explore = () => {
     useEffect(() => {
         if (isError && error) {
             if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
-            if (error.response) {
-                const backendMessage = error.response?.data?.message || "Something went wrong";
-                toast.error(backendMessage);
-            } else if (error.request) {
-                const networkMsg = "Network error. Please check your connection.";
-                toast.error(networkMsg);
-            } else {
-                const unexpectedMsg = "An unexpected error occurred.";
-                toast.error(unexpectedMsg);
-            }
+            handleApiError(error);
         }
     }, [error, isError]);
 

@@ -31,10 +31,10 @@ const formatData = (item) => {
 
 const getSearchData = asyncHandler(async (req, res) => {
     const api_key = process.env.TMDB_API_KEY;
-    const { searchedTerm, page } = req.body;
+    const { searchedTerm, page } = req.query;
 
     if (!searchedTerm || !page) {
-        throw new ApiError(400, "Provide proper data")
+        throw new ApiError(400, "Search term and page number are required")
     }
 
     try {
@@ -43,7 +43,7 @@ const getSearchData = asyncHandler(async (req, res) => {
         const rawResults = response?.data?.results;
 
         if (rawResults.length === 0) {
-            throw new ApiError(400, "No data found from TMDB");
+            throw new ApiError(404, "No search results found for the provided query");
         }
 
         const formattedResults = rawResults.filter(item => item.media_type !== 'person').map(formatData);
@@ -59,7 +59,7 @@ const getSearchData = asyncHandler(async (req, res) => {
             .json(new ApiResponse(200, finalData, "Searched data fetched successfully"))
 
     } catch (error) {
-        throw new ApiError(400, `${error.message}`)
+        throw new ApiError(502, "Bad Gateway: Failed to fetch data from the external service")
     }
 });
 
@@ -93,17 +93,17 @@ const formatMovieData = (item) => {
     return {
         id: item.id,
         title: item.title,
-        poster: item.poster_path ? `https://image.tmdb.org/t/p/w400${item.poster_path}` : "https://placehold.co/300x450/252525/FFFFFF?text=No+poster+availabe",
+        poster: item.poster_path ? `https://image.tmdb.org/t/p/w400${item.poster_path}` : `https://placehold.co/300x450/252525/FFFFFF?text=${item.title}`,
         backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w1920${item.backdrop_path}` : `https://placehold.co/1920x750/111826/FFFFFF?text=${item.title}`,
         runtime: item.runtime || "Not specified",
-        type : "movie" ,
+        type: "movie",
         rating: item.vote_average ? `${item.vote_average.toFixed(1)}/10` : item.vote_average,
         imdb_id: item.imdb_id,
         release_date: item.release_date.split("-").reverse().join("-") || "Not specified",
         overview: item.overview,
         status: item.status,
         budget: (item.budget > 0) ? item.budget : "Not specified",
-        revenue : (item.revenue > 0) ? item.revenue : "Not specified",
+        revenue: (item.revenue > 0) ? item.revenue : "Not specified",
         trailer: trailerKey ? `https://www.youtube.com/embed/${trailerKey}` : null,
         genres: genres,
         director: director,
@@ -114,10 +114,10 @@ const formatMovieData = (item) => {
 
 const getMoviesDetail = asyncHandler(async (req, res) => {
     const api_key = process.env.TMDB_API_KEY
-    const { id } = req.body;
+    const { id } = req.query;
 
     if (!id) {
-        throw new ApiError(400, "Please provide a movie");
+        throw new ApiError(400, "Movie ID is required");
     }
 
     try {
@@ -126,7 +126,7 @@ const getMoviesDetail = asyncHandler(async (req, res) => {
         const finalData = formatMovieData(response.data);
 
         if (!finalData) {
-            throw new ApiError(400, "Failed to fetch details from TMDB")
+            throw new ApiError(502, "Failed to retrieve movie details from the external provider")
         }
 
         return res
@@ -135,7 +135,7 @@ const getMoviesDetail = asyncHandler(async (req, res) => {
 
 
     } catch (error) {
-        throw new ApiError(400, `${error.message}`)
+        throw new ApiError(502, "Bad Gateway: Failed to fetch data from the external service")
     }
 });
 
@@ -177,11 +177,11 @@ const formatTVData = (item) => {
         backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w1920${item.backdrop_path}` : `https://placehold.co/1920x750/111826/FFFFFF?text=${encodeURIComponent(item.original_name || item.name)}`,
         runtime: item.episode_run_time?.[0] || "Not specified",
         rating: item.vote_average ? `${item.vote_average.toFixed(1)}/10` : item.vote_average,
-        type : "tv",
+        type: "tv",
         release_date: item.first_air_date.split("-").reverse().join("-") || "Not specified",
-        in_production : item.in_production || "Not specified",
-        number_of_seasons : item.number_of_seasons || "Not specified",
-        number_of_episodes : item.number_of_episodes || "Not specified",
+        in_production: item.in_production || "Not specified",
+        number_of_seasons: item.number_of_seasons || "Not specified",
+        number_of_episodes: item.number_of_episodes || "Not specified",
         overview: item.overview,
         status: item.status,
         trailer: trailerKey ? `https://www.youtube.com/embed/${trailerKey}` : null,
@@ -195,9 +195,9 @@ const formatTVData = (item) => {
 
 const getTVDetails = asyncHandler(async (req, res) => {
     const api_key = process.env.TMDB_API_KEY;
-    const { id } = req.body;
+    const { id } = req.query;
 
-    if(!id) {
+    if (!id) {
         throw new ApiError(400, "Please provide a movie");
     }
 
@@ -206,7 +206,7 @@ const getTVDetails = asyncHandler(async (req, res) => {
 
         const finalData = formatTVData(response.data);
 
-        if(!finalData) {
+        if (!finalData) {
             throw new ApiError(400, "Failed to fetch details from TMDB")
         }
 
@@ -215,7 +215,7 @@ const getTVDetails = asyncHandler(async (req, res) => {
             .json(new ApiResponse(200, finalData, "Fetched TV data successfully"))
 
     } catch (error) {
-        throw new ApiError(400, `${error.message}`)
+        throw new ApiError(502, "Bad Gateway: Failed to fetch data from the external service")
     }
 });
 

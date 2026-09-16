@@ -1,7 +1,7 @@
 import './App.css'
 import { useEffect } from 'react'
 import NavBar from './components/NavBar'
-import SecondryNavBar from './components/SecondryNavBar.jsx'
+import SecondaryNavBar from './components/SecondaryNavBar.jsx'
 import Footbar from './components/Footbar'
 import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { useThemeStore } from './store/ThemeStore'
@@ -76,7 +76,7 @@ function App() {
           pauseOnHover
           theme={theme}
         />
-        {isLoggedIn ? <NavBar /> : <SecondryNavBar />}
+        {isLoggedIn ? <NavBar /> : <SecondaryNavBar />}
         <section className="flex flex-grow flex-col items-center">
           <Outlet />
         </section>

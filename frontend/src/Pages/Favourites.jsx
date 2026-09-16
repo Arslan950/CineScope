@@ -4,6 +4,7 @@ import Card from '../components/Cards/Card';
 import { Copy, HeartIcon, Share, Check } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../lib/axiosInstance';
+import { handleApiError } from '../lib/errorHandler';
 
 const Favourites = () => {
   const favouritesList = useFavouritesStore((state) => state.favouritesList);
@@ -72,38 +73,20 @@ const Favourites = () => {
         addUrl(responseData?.sharedUrl);
         setUrl(responseData?.sharedUrl);
       } catch (error) {
-        if (error.response) {
-          const backendMessage = error.response?.data?.message
-          toast.error(backendMessage);
-        } else if (error.request) {
-          const networkMsg = "Network error. Please check your connection.";
-          toast.error(networkMsg);
-        } else {
-          const unexpectedMsg = "An unexpected error occurred.";
-          toast.error(unexpectedMsg);
-        }
+        handleApiError(error);
       } finally {
         setIsLoading(false);
       }
     }
   }
 
-  const handleRevok = async () => {
+  const handleRevoke = async () => {
     try {
       await api.post("/favourites/revoke-link");
       removeUrl();
       setUrl("");
     } catch (error) {
-      if (error.response) {
-        const backendMessage = error.response?.data?.message
-        toast.error(backendMessage);
-      } else if (error.request) {
-        const networkMsg = "Network error. Please check your connection.";
-        toast.error(networkMsg);
-      } else {
-        const unexpectedMsg = "An unexpected error occurred.";
-        toast.error(unexpectedMsg);
-      }
+      handleApiError(error);
     }
   }
 
@@ -195,7 +178,7 @@ const Favourites = () => {
                       </button>
                     </div>
                     <button
-                      onClick={() => handleRevok()}
+                      onClick={() => handleRevoke()}
                       disabled={(url === "")}
                       className='bg-red-600 hover:bg-red-400 duration-200 w-full mt-4 py-2 rounded-lg cursor-pointer text-lg font-medium '>
                       Revoke
@@ -224,7 +207,7 @@ const Favourites = () => {
             </div>
           ) : (
             <div className="py-12 text-center text-slate-500 dark:text-slate-400">
-              No {filter.toLowerCase()} found in your favorites.
+              No {filter.toLowerCase()} found in your favourites
             </div>
           )
         }

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from "zustand/middleware";
 import api from "../lib/axiosInstance.js";
 import debounce from "lodash.debounce";
-import { toast } from 'react-toastify';
+import { handleApiError } from '../lib/errorHandler.js';
 
 const syncWithBackend = debounce(async (list) => {
   try {
@@ -13,23 +13,14 @@ const syncWithBackend = debounce(async (list) => {
     localStorage.removeItem('favourites_sync_pending');
 
   } catch (error) {
-    if (error.response) {
-      const backendMessage = error.response?.data?.message || "Something went wrong";
-      toast.error(backendMessage)
-    } else if (error.request) {
-      const networkMsg = "Network error. Please check your connection.";
-      toast.error(networkMsg);
-    } else {
-      const unexpectedMsg = "An unexpected error occurred.";
-      toast.error(unexpectedMsg);
-    }
+    handleApiError(error);
   }
 }, 3000);
 
 export const useFavouritesStore = create(
   persist((set, get) => ({
     favouritesList: [],
-    shareUrl : "",
+    shareUrl: "",
 
     hydrateFavouritesList: async () => {
       const hasPendingSync = localStorage.getItem('favourites_sync_pending');
@@ -40,36 +31,18 @@ export const useFavouritesStore = create(
           await api.put("/favourites/sync", { "favouritesChanges": localData });
           localStorage.removeItem('favourites_sync_pending');
         } catch (error) {
-          if (error.response) {
-            const backendMessage = error.response?.data?.message || "Something went wrong";
-            toast.error(backendMessage)
-          } else if (error.request) {
-            const networkMsg = "Network error. Please check your connection.";
-            toast.error(networkMsg);
-          } else {
-            const unexpectedMsg = "An unexpected error occurred.";
-            toast.error(unexpectedMsg);
-          }
-          return ;
+          handleApiError(error);
+          return;
         }
       }
 
       try {
         const response = await api.get("/favourites/get-list");
         const backendList = response?.data?.data?.favourites || [];
-        const sharedUrl = response.data?.data?.sharedUrl  || "" ;
-        set({ favouritesList: backendList , shareUrl : sharedUrl});
+        const sharedUrl = response.data?.data?.sharedUrl || "";
+        set({ favouritesList: backendList, shareUrl: sharedUrl });
       } catch (error) {
-        if (error.response) {
-          const backendMessage = error.response?.data?.message || "Something went wrong";
-          toast.error(backendMessage)
-        } else if (error.request) {
-          const networkMsg = "Network error. Please check your connection.";
-          toast.error(networkMsg);
-        } else {
-          const unexpectedMsg = "An unexpected error occurred.";
-          toast.error(unexpectedMsg);
-        }
+        handleApiError(error);
       }
     },
 
@@ -91,12 +64,12 @@ export const useFavouritesStore = create(
       });
     },
 
-    addUrl : (url) => {
-      set({shareUrl : url});
+    addUrl: (url) => {
+      set({ shareUrl: url });
     },
 
-    removeUrl : () => {
-      set({shareUrl : ""})
+    removeUrl: () => {
+      set({ shareUrl: "" })
     }
   }),
     {

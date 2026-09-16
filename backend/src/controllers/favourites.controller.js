@@ -9,7 +9,7 @@ const syncChanges = asyncHandler(async (req, res) => {
     const { favouritesChanges } = req.body;
 
     if (!favouritesChanges) {
-        throw new ApiError(400, "No changes sent !")
+        throw new ApiError(400, "No favorite changes provided in the request payload")
     }
 
     const changedFavourites = await Favourites.findOneAndUpdate(
@@ -33,7 +33,7 @@ const syncChanges = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, changedFavourites, "Sync data succesfull")
+            new ApiResponse(200, changedFavourites, "Sync data successfull")
         )
 });
 
@@ -71,14 +71,14 @@ const createLink = asyncHandler(async (req, res) => {
     );
 
     if (!updatedFavourites) {
-        throw new ApiError(400, "Unable to create a link")
+        throw new ApiError(500, "Internal server error: Failed to update shareable link")
     }
 
     const sharedUrl = `${process.env.FRONTEND_URL}/share/${token}`;
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { sharedUrl }, "Link generated succesfully"))
+        .json(new ApiResponse(200, { sharedUrl }, "Link generated successfully"))
 });
 
 const revokeLink = asyncHandler(async (req, res) => {
@@ -102,12 +102,12 @@ const revokeLink = asyncHandler(async (req, res) => {
     );
 
     if (!updatedUser) {
-        throw new ApiError(400, "Unable to revoke your link")
+        throw new ApiError(500, "Internal server error: Failed to update shareable link")
     }
 
     return res
         .status(200)
-        .json(new ApiResponse(200, {}, "link revoked succesfully"))
+        .json(new ApiResponse(200, {}, "link revoked successfully"))
 
 });
 

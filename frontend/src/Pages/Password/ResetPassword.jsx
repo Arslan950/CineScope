@@ -3,12 +3,12 @@ import { useParams, useNavigate } from "react-router-dom"
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
 import { toast } from "react-toastify"
 import axios from 'axios';
+import { handleApiError } from '../../lib/errorHandler';
 
 const ResetPassword = () => {
-  const [passwordToogle, setPasswordToogle] = useState(false);
+  const [passwordToggle, setPasswordToggle] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const { resetPasswordToken } = useParams();
@@ -23,23 +23,11 @@ const ResetPassword = () => {
         "confirmNewPassword": confirmNewPassword
       });
 
-      toast.success("password updated Successfully !")
+      toast.success("Password updated Successfully !")
       navigate('/login');
 
     } catch (error) {
-      if (error.response) {
-        const backendMessage = error.response?.data?.message || "Invalid password. Please try again.";
-        setErrorMessage(backendMessage);
-        toast.error(backendMessage);
-      } else if (error.request) {
-        const networkMsg = "Network error. Please check your connection.";
-        setErrorMessage(networkMsg);
-        toast.error(networkMsg);
-      } else {
-        const unexpectedMsg = "An unexpected error occurred.";
-        setErrorMessage(unexpectedMsg);
-        toast.error(unexpectedMsg);
-      }
+      handleApiError(error);
     }
   }
 
@@ -57,7 +45,7 @@ const ResetPassword = () => {
           <div className="relative w-full">
             <input
               id="newPassword"
-              type={passwordToogle ? "text" : "password"}
+              type={passwordToggle ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password"
@@ -65,10 +53,10 @@ const ResetPassword = () => {
             />
             <button
               type="button"
-              onClick={() => setPasswordToogle(!passwordToogle)}
+              onClick={() => setPasswordToggle(!passwordToggle)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
             >
-              {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
+              {passwordToggle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
             </button>
           </div>
         </div>
@@ -80,7 +68,7 @@ const ResetPassword = () => {
           <div className="relative w-full">
             <input
               id="confirmNewPassword"
-              type={passwordToogle ? "text" : "password"}
+              type={passwordToggle ? "text" : "password"}
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               placeholder="Re-enter new password"
@@ -88,10 +76,10 @@ const ResetPassword = () => {
             />
             <button
               type="button"
-              onClick={() => setPasswordToogle(!passwordToogle)}
+              onClick={() => setPasswordToggle(!passwordToggle)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
             >
-              {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
+              {passwordToggle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
             </button>
           </div>
         </div>

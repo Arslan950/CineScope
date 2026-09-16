@@ -60,9 +60,9 @@ const Profile = () => {
     };
 
     const handleDelete = async () => {
-        const sucess = await deleteUser();
+        const success = await deleteUser();
 
-        if (sucess === true) {
+        if (success === true) {
             navigate("/login");
         }
     }
@@ -203,7 +203,7 @@ const Profile = () => {
                         <div className="mt-10 pt-6 border-t border-red-500/20">
                             <h3 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-1">Danger Zone</h3>
                             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                                Once you delete your account, All your favorites will be gone
+                                Once you delete your account, all your favorites will be gone
                             </p>
                             <button
                                 disabled={isEditing}

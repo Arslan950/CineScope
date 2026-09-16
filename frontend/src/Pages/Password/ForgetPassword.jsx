@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from "axios";
 import { toast } from 'react-toastify';
 import AuthMarquee from '../../components/AuthMarquee';
-import { CheckCheck, Loader, Loader2Icon } from "lucide-react";
+import { handleApiError } from '../../lib/errorHandler';
 const ForgetPassword = () => {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
@@ -18,19 +18,7 @@ const ForgetPassword = () => {
             });
             toast.success("Email sent to your inbox")
         } catch (error) {
-            if (error.response) {
-                const backendMessage = error.response?.data?.message || "Something went wrong";
-                setErrorMessage(backendMessage);
-                toast.error(backendMessage);
-            } else if (error.request) {
-                const networkMessage = "Network problem !"
-                setErrorMessage(networkMessage);
-                toast.error(networkMessage);
-            } else {
-                const unknownMessage = "Something went wrong (1)";
-                setErrorMessage(unknownMessage);
-                toast.error(unknownMessage);
-            }
+            handleApiError(error);
         } finally {
             setLoading(false)
         }

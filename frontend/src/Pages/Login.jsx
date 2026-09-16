@@ -1,6 +1,5 @@
 import { useGoogleLogin } from "@react-oauth/google"
 import React, { useState } from 'react';
-import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import AuthMarquee from '../components/AuthMarquee';
 import logo from "../assets/logo.svg";
@@ -9,10 +8,9 @@ import { toast } from 'react-toastify';
 import { useAuthStore } from "../store/AuthStore.js"
 
 const Login = () => {
-    const [passwordToogle, setPasswordToogle] = useState(false);
+    const [passwordToggle, setPasswordToggle] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const login = useAuthStore((state) => state.login);
     const googleAuth = useAuthStore((state) => state.googleAuth);
@@ -95,7 +93,7 @@ const Login = () => {
                             <div className="relative w-full">
                                 <input
                                     id="password"
-                                    type={passwordToogle ? "text" : "password"}
+                                    type={passwordToggle ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Enter your password"
@@ -103,10 +101,10 @@ const Login = () => {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setPasswordToogle(!passwordToogle)}
+                                    onClick={() => setPasswordToggle(!passwordToggle)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"
                                 >
-                                    {passwordToogle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
+                                    {passwordToggle ? <EyeIcon size={18} /> : <EyeClosedIcon size={18} />}
                                 </button>
                             </div>
                             <button

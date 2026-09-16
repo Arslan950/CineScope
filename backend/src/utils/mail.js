@@ -34,7 +34,7 @@ const sendEmail = async (options) => {
             ]
         });
     } catch (error) {
-        throw new ApiError(400,"Something went wrong")
+        throw new ApiError(500,"Failed to send email")
     }
 }
 

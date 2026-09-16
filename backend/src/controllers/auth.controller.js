@@ -3,7 +3,7 @@ import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.model.js";
-import { IntialUser } from "../models/intialUser.model.js";
+import { InitialUser } from "../models/initialUser.model.js";
 import { Favourites } from "../models/favourites.model.js";
 import { sendEmail, emailVerificationMail, resetPasswordMail } from "../utils/mail.js"
 import { optionsAccessToken, optionsRefreshToken } from "../utils/cookies-options.js";
@@ -25,7 +25,7 @@ const generateTokens = async (userID) => {
         return { accessToken, refreshToken }
 
     } catch (error) {
-        throw new ApiError(401, "Unable to create JWT token");
+        throw new ApiError(500, "Failed to generate authentication tokens");
     }
 };
 
@@ -59,7 +59,7 @@ const googleAuth = asyncHandler(async (req, res) => {
     const { code } = req.body;
 
     if (!code) {
-        throw new ApiError(400, "Autherization code is required")
+        throw new ApiError(400, "Authorization code is required")
     }
 
     const { tokens } = await googleClient.getToken(code);
@@ -114,16 +114,16 @@ const register = asyncHandler(async (req, res) => {
     const existedUser = await User.findOne({ email: email })
 
     if (existedUser) {
-        throw new ApiError(400, "User with same email already exists");
+        throw new ApiError(409,"A user with this email address already exists");
     }
 
     const hashedPassword = await hashPassword(password);
 
     const { OTP, hashedOTP } = await generateOTP();
 
-    await IntialUser.deleteOne({ email });
+    await InitialUser.deleteOne({ email });
 
-    const tempUser = await IntialUser.create({
+    const tempUser = await InitialUser.create({
         fullName,
         email,
         password: hashedPassword,
@@ -139,12 +139,12 @@ const register = asyncHandler(async (req, res) => {
         )
     })
 
-    const createdUser = await IntialUser.findById(tempUser._id).select(
+    const createdUser = await InitialUser.findById(tempUser._id).select(
         "-password -OTP",
     )
 
     if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while creating a temporary  user");
+        throw new ApiError(500, "Something went wrong while creating a temporary user");
     }
 
     return res
@@ -164,7 +164,7 @@ const verifyUser = asyncHandler(async (req, res) => {
         .update(enteredOTP)
         .digest("hex")
 
-    const user = await IntialUser.findOne({
+    const user = await InitialUser.findOne({
         email: email,
         OTP: hashedOTP,
         createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) }
@@ -179,13 +179,13 @@ const verifyUser = asyncHandler(async (req, res) => {
         isEmailVerified: true
     });
 
-    await IntialUser.deleteOne({ _id: user._id });
+    await InitialUser.deleteOne({ _id: user._id });
 
     const createdUser = await User.findById(createUser._id).select(
         "-password -refreshToken -resetPasswordToken -resetPasswordExpires"
     )
 
-    if (!createdUser) { throw new ApiError(400, "Unable to create final User") }
+    if (!createdUser) { throw new ApiError(500, "Failed to finalize user registration") }
 
     return res
         .status(200)
@@ -201,13 +201,13 @@ const login = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-        throw new ApiError(400, "User with this email does not exists");
+        throw new ApiError(400, "Invalid email or password");
     }
 
     const isPasswordCorrect = await user.isPasswordCorrect(password);
 
     if (!isPasswordCorrect) {
-        throw new ApiError(401, "Incorrect password");
+        throw new ApiError(400, "Invalid email or password.");
     }
 
     const { accessToken, refreshToken } = await generateTokens(user._id);
@@ -221,7 +221,7 @@ const login = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, optionsAccessToken)
         .cookie("refreshToken", refreshToken, optionsRefreshToken)
         .json(
-            new ApiResponse(200, loggedInUser, "Logged in succesfully!")
+            new ApiResponse(200, loggedInUser, "Logged in successfully!")
         )
 
 })
@@ -244,7 +244,7 @@ const logout = asyncHandler(async (req, res) => {
         .clearCookie("accessToken", optionsAccessToken)
         .clearCookie("refreshToken", optionsRefreshToken)
         .json(
-            new ApiResponse(200, {}, "Logged out securly")
+            new ApiResponse(200, {}, "Logged out securely")
         )
 });
 
@@ -274,12 +274,12 @@ const updateUserInfo = asyncHandler(async (req, res) => {
         }
     )
 
-    if (!updatedUser) { throw new ApiError(400, "Not a valid user") }
+    if (!updatedUser) { throw new ApiError(404, "User profile not found") }
 
     return res
         .status(200)
         .json(
-            new ApiResponse(200, updatedUser, "Info updated succesfully")
+            new ApiResponse(200, updatedUser, "Info updated successfully")
         )
 
 
@@ -290,7 +290,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) { throw new ApiError(400, "No such user exist with this email") }
+    if (!user) { throw new ApiError(404, "User profile not found") }
 
     const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken();
 
@@ -320,7 +320,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     const { newPassword, confirmNewPassword } = req.body;
 
     if (newPassword !== confirmNewPassword) {
-        throw new ApiError(401, "Please enter same password in both the fields")
+        throw new ApiError(400, "Passwords do not match")
     }
 
     const newHash = crypto.createHash("sha256").update(resetPasswordToken).digest("hex");
@@ -330,7 +330,7 @@ const resetPassword = asyncHandler(async (req, res) => {
         resetPasswordExpires: { $gt: Date.now() }
     });
 
-    if (!user) { throw new ApiError(401, "Time limit exceeded , Please try again") }
+    if (!user) { throw new ApiError(400, "The password reset token is invalid or has expired") }
 
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
@@ -352,7 +352,7 @@ const getCurrentUserInfo = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, req.user, "Fetched user data succesfully !")
+            new ApiResponse(200, req.user, "Fetched user data successfully!")
         )
 });
 
@@ -363,10 +363,10 @@ const deleteUser = asyncHandler(async (req, res) => {
     try {
         session.startTransaction();
 
-        const deletedUser = await User.findByIdAndDelete({ _id: userId }).session(session);
+        const deletedUser = await User.findByIdAndDelete(userId).session(session);
 
         if (!deletedUser) {
-            throw new ApiError(400, "Unable to delete user")
+            throw new ApiError(500, "Failed to delete user account");
         }
 
         await Favourites.deleteMany({ user: userId }).session(session);
@@ -374,8 +374,8 @@ const deleteUser = asyncHandler(async (req, res) => {
         await session.commitTransaction();
 
     } catch (error) {
-        session.abortTransaction();
-        throw new ApiError(400, "Unable to delete your")
+        await session.abortTransaction();
+        throw new ApiError(400, "Unable to delete your account");
     } finally {
         session.endSession();
     }
@@ -392,7 +392,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
-    if (!incomingToken) { throw new ApiError(401, "You are not a Valid user") }
+    if (!incomingToken) { throw new ApiError(401, "Unauthorized: Refresh token is missing") }
 
     const decodedToken = jwt.verify(incomingToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decodedToken?._id);

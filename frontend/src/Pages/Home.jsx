@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import CardSection from '../components/Cards/CardSection'
 import api from "../lib/axiosInstance.js"
 import HomeSkeleton from "../components/skeletons/HomeSkeleton.jsx"
-import { toast } from 'react-toastify'
 import { motion } from 'motion/react'
 import { Info, Star, TrendingUp } from 'lucide-react'
+import { handleApiError } from '../lib/errorHandler.js'
 
 const Home = () => {
   const navigate = useNavigate();
@@ -23,14 +23,7 @@ const Home = () => {
   useEffect(() => {
     if (isError && error) {
       if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
-
-      if (error.response) {
-        toast.error(error.response?.data?.message || "Server Error");
-      } else if (error.request) {
-        toast.error("Network error. Please check your connection.");
-      } else {
-        toast.error("An unexpected error occurred.");
-      }
+      handleApiError(error);
     }
   }, [isError, error])
 

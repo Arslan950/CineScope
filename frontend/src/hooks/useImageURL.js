@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { handleApiError } from "../lib/errorHandler";
 
 const preset = import.meta.env.VITE_CLOUD_PRESET;
 const cloudName = import.meta.env.VITE_CLOUD_NAME;
@@ -32,19 +32,7 @@ export const useCloudinaryImageUpload = () => {
             return uploadedUrl;
 
         } catch (error) {
-            if (error.response) {
-                const cloudinaryErrorMessage = error.response?.data?.error?.message || "Failure";
-                setErrorMessage(cloudinaryErrorMessage);
-                toast.error(cloudinaryErrorMessage);
-            } else if (error.request) {
-                const networkMsg = "Network error. Please check your connection.";
-                setErrorMessage(networkMsg);
-                toast.error(networkMsg);
-            } else {
-                const unexpectedMsg = "An unexpected error occurred.";
-                setErrorMessage(unexpectedMsg);
-                toast.error(unexpectedMsg);
-            }
+            handleApiError(error);
             return null;
         } finally {
             setLoading(false);

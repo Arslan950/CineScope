@@ -6,8 +6,8 @@ const userRegistrationValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("Full name is required")
-            .isLength({ min: 3 })
-            .withMessage("Full name must be at least 3 characters long"),
+            .isLength({ min: 3, max: 50 })
+            .withMessage("Full name must be between 3 and 50 characters long"),
 
         body("email")
             .trim()
@@ -21,8 +21,8 @@ const userRegistrationValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("Password is required")
-            .isLength({ min: 8 })
-            .withMessage("Password must be at least 8 characters long"),
+            .isLength({ min: 8, max: 15 })
+            .withMessage("Password must be between 8 and 15 characters long"),
     ]
 };
 
@@ -32,11 +32,12 @@ const userOTPValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("OTP is required")
-            .isLength({min : 4})
-            .isLength({max : 15})
-            .withMessage("OTP must be at least 4 digit long")
+            .isLength({ min: 4, max: 4 })
+            .withMessage("OTP must be exactly 4 digits long")
+            .isNumeric()
+            .withMessage("OTP must contain only digits"),
     ]
-}
+};
 
 const userLoginValidator = () => {
     return [
@@ -52,9 +53,8 @@ const userLoginValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("Password is required")
-            .isLength({ min: 8 })
-            .isLength({max : 15})
-            .withMessage("Password must be at least 8 characters long"),
+            .isLength({ min: 8, max: 15 })
+            .withMessage("Password must be between 8 and 15 characters long"),
     ]
 };
 
@@ -76,14 +76,14 @@ const userResetForgotPasswordValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("New password is required")
-            .isLength({ min: 8 })
-            .withMessage("New password must be at least 8 characters long"),
+            .isLength({ min: 8, max: 15 })
+            .withMessage("New password must be between 8 and 15 characters long"),
     ]
 };
 
 export {
     userRegistrationValidator,
-    userOTPValidator ,
+    userOTPValidator,
     userLoginValidator,
     userForgotPasswordValidator,
     userResetForgotPasswordValidator

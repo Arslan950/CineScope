@@ -6,11 +6,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import api from "../../lib/axiosInstance.js";
 import { Frown, Star, Clock, Calendar, Clapperboard, Users, MonitorPlay, ChevronRightIcon, CheckIcon } from "lucide-react"
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { useFavouritesStore } from "../../store/FavouritesStore.js"
 import { useQuery } from "@tanstack/react-query";
+import { handleApiError } from "../../lib/errorHandler.js";
 
 const TvDescription = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,9 +24,12 @@ const TvDescription = () => {
   const { data: tvData, isLoading, isError, error } = useQuery({
     queryKey: ['tvData', id],
     queryFn: async ({ signal }) => {
-      const response = await api.post("/explore/tv-result", {
-        "id": id
-      }, { signal });
+      const response = await api.get("/explore/tv-result", {
+        params: {
+          id: id
+        },
+        signal
+      });
 
       return response.data?.data
     },
@@ -38,19 +41,7 @@ const TvDescription = () => {
       if (error.name === 'CanceledError' || error.name === 'AbortError') {
         return;
       }
-      if (error.response) {
-        const backendMessage = error.response?.data?.message
-        setErrorMessage(backendMessage)
-        toast.error(backendMessage);
-      } else if (error.request) {
-        const networkMsg = "Network error. Please check your connection.";
-        setErrorMessage(networkMsg);
-        toast.error(networkMsg);
-      } else {
-        const unexpectedMsg = "An unexpected error occurred.";
-        setErrorMessage(unexpectedMsg);
-        toast.error(unexpectedMsg);
-      }
+      handleApiError(error);
     }
   }, [isError, error])
 
@@ -107,7 +98,7 @@ const TvDescription = () => {
     },
     {
       icon: <Users className="stroke-blue-400" />,
-      stat_title: "seasons",
+      stat_title: "Seasons",
       stat_data: tvData?.number_of_seasons
     },
     {
@@ -127,7 +118,7 @@ const TvDescription = () => {
             `url('${tvData.backdrop}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/60 via-black/40 to-transparen" />
+        <div className="absolute inset-0 bg-gradient-to-t bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}

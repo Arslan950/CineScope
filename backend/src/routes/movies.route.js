@@ -5,9 +5,9 @@ import {verifyAccessToken} from "../middleware/auth.middleware.js"
 
 const router = Router() ;
 
-router.route("/search-results").post(verifyAccessToken,getSearchData);
-router.route("/movie-result").post(verifyAccessToken,getMoviesDetail);
-router.route("/tv-result").post(verifyAccessToken,getTVDetails);
+router.route("/search-results").get(verifyAccessToken,getSearchData);
+router.route("/movie-result").get(verifyAccessToken,getMoviesDetail);
+router.route("/tv-result").get(verifyAccessToken,getTVDetails);
 
 
 export default router ;

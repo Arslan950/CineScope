@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import crypto from "crypto";
 
-const IntialUserSchema = new Schema({
+const InitialUserSchema = new Schema({
     fullName: {
         type: String,
         required: [true, 'Full name is required'],
@@ -31,4 +31,4 @@ const IntialUserSchema = new Schema({
     }
 });
 
-export  const IntialUser = mongoose.model("IntialUser",IntialUserSchema)
+export  const InitialUser = mongoose.model("InitialUser",InitialUserSchema)

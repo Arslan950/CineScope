@@ -4,9 +4,10 @@ import axios from "axios"
 import { useNavigate } from "react-router-dom";
 import AuthMarquee from "../components/AuthMarquee.jsx"
 import logo from "../assets/logo.svg";
-import { CheckCheck, EyeClosedIcon, EyeIcon } from "lucide-react";
+import { EyeClosedIcon, EyeIcon } from "lucide-react";
 import { toast } from 'react-toastify';
 import { useAuthStore } from "../store/AuthStore.js"
+import { handleApiError } from "../lib/errorHandler.js";
 
 const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);
@@ -45,22 +46,10 @@ const SignUp = () => {
       });
       sessionStorage.setItem("pendingVerificationEmail", email);
       setStep(2);
-      toast.success("An 4 digit OTP has been sent to you inbox")
+      toast.success("An 4 digit OTP has been sent to your inbox")
       setErrorMessage("Success");
     } catch (error) {
-      if (error.response) {
-        const backendMessage = error.response?.data?.message
-        setErrorMessage(backendMessage)
-        toast.error(backendMessage);
-      } else if (error.request) {
-        const networkMsg = "Network error. Please check your connection.";
-        setErrorMessage(networkMsg);
-        toast.error(networkMsg);
-      } else {
-        const unexpectedMsg = "An unexpected error occurred.";
-        setErrorMessage(unexpectedMsg);
-        toast.error(unexpectedMsg);
-      }
+      handleApiError(error);
     } finally {
       setLoading(false)
     }
@@ -81,19 +70,7 @@ const SignUp = () => {
         navigate('/onBoarding');
       }
     } catch (error) {
-      if (error.response) {
-        const backendMessage = error.response?.data?.message || "Something went wrong";
-        setErrorMessage(backendMessage);
-        toast.error(backendMessage)
-      } else if (error.request) {
-        const networkMsg = "Network error. Please check your connection.";
-        setErrorMessage(networkMsg);
-        toast.error(networkMsg);
-      } else {
-        const unexpectedMsg = "An unexpected error occurred.";
-        setErrorMessage(unexpectedMsg);
-        toast.error(unexpectedMsg);
-      }
+      handleApiError(error);
     } finally {
       setLoading(false)
     }

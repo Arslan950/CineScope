@@ -6,8 +6,8 @@ import Card from "../components/Cards/Card.jsx";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from '../store/AuthStore.js';
-import { toast } from 'react-toastify';
 import { Frown, HeartIcon } from 'lucide-react';
+import { handleApiError } from '../lib/errorHandler.js';
 
 const ShareCollection = () => {
     const { shareToken } = useParams();
@@ -28,14 +28,7 @@ const ShareCollection = () => {
     useEffect(() => {
         if (isError && error) {
             if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
-
-            if (error.response) {
-                toast.error(error.response?.data?.message || "Server Error");
-            } else if (error.request) {
-                toast.error("Network error. Please check your connection.");
-            } else {
-                toast.error("An unexpected error occurred.");
-            }
+            handleApiError(error);
         }
     }, [isError, error]);
 
@@ -134,7 +127,7 @@ const ShareCollection = () => {
                             />
                         ))}
                     </div>) : (<div className="py-12 text-center text-slate-500 dark:text-slate-400">
-                        No {filter.toLowerCase()} found in this favorites.
+                        No {filter.toLowerCase()} found in this favourites collection.
                     </div>)
                 ) : (
                     <div className="flex min-h-60 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 px-6 text-center dark:border-slate-700">

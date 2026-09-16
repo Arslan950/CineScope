@@ -105,7 +105,7 @@ const OnBoarding = () => {
                 <div className='space-y-2 text-center'>
                   <h1 className='text-2xl font-bold sm:text-4xl'>Set up your profile</h1>
                   <p className='mx-auto max-w-md text-sm font-medium text-slate-600 dark:text-white/60 sm:text-base'>
-                    Choose your avatar or uploads of your choice
+                    Choose an avatar or upload one of your choice
                   </p>
                 </div>
               </div>
