@@ -49,7 +49,7 @@ const Login = () => {
     return (
         <section className='w-full flex-1 flex items-stretch min-h-0'>
 
-            <div className="hidden lg:block lg:w-1/2 relative overflow-hidden min-h-0">
+            <div className="hidden lg:block lg:w-1/2 relative min-h-0">
                 <div className="absolute inset-0">
                     <AuthMarquee />
                 </div>
