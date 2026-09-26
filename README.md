@@ -53,23 +53,29 @@ CineScope helps users discover movies and TV shows, inspect detailed metadata, s
 CineScope/
 ├── backend/
 │   ├── src/
-│   │   ├── controllers/       # Authentication, dashboard, movie, and favourite logic
-│   │   ├── db/                # MongoDB and Redis connections
-│   │   ├── middleware/        # Authentication and request validation
-│   │   ├── models/            # User and favourites schemas
-│   │   ├── routes/            # Express API routes
-│   │   ├── utils/             # API responses, errors, mail, and cookie helpers
-│   │   └── index.js           # Backend entry point
+│   │   ├── config/          # env validation
+│   │   ├── db/              # MongoDB & Redis
+│   │   ├── middleware/      # Auth, validation, error handling
+│   │   ├── modules/         # Feature modules
+│   │   │   ├── auth/        # Routes, controller, service, models
+│   │   │   ├── dashboard/   # Trending dashboard
+│   │   │   ├── favourites/  # Favourites routes & model
+│   │   │   ├── healthCheck/ # API health check
+│   │   │   └── media/       # Search & movie/TV details
+│   │   ├── services/        # TMDB client
+│   │   ├── utils/           # Responses, errors, mail, cookies
+│   │   ├── app.js           # Express app setup
+│   │   └── index.js         # Entry point
 │   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── Pages/             # Application screens and detail views
-│   │   ├── components/        # Shared UI, cards, navigation, and skeletons
-│   │   ├── hooks/             # Reusable hooks such as image upload
-│   │   ├── lib/               # API client and static data
-│   │   └── store/             # Zustand stores
+│   │   ├── Pages/           # Screens & detail views
+│   │   ├── components/      # Shared UI, cards, skeletons
+│   │   ├── hooks/           # Reusable hooks
+│   │   ├── lib/             # API client & static data
+│   │   └── store/           # Zustand stores
 │   └── package.json
-├── package.json               # Root scripts for running both apps
+├── package.json         # Root scripts
 └── README.md
 ```
 
@@ -169,9 +175,9 @@ All protected endpoints require the access-token cookie. Responses use a consist
 | PATCH | `/api/auth/editInfo` | Update profile and preferences | Protected |
 | DELETE | `/api/auth/delete-account` | Delete the current account | Protected |
 | GET | `/api/get-dashboard-data/` | Get cached trending dashboard data | Protected |
-| POST | `/api/explore/search-results` | Search movies and TV shows | Protected |
-| POST | `/api/explore/movie-result` | Get movie details | Protected |
-| POST | `/api/explore/tv-result` | Get TV details | Protected |
+| GET | `/api/explore/search-results` | Search movies and TV shows | Protected |
+| GET | `/api/explore/movie-result` | Get movie details | Protected |
+| GET | `/api/explore/tv-result` | Get TV show details | Protected |
 | GET | `/api/favourites/get-list` | Get the user’s favourites | Protected |
 | PUT | `/api/favourites/sync` | Sync favourites changes | Protected |
 | POST | `/api/favourites/generate-link` | Generate or retrieve a share link for the favourites collection | Protected |
