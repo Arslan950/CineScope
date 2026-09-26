@@ -1,57 +1,21 @@
+import { env } from "../../config/env.js";
 import { OAuth2Client } from "google-auth-library"
-import { ApiResponse } from "../utils/api-response.js";
-import { ApiError } from "../utils/api-error.js";
-import { asyncHandler } from "../utils/async-handler.js";
-import { User } from "../models/user.model.js";
-import { InitialUser } from "../models/initialUser.model.js";
-import { Favourites } from "../models/favourites.model.js";
-import { sendEmail, emailVerificationMail, resetPasswordMail } from "../utils/mail.js"
-import { optionsAccessToken, optionsRefreshToken } from "../utils/cookies-options.js";
-import bcrypt from "bcrypt"
+import { ApiResponse } from "../../utils/api-response.js";
+import { ApiError } from "../../utils/api-error.js";
+import { asyncHandler } from "../../utils/async-handler.js";
+import { User } from "./user.model.js";
+import { InitialUser } from "./initialUser.model.js";
+import { Favourites } from "../favourites/favourites.model.js";
+import { sendEmail, emailVerificationMail, resetPasswordMail } from "../../utils/mail.js"
+import { optionsAccessToken, optionsRefreshToken } from "../../utils/cookies-options.js";
+import { generateTokens, generateOTP, hashPassword } from "./auth.service.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-const generateTokens = async (userID) => {
-    try {
-        const user = await User.findById(userID);
-
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
-
-        user.refreshToken = refreshToken;
-        await user.save({ validateBeforeSave: false });
-
-        return { accessToken, refreshToken }
-
-    } catch (error) {
-        throw new ApiError(500, "Failed to generate authentication tokens");
-    }
-};
-
-const generateOTP = (length = 4) => {
-    const digit = "0123456789";
-    let OTP = "";
-
-    for (let i = 0; i < length; i++) {
-        OTP += digit[crypto.randomInt(0, 10)]
-    }
-
-    const hashedOTP = crypto
-        .createHmac("sha256", process.env.OTP_SERVER_SECRET)
-        .update(OTP)
-        .digest("hex")
-
-    return { OTP, hashedOTP };
-}
-
-const hashPassword = async (password) => {
-    return await bcrypt.hash(password, 10)
-};
-
 const googleClient = new OAuth2Client(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
+    env.googleClientId,
+    env.googleClientSecret,
     'postmessage'
 )
 
@@ -65,7 +29,7 @@ const googleAuth = asyncHandler(async (req, res) => {
     const { tokens } = await googleClient.getToken(code);
     const ticket = await googleClient.verifyIdToken({
         idToken: tokens.id_token,
-        audience: process.env.GOOGLE_CLIENT_ID,
+        audience: env.googleClientId,
     });
 
     const payload = ticket.getPayload();
@@ -114,7 +78,7 @@ const register = asyncHandler(async (req, res) => {
     const existedUser = await User.findOne({ email: email })
 
     if (existedUser) {
-        throw new ApiError(409,"A user with this email address already exists");
+        throw new ApiError(409, "A user with this email address already exists");
     }
 
     const hashedPassword = await hashPassword(password);
@@ -160,7 +124,7 @@ const verifyUser = asyncHandler(async (req, res) => {
     if (!enteredOTP) { throw new ApiError(400, "Please Provide a valid OTP") }
 
     const hashedOTP = crypto
-        .createHmac("sha256", process.env.OTP_SERVER_SECRET)
+        .createHmac("sha256", env.otpServerSecret)
         .update(enteredOTP)
         .digest("hex")
 
@@ -304,7 +268,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
         subject: "Request to change password",
         mailgenContent: resetPasswordMail(
             user?.fullName,
-            `${process.env.FRONTEND_URL}/resetPassword/${unHashedToken}`
+            `${env.frontendUrl}/resetPassword/${unHashedToken}`
         )
     })
 
@@ -394,7 +358,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     if (!incomingToken) { throw new ApiError(401, "Unauthorized: Refresh token is missing") }
 
-    const decodedToken = jwt.verify(incomingToken, process.env.REFRESH_TOKEN_SECRET);
+    const decodedToken = jwt.verify(incomingToken, env.refreshTokenSecret);
     const user = await User.findById(decodedToken?._id);
 
     if (!user) {

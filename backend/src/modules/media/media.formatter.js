@@ -1,25 +1,4 @@
-import { ApiResponse } from "../utils/api-response.js";
-import { ApiError } from "../utils/api-error.js";
-import { asyncHandler } from "../utils/async-handler.js";
-import axios from "axios";
-import axiosRetry from "axios-retry";
-import https from "https";
-
-const agent = new https.Agent({ keepAlive: true, timeout: 60000 });
-
-axiosRetry(axios, {
-    retries: 3,
-    retryDelay: axiosRetry.exponentialDelay,
-    retryCondition: (error) => {
-        return (
-            axiosRetry.isNetworkOrIdempotentRequestError(error) ||
-            error.code === "ECONNRESET" ||
-            error.code === "ECONNABORTED"
-        )
-    },
-})
-
-const formatData = (item) => {
+const formatSearchResults = (item) => {
     return {
         id: item.id,
         title: item.title || item.name || item.original_title || item.original_name,
@@ -28,40 +7,6 @@ const formatData = (item) => {
         type: item.media_type
     }
 }
-
-const getSearchData = asyncHandler(async (req, res) => {
-    const api_key = process.env.TMDB_API_KEY;
-    const { searchedTerm, page } = req.query;
-
-    if (!searchedTerm || !page) {
-        throw new ApiError(400, "Search term and page number are required")
-    }
-
-    try {
-        const response = await axios.get(`https://api.themoviedb.org/3/search/multi?query=${searchedTerm}&api_key=${api_key}&page=${page}&sort_by=popularity.desc`, { httpsAgent: agent, timeout: 10000 });
-
-        const rawResults = response?.data?.results;
-
-        if (rawResults.length === 0) {
-            throw new ApiError(404, "No search results found for the provided query");
-        }
-
-        const formattedResults = rawResults.filter(item => item.media_type !== 'person').map(formatData);
-
-        const finalData = {
-            page: page,
-            results: formattedResults,
-            total_pages: response?.data?.total_pages,
-        }
-
-        return res
-            .status(200)
-            .json(new ApiResponse(200, finalData, "Searched data fetched successfully"))
-
-    } catch (error) {
-        throw new ApiError(502, "Bad Gateway: Failed to fetch data from the external service")
-    }
-});
 
 const formatMovieData = (item) => {
     const rawDirector = item.credits?.crew?.find(member => member.job === 'Director');
@@ -111,33 +56,6 @@ const formatMovieData = (item) => {
         cast: topCast,
     };
 };
-
-const getMoviesDetail = asyncHandler(async (req, res) => {
-    const api_key = process.env.TMDB_API_KEY
-    const { id } = req.query;
-
-    if (!id) {
-        throw new ApiError(400, "Movie ID is required");
-    }
-
-    try {
-        const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&append_to_response=credits,videos`, { httpsAgent: agent, timeout: 10000 });
-
-        const finalData = formatMovieData(response.data);
-
-        if (!finalData) {
-            throw new ApiError(502, "Failed to retrieve movie details from the external provider")
-        }
-
-        return res
-            .status(200)
-            .json(new ApiResponse(200, finalData, "Fetched movies data successfully"))
-
-
-    } catch (error) {
-        throw new ApiError(502, "Bad Gateway: Failed to fetch data from the external service")
-    }
-});
 
 const formatTVData = (item) => {
     const creators = item.created_by?.map(creator => ({
@@ -193,34 +111,8 @@ const formatTVData = (item) => {
     };
 };
 
-const getTVDetails = asyncHandler(async (req, res) => {
-    const api_key = process.env.TMDB_API_KEY;
-    const { id } = req.query;
-
-    if (!id) {
-        throw new ApiError(400, "Please provide a movie");
-    }
-
-    try {
-        const response = await axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${api_key}&append_to_response=credits,videos`, { httpsAgent: agent, timeout: 10000 });
-
-        const finalData = formatTVData(response.data);
-
-        if (!finalData) {
-            throw new ApiError(400, "Failed to fetch details from TMDB")
-        }
-
-        return res
-            .status(200)
-            .json(new ApiResponse(200, finalData, "Fetched TV data successfully"))
-
-    } catch (error) {
-        throw new ApiError(502, "Bad Gateway: Failed to fetch data from the external service")
-    }
-});
-
 export {
-    getSearchData,
-    getMoviesDetail,
-    getTVDetails
+    formatSearchResults , 
+    formatMovieData ,
+    formatTVData
 }

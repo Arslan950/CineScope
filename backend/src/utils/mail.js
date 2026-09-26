@@ -1,14 +1,14 @@
 import Mailgen from "mailgen";
-import mailgen from "mailgen";
 import { BrevoClient } from "@getbrevo/brevo";
 import { ApiError } from "./api-error.js";
+import { env } from "../config/env.js";
 
 const sendEmail = async (options) => {
     const mailGenerator = new Mailgen({
         theme: "cerberus",
         product: {
             name: "CineScope",
-            link: process.env.FRONTEND_URL
+            link: env.frontendUrl
         }
     })
 
@@ -17,7 +17,7 @@ const sendEmail = async (options) => {
 
     try {
         const brevo = new BrevoClient({
-            apiKey: process.env.BREVO_API_KEY,
+            apiKey: env.brevoApiKey,
         })
 
         const result = await brevo.transactionalEmails.sendTransacEmail({
@@ -25,7 +25,7 @@ const sendEmail = async (options) => {
             htmlContent: emailHTML,
             sender: {
                 name: "Team CineScope",
-                email: process.env.MAIL_FROM,
+                email: env.mailFrom,
             },
             to: [
                 {

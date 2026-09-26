@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {verifyAccessToken} from "../middleware/auth.middleware.js";
-import { createLink, getFavouritesList , getSharedFavourites, revokeLink, syncChanges } from "../controllers/favourites.controller.js";
+import {verifyAccessToken} from "../../middleware/auth.middleware.js";
+import { createLink, getFavouritesList , getSharedFavourites, revokeLink, syncChanges } from "./favourites.controller.js";
 
 const router = Router() ;
 

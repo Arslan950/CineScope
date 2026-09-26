@@ -1,3 +1,4 @@
+import {env} from "../config/env.js"
 import { createClient } from "redis";
 
 let client;
@@ -5,7 +6,7 @@ let isRedisConnected = false;
 
 const connectRedis = async () => {
     client = createClient({
-        url: process.env.REDIS_URL
+        url: env.redisUrl
     })
 
     client.on("error", (error) => {

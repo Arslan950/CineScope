@@ -1,9 +1,10 @@
-import { ApiResponse } from "../utils/api-response.js";
-import { ApiError } from "../utils/api-error.js";
-import { asyncHandler } from "../utils/async-handler.js";
-import { Favourites } from "../models/favourites.model.js";
-import { User } from "../models/user.model.js";
+import { ApiResponse } from "../../utils/api-response.js";
+import { ApiError } from "../../utils/api-error.js";
+import { asyncHandler } from "../../utils/async-handler.js";
+import { Favourites } from "./favourites.model.js";
+import { User } from "../auth/user.model.js";
 import crypto from "crypto";
+import { env } from "../../config/env.js";
 
 const syncChanges = asyncHandler(async (req, res) => {
     const { favouritesChanges } = req.body;
@@ -44,7 +45,7 @@ const createLink = asyncHandler(async (req, res) => {
 
     if (userFavourites && userFavourites.shareToken && userFavourites.shareTokenStatus === "active") {
         let token = userFavourites.shareToken;
-        const sharedUrl = `${process.env.FRONTEND_URL}/share/${token}`
+        const sharedUrl = `${env.frontendUrl}/share/${token}`
 
         return res
             .status(200)
@@ -74,7 +75,7 @@ const createLink = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Internal server error: Failed to update shareable link")
     }
 
-    const sharedUrl = `${process.env.FRONTEND_URL}/share/${token}`;
+    const sharedUrl = `${env.frontendUrl}/share/${token}`;
 
     return res
         .status(200)
@@ -154,7 +155,7 @@ const getFavouritesList = asyncHandler(async (req, res) => {
 
     let sharedUrl = "";
     if(userFavourites.shareToken && userFavourites.shareTokenStatus === "active"){
-        sharedUrl += `${process.env.FRONTEND_URL}/share/${userFavourites.shareToken}`
+        sharedUrl += `${env.frontendUrl}/share/${userFavourites.shareToken}`
     }
 
     delete userFavourites.shareToken;

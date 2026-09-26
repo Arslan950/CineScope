@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import crypto from "crypto";
 
 const InitialUserSchema = new Schema({
     fullName: {

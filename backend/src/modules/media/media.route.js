@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getSearchData , getMoviesDetail , getTVDetails} from "../controllers/movies.controller.js";
-import {verifyAccessToken} from "../middleware/auth.middleware.js"
+import { getSearchData , getMoviesDetail , getTVDetails} from "./media.controller.js";
+import {verifyAccessToken} from "../../middleware/auth.middleware.js"
 
 
 const router = Router() ;

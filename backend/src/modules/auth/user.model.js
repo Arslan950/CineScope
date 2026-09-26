@@ -1,3 +1,4 @@
+import { env } from "../../config/env.js";
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -67,8 +68,8 @@ UserSchema.methods.generateAccessToken = function () {
             _id: this._id,
             email: this.email
         },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+        env.accessTokenSecret,
+        { expiresIn: env.accessTokenExpiry }
     )
 };
 
@@ -77,8 +78,8 @@ UserSchema.methods.generateRefreshToken = function () {
         {
             _id: this._id,
         },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+        env.refreshTokenSecret,
+        { expiresIn: env.refreshTokenExpiry }
     )
 };
 

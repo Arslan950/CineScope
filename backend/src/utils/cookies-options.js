@@ -1,16 +1,17 @@
 import ms from "ms"
+import { env } from "../config/env.js";
 
 const optionsAccessToken = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: env.nodeEnv === 'production',
     sameSite: 'Lax', 
 };
 
 const optionsRefreshToken = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: env.nodeEnv === 'production',
     sameSite: 'Lax',
-    maxAge : ms(process.env.REFRESH_TOKEN_EXPIRY)
+    maxAge : ms(env.refreshTokenExpiry)
 };
 
 export {

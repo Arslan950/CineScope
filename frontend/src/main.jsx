@@ -27,7 +27,13 @@ const Profile = lazy(() => import("./Pages/Profile.jsx"));
 const OnBoarding = lazy(() => import("./Pages/OnBoarding.jsx"));
 const ShareCollection = lazy(() => import("./Pages/ShareCollection.jsx"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions : {
+    queries : {
+      refetchOnWindowFocus : false,
+    }
+  }
+});
 
 const router = createBrowserRouter([
   {

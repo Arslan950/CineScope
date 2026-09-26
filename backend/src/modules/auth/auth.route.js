@@ -11,16 +11,16 @@ import {
     deleteUser,
     resetPassword,
     refreshAccessToken
-} from "../controllers/auth.controller.js";
-import { verifyAccessToken } from "../middleware/auth.middleware.js";
-import { validation } from "../middleware/validator.middleware.js"
+} from "./auth.controller.js";
+import { verifyAccessToken } from "../../middleware/auth.middleware.js";
+import { validation } from "../../middleware/validator.middleware.js"
 import {
     userRegistrationValidator,
     userOTPValidator ,
     userLoginValidator,
     userForgotPasswordValidator,
     userResetForgotPasswordValidator
-} from "../validators/index.js"
+} from "./auth.validator.js"
 
 const router = Router();
 
