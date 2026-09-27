@@ -177,7 +177,7 @@ const login = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken } = await generateTokens(user._id);
 
     const loggedInUser = await User.findById(user._id).select(
-        "-password -refreshToken",
+        "-_id -password -refreshToken -createdAt -updatedAt -__v -googleId -resetPasswordToken -resetPasswordExpires",
     )
 
     return res
@@ -191,7 +191,7 @@ const login = asyncHandler(async (req, res) => {
 })
 
 const logout = asyncHandler(async (req, res) => {
-    const user = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
         req.user._id,
         {
             $set: {
@@ -236,7 +236,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
             returnDocument: "after",
             runValidators: true,
         }
-    )
+    ).select("-_id -password -refreshToken -googleId -resetPasswordToken -resetPasswordExpires -createdAt -updatedAt -__v")
 
     if (!updatedUser) { throw new ApiError(404, "User profile not found") }
 
@@ -313,11 +313,14 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUserInfo = asyncHandler(async (req, res) => {
+    const plainUser = req.user.toObject ? req.user.toObject() : req.user;
+    const { _id, __v, createdAt, updatedAt, googleId, ...cleanUser } = plainUser;
+
     return res
         .status(200)
         .json(
-            new ApiResponse(200, req.user, "Fetched user data successfully!")
-        )
+            new ApiResponse(200, cleanUser, "Fetched user data successfully!")
+        );
 });
 
 const deleteUser = asyncHandler(async (req, res) => {

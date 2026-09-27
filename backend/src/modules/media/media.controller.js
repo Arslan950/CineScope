@@ -22,7 +22,7 @@ const getSearchData = asyncHandler(async (req, res) => {
     const rawResults = response?.data?.results;
 
     if (rawResults.length === 0) {
-        throw new ApiError(404, "No search results");
+        throw new ApiError(404, "No search results found");
     }
 
     const formattedResults = rawResults.filter(item => item.media_type !== 'person').map(formatSearchResults);
