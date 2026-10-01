@@ -84,7 +84,7 @@ const Home = () => {
       </section>
 
       <div className='space-y-6 sm:p-7 p-2'>
-        <CardSection movieList={dashboardData?.hollywood.slice(1, 6)} name={`Hollywood`} />
+        <CardSection movieList={dashboardData?.hollywood.slice(1)} name={`Hollywood`} />
         <CardSection movieList={dashboardData?.bollywood} name={`Bollywood`} />
         <CardSection movieList={dashboardData?.webSeries} name={`Web series`} />
       </div>

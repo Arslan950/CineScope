@@ -32,7 +32,7 @@ const Card = ({ title, poster, rating, type, id, className = "", allowed = true,
           onAuthRequired();
         }
       }}
-     className="group shrink-0 snap-start w-[clamp(10rem,26vw,16rem)] cursor-pointer"
+     className="group shrink-0 snap-start w-[clamp(10rem,27vw,14.5rem)] cursor-pointer"
     >
       <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg border border-slate-300 shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl dark:border-slate-800">
         <img

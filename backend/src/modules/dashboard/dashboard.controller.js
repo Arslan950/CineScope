@@ -44,9 +44,9 @@ const getTrendingData = asyncHandler(async (req, res) => {
     ]);
 
     const finalData = {
-        hollywood: hollywoodRes.data?.results?.slice(0, 6).map((item, index) => formatItem(item, 'movie', index === 0)) || [],
-        bollywood: bollywoodRes.data?.results?.slice(0, 5).map(item => formatItem(item, 'movie')) || [],
-        webSeries: webSeriesRes.data?.results?.slice(0, 5).map(item => formatItem(item, 'tv')) || []
+        hollywood: hollywoodRes.data?.results?.map((item, index) => formatItem(item, 'movie', index === 0)) || [],
+        bollywood: bollywoodRes.data?.results?.map(item => formatItem(item, 'movie')) || [],
+        webSeries: webSeriesRes.data?.results?.map(item => formatItem(item, 'tv')) || []
     };
 
     if (finalData.hollywood.length === 0 && finalData.bollywood.length === 0) {
